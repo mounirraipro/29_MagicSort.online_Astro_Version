@@ -1,0 +1,278 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { articles } from "@/data/articles";
+import { externalGames } from "@/data/externalGames";
+import { siteConfig } from "@/data/siteConfig";
+import { brandAccentClass } from "@/data/accentClasses";
+
+const recentPosts = articles.slice(0, 3);
+const totalLevels = 30;
+const homeBentoGames = [
+  {
+    href: "/play/",
+    title: "Magic Sort Online",
+    shortTitle: "Magic Sort",
+    category: "Now playing",
+    thumbnail: "/apple-touch-icon.png",
+    accentClass: brandAccentClass,
+  },
+  ...externalGames.map((game) => ({
+    href: `/games/${game.slug}/`,
+    title: game.title,
+    shortTitle: game.shortTitle,
+    category: game.category,
+    thumbnail: game.thumbnail,
+    accentClass: game.accentClass,
+  })),
+].slice(0, 8);
+const homeBentoLeft = homeBentoGames.slice(0, 4);
+const homeBentoRight = homeBentoGames.slice(4, 8);
+
+const faqItems = [
+  ["What is Magic Sort?", "Magic Sort is a free online bottle sorting puzzle where you pour layered colors between tubes until every filled bottle contains one clean color."],
+  ["How do you play Magic Sort online?", "Choose a bottle, then pour into an empty bottle or onto the same top color when there is enough room. Keep sorting until all colors are organized."],
+  ["Is Magic Sort free?", "Yes. Magic Sort is free to play in the browser with no download, no account, and no app install required."],
+  ["Does Magic Sort work on mobile?", "Yes. Magic Sort supports touch and mouse play, so it works on phones, tablets, laptops, and desktop browsers."],
+  ["How many levels are included?", `The current game includes ${totalLevels} browser levels with easier openings and tighter late-game layouts.`],
+];
+
+const homeStructuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "VideoGame",
+    name: "Magic Sort",
+    alternateName: ["MagicSort", "Magic Sort Online", "Water Sort Puzzle", "Bottle Sort Game"],
+    url: `${siteConfig.siteUrl}/`,
+    image: new URL(siteConfig.defaultOgImage, siteConfig.siteUrl).href,
+    description: siteConfig.description,
+    applicationCategory: "Game",
+    gamePlatform: ["Web browser", "Desktop", "Mobile", "Tablet"],
+    genre: ["Bottle sorting puzzle", "Water sort puzzle", "Color sort puzzle", "Logic game"],
+    operatingSystem: "Any modern browser",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+      availability: "https://schema.org/InStock",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: siteConfig.publisherName,
+      url: siteConfig.siteUrl,
+    },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faqItems.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: answer,
+      },
+    })),
+  },
+];
+---
+
+<BaseLayout title={siteConfig.name} description={siteConfig.description} structuredData={homeStructuredData}>
+  <section class="hero-play">
+    <div class="home-game-lobby">
+      <div class="game-bento-grid game-bento-grid-side" aria-label="Games you can play">
+        {homeBentoLeft.map((game, index) => (
+          <a class:list={["game-bento-card", game.accentClass, { "game-bento-card-featured": index === 0 }]} href={game.href}>
+            <img src={game.thumbnail} alt={`${game.title} thumbnail`} width="640" height="360" loading="lazy" />
+            <div>
+              <span>{game.category}</span>
+              <strong>{game.shortTitle}</strong>
+            </div>
+          </a>
+        ))}
+      </div>
+      <div class="hero-game">
+        <iframe src="/game/index.html" title="Play Magic Sort" loading="eager"></iframe>
+      </div>
+      <div class="game-bento-grid game-bento-grid-side" aria-label="More games">
+        {homeBentoRight.map((game, index) => (
+          <a class:list={["game-bento-card", game.accentClass, { "game-bento-card-featured": index === 0 }]} href={game.href}>
+            <img src={game.thumbnail} alt={`${game.title} thumbnail`} width="640" height="360" loading="lazy" />
+            <div>
+              <span>{game.category}</span>
+              <strong>{game.shortTitle}</strong>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+    <div class="hero-copy">
+      <div class="hero-copy-main">
+        <p class="eyebrow">Instant play</p>
+        <h1>Magic Sort Online</h1>
+        <p>Play Magic Sort free in your browser. Pour layered colors between bottles, protect your empty space, and finish every level with no download and no account.</p>
+        <a class="text-link hero-note" href="/how-to-play/">Learn the rules</a>
+      </div>
+      <div class="hero-play-panel">
+        <div class="hero-panel-top">
+          <span>Ready in browser</span>
+          <strong>Start sorting colors.</strong>
+        </div>
+        <div class="hero-actions">
+          <a class="primary-action" href="/play/"><span class="play-triangle"></span>Play Full Screen</a>
+          <a class="secondary-action" href="/how-to-play/">How To Play</a>
+        </div>
+        <dl class="stat-row">
+          <div><dt>{totalLevels}</dt><dd>Levels</dd></div>
+          <div><dt>4</dt><dd>Layers</dd></div>
+          <div><dt>{articles.length}</dt><dd>Guides</dd></div>
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section home-search-intent">
+    <div class="home-section-head split-head">
+      <div>
+        <p class="eyebrow">Magic Sort guide</p>
+        <h2>Play the bottle sorting puzzle.</h2>
+      </div>
+      <p>Magic Sort turns mixed liquid colors into a calm logic challenge built around readable bottles, smart space control, and satisfying clean finishes.</p>
+    </div>
+    <div class="process-strip">
+      <article>
+        <span>Free</span>
+        <h3>Browser play</h3>
+        <p>Open <a href="/play/">Magic Sort online</a> and start instantly. The game runs in the browser, so there is no app store, installer, or sign-up flow.</p>
+      </article>
+      <article>
+        <span>Read</span>
+        <h3>Layer logic</h3>
+        <p>Each move starts with the top liquid color, but the hidden layers underneath decide whether the next few pours will stay flexible.</p>
+      </article>
+      <article>
+        <span>Plan</span>
+        <h3>Empty space</h3>
+        <p>Empty bottles are your strongest tools. Use them to uncover colors, build clean stacks, and avoid trapping important layers.</p>
+      </article>
+      <article>
+        <span>Finish</span>
+        <h3>Clean bottles</h3>
+        <p>The level is solved when each filled bottle holds one color from top to bottom. The best route is patient, not frantic.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="home-section home-authority">
+    <div class="authority-panel">
+      <div class="home-section-head">
+        <p class="eyebrow">Puzzle context</p>
+        <h3>Built on classic sorting logic.</h3>
+        <p>
+          Keep <a class="site-identity-link" href="/"><strong>www.magicsort.online</strong></a> as your quick route back to free browser bottle sorting, then explore the puzzle and game-design ideas behind the genre.
+        </p>
+      </div>
+      <div class="authority-links" aria-label="External puzzle references">
+        <a href="https://en.wikipedia.org/wiki/Water_sort_puzzle" target="_blank" rel="noopener noreferrer">
+          <span>Wikipedia</span>
+          <strong>Water sort puzzle</strong>
+          <small>Background on the color sorting puzzle format.</small>
+        </a>
+        <a href="https://en.wikipedia.org/wiki/Puzzle_video_game" target="_blank" rel="noopener noreferrer">
+          <span>Wikipedia</span>
+          <strong>Puzzle video games</strong>
+          <small>How simple rules create deep planning challenges.</small>
+        </a>
+        <a href="https://www.youtube.com/results?search_query=water+sort+puzzle+strategy" target="_blank" rel="noopener noreferrer">
+          <span>YouTube</span>
+          <strong>Strategy videos</strong>
+          <small>Watch color sorting routes and planning examples.</small>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section home-process">
+    <div class="home-section-head split-head">
+      <div>
+        <p class="eyebrow">How it works</p>
+        <h3>Simple pours. Real planning.</h3>
+      </div>
+      <p>Four steps from mixed bottles to a clean board.</p>
+    </div>
+    <div class="process-strip">
+      <article><span>01</span><h3>Pick</h3><p>Select a bottle with the color you want to move.</p></article>
+      <article><span>02</span><h3>Match</h3><p>Pour into an empty bottle or onto the same top color.</p></article>
+      <article><span>03</span><h3>Protect</h3><p>Keep enough empty space for future colors to move.</p></article>
+      <article><span>04</span><h3>Clear</h3><p>Finish every bottle as a single-color stack.</p></article>
+    </div>
+  </section>
+
+  <section class="home-section home-blog">
+    <div class="blog-editorial">
+      <div class="home-section-head">
+        <p class="eyebrow">From the blog</p>
+        <h3>Sharper sorting habits.</h3>
+        <p>Short reads for cleaner pours, better focus, and calmer play.</p>
+        <a class="text-link" href="/blog/">Browse all articles</a>
+      </div>
+      <div class="blog-board">
+        <a class="editorial-card editorial-card-featured" href={`/blog/${recentPosts[0].slug}/`}>
+          <span>{recentPosts[0].category}</span>
+          <h3>{recentPosts[0].title}</h3>
+          <p>{recentPosts[0].description}</p>
+          <small>{recentPosts[0].readTime}</small>
+        </a>
+        <div class="article-rail">
+          {recentPosts.slice(1).map((post) => (
+            <a class="editorial-card editorial-card-row" href={`/blog/${post.slug}/`}>
+              <span>{post.category}</span>
+              <h3>{post.title}</h3>
+              <small>{post.readTime}</small>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section home-faq">
+    <div class="faq-layout">
+      <div class="faq-cardlet">
+        <p class="eyebrow">FAQ</p>
+        <h3>Quick answers.</h3>
+        <p>Need the short version before playing?</p>
+      </div>
+      <div class="faq-list" data-faq-list>
+        {faqItems.map(([question, answer]) => (
+          <details>
+            <summary>{question}</summary>
+            <p>{answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="home-cta">
+    <div>
+      <p class="eyebrow">Ready?</p>
+      <h3>Open a level and start sorting.</h3>
+    </div>
+    <a class="primary-action" href="/play/"><span class="play-triangle"></span>Play Magic Sort</a>
+  </section>
+
+  <script is:inline>
+    (() => {
+      document.querySelectorAll("[data-faq-list]").forEach((list) => {
+        list.querySelectorAll("details").forEach((item) => {
+          item.addEventListener("toggle", () => {
+            if (!item.open) return;
+            list.querySelectorAll("details[open]").forEach((other) => {
+              if (other !== item) other.open = false;
+            });
+          });
+        });
+      });
+    })();
+  </script>
+</BaseLayout>

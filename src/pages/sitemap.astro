@@ -1,0 +1,86 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { articles } from "@/data/articles";
+import { externalGames } from "@/data/externalGames";
+import { siteRoutes } from "@/data/siteRoutes";
+import { siteConfig } from "@/data/siteConfig";
+
+const sitemapSections = [
+  {
+    title: "Main Pages",
+    links: siteRoutes.map((route) => ({ path: route.path, title: route.title })),
+  },
+  {
+    title: "Game Pages",
+    links: [
+      { path: "/play", title: "Play Magic Sort" },
+      ...externalGames.map((game) => ({ path: `/games/${game.slug}`, title: game.title })),
+    ],
+  },
+  {
+    title: "Blog Articles",
+    links: articles.map((article) => ({ path: `/blog/${article.slug}`, title: article.title })),
+  },
+];
+
+const pathWithSlash = (path: string) => (path === "/" ? "/" : `${path.replace(/\/$/, "")}/`);
+---
+
+<BaseLayout
+  title="Sitemap"
+  description={`Browse every important ${siteConfig.name} page, including play, guides, support, legal information, related games, and blog articles.`}
+  seo={{
+    path: "/sitemap",
+    title: "Sitemap",
+    seoTitle: `${siteConfig.name} Sitemap - All Pages`,
+    description: `Browse every important ${siteConfig.name} page, including play, guides, support, legal information, related games, and blog articles.`,
+    keywords: ["Magic Sort sitemap", "site map", "browser game pages"],
+  }}
+>
+  <section class="listing-shell">
+    <header class="listing-header">
+      <p class="eyebrow">Sitemap</p>
+      <h1>Every public page.</h1>
+      <p>Browse every public page, game, guide, support route, legal page, and article available on {siteConfig.name}.</p>
+    </header>
+
+    <div class="seo-copy-grid">
+      {
+        sitemapSections.map((section) => (
+          <article class="seo-copy-card seo-copy-wide">
+            <div class="section-head">
+              <h3 class="text-xl font-black text-ink">{section.title}</h3>
+            </div>
+            <nav class="grid gap-2 sm:grid-cols-2 lg:grid-cols-3" aria-label={`${section.title} sitemap links`}>
+              {section.links.map((link) => (
+                <a class="content-page-link" href={pathWithSlash(link.path)}>
+                  <span>{link.title}</span>
+                </a>
+              ))}
+            </nav>
+          </article>
+        ))
+      }
+    </div>
+
+    <section class="seo-copy-section" aria-labelledby="sitemap-organization">
+      <div class="section-head">
+        <h2 id="sitemap-organization">How this sitemap is organized</h2>
+      </div>
+      <div class="seo-copy-grid">
+        <article class="seo-copy-card seo-copy-wide">
+          <h3>Main routes</h3>
+          <p>Main pages cover core navigation such as Play, Games, How To Play, Strategy, Blog, FAQ, and Contact. The XML sitemap gives search engines a clean machine-readable list of canonical URLs, while this page gives visitors a direct overview.</p>
+        </article>
+        <article class="seo-copy-card">
+          <h3>Game routes</h3>
+          <p>The play route loads Magic Sort directly. Related game pages use iframe loaders with supporting rules, strategy, and tips.</p>
+        </article>
+        <article class="seo-copy-card">
+          <h3>Article routes</h3>
+          <p>Blog article routes are generated from structured article data so new strategy, family, science, or review posts can be added consistently.</p>
+        </article>
+      </div>
+    </section>
+  </section>
+</BaseLayout>

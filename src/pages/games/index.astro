@@ -1,0 +1,116 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { externalGames } from "@/data/externalGames";
+import { brandAccentClass } from "@/data/accentClasses";
+
+const featuredGames = [
+  {
+    href: "/play/",
+    title: "Magic Sort Online",
+    shortTitle: "Magic Sort",
+    category: "Main game",
+    description: "Sort layered liquid colors into clean bottles.",
+    thumbnail: "/apple-touch-icon.png",
+    accentClass: brandAccentClass,
+  },
+  ...externalGames.slice(0, 3).map((game) => ({
+    href: `/games/${game.slug}/`,
+    title: game.title,
+    shortTitle: game.shortTitle,
+    category: game.category,
+    description: game.description,
+    thumbnail: game.thumbnail,
+    accentClass: game.accentClass,
+  })),
+];
+
+const directoryGames = [
+  {
+    href: "/play/",
+    title: "Magic Sort Online",
+    shortTitle: "Magic Sort",
+    category: "Color sorting",
+    description: "The main Magic Sort experience with bottles, layered colors, empty-space planning, and calm browser play.",
+    thumbnail: "/apple-touch-icon.png",
+    accentClass: brandAccentClass,
+  },
+  ...externalGames.map((game) => ({
+    href: `/games/${game.slug}/`,
+    title: game.title,
+    shortTitle: game.shortTitle,
+    category: game.category,
+    description: game.description,
+    thumbnail: game.thumbnail,
+    accentClass: game.accentClass,
+  })),
+];
+---
+
+<BaseLayout title="Free Online Games" description="Play Magic Sort and more free online browser games, including color puzzles, logic games, word games, number games, and arcade puzzle favorites.">
+  <section class="games-directory">
+    <header class="games-directory-hero">
+      <div>
+        <h1>Free browser games.</h1>
+        <p>Play Magic Sort and a focused library of puzzle, word, number, spatial, and arcade games. No downloads, no account setup, just clean browser play.</p>
+      </div>
+      <a class="games-directory-action" href="/play/"><span></span>Play Magic Sort</a>
+    </header>
+
+    <div class="games-feature-rail" aria-label="Featured games">
+      {featuredGames.map((game, index) => (
+        <a class:list={["games-feature-link", game.accentClass]} href={game.href}>
+          <img src={game.thumbnail} alt={`${game.title} thumbnail`} width="640" height="360" loading="lazy" />
+          <div>
+            <span>{game.category}</span>
+            <strong>{game.shortTitle}</strong>
+          </div>
+          <small>{index === 0 ? "Start here" : "Related pick"}</small>
+        </a>
+      ))}
+    </div>
+
+    <section class="games-directory-main" aria-labelledby="games-directory-title">
+      <div class="games-directory-intro">
+        <h2 id="games-directory-title">Choose a game</h2>
+        <p>{directoryGames.length} browser games selected for color puzzle players, quick breaks, and low-friction play.</p>
+      </div>
+
+      <div class="games-directory-list">
+        {directoryGames.map((game, index) => (
+          <a class:list={["games-directory-row", game.accentClass]} href={game.href}>
+            <span class="games-directory-number">{String(index + 1).padStart(2, "0")}</span>
+            <img src={game.thumbnail} alt={`${game.title} thumbnail`} width="320" height="180" loading="lazy" />
+            <div>
+              <span>{game.category}</span>
+              <h3>{game.title}</h3>
+              <p>{game.description}</p>
+            </div>
+            <span class="games-directory-arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+                <path d="M7 17L17 7M9 7h8v8" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="games-guide-strip" aria-labelledby="games-library-guide">
+      <h3 id="games-library-guide">Game library guide</h3>
+      <div>
+        <article>
+          <h3>Free browser games in one place</h3>
+          <p>The games library brings together Magic Sort and a focused set of free online games that work directly in the browser. Every game is easy to open, easy to understand, and useful for quick sessions without downloads or account setup.</p>
+        </article>
+        <article>
+          <h3>How to choose a game</h3>
+          <p>Choose Magic Sort when you want calm color sorting, Block Puzzle for spatial planning, Sudoku Blocks for zone clearing, 2048 for number merging, Brain Line Connect for route planning, and Bubble Shooter for faster color matching.</p>
+        </article>
+        <article>
+          <h3>Why no-download play matters</h3>
+          <p>Browser games remove friction. You can open a page, play immediately, and leave without installing software. That matters for shared computers, mobile devices, school laptops, and work breaks.</p>
+        </article>
+      </div>
+    </section>
+  </section>
+</BaseLayout>
