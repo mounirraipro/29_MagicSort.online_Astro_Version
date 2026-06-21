@@ -215,8 +215,8 @@ export const pageContent = {
     ],
   },
   faq: {
-    title: "Frequently Asked Questions",
-    seoTitle: `${gameName} FAQ - Gameplay, Devices, Privacy, and Support`,
+    title: "Magic Sort FAQ",
+    seoTitle: `Magic Sort FAQ - Gameplay, Devices, Privacy, and Support`,
     description: `Frequently asked questions about ${gameName}, including gameplay, devices, privacy, ads, and support.`,
     keywords: ["Magic Sort FAQ", "liquid sorting game questions", "Magic Sort help"],
     schemaType: "FAQPage",
@@ -253,12 +253,12 @@ export const pageContent = {
     ],
   },
   "how-to-play": {
-    title: "How To Play",
-    seoTitle: `How to Play ${gameName} - Complete Bottle Sorting Guide`,
+    title: "How to Play Magic Sort",
+    seoTitle: `How to Play Magic Sort - Complete Bottle Sorting Guide`,
     description: `Learn how to play ${gameName} step by step, from basic bottle-pouring rules to strategy, planning, and common mistakes.`,
     keywords: ["how to play Magic Sort", "Magic Sort guide", "liquid sorting strategy guide", "bottle sort instructions"],
     schemaType: "HowTo",
-    intro: "A full beginner-friendly guide to the rules, rhythm, and strategy behind Magic Sort.",
+    intro: "A full beginner-friendly guide to Magic Sort rules, controls, strategy, and common mistakes.",
     sections: [
       {
         heading: "The Goal",

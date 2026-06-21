@@ -1,5 +1,7 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
+import { externalGames } from "@/data/externalGames";
+import { brandAccentClass } from "@/data/accentClasses";
 import { siteConfig } from "@/data/siteConfig";
 
 const playSteps = [
@@ -13,23 +15,70 @@ const tips = [
   "Check the second layer before you pour.",
   "Restart early when every route is blocked.",
 ];
+
+const relatedGames = [
+  {
+    href: "/play/",
+    title: "Magic Sort Online",
+    shortTitle: "Magic Sort",
+    category: "Now playing",
+    thumbnail: "/apple-touch-icon.png",
+    accentClass: brandAccentClass,
+  },
+  ...externalGames.map((game) => ({
+    href: `/games/${game.slug}/`,
+    title: game.title,
+    shortTitle: game.shortTitle,
+    category: game.category,
+    thumbnail: game.thumbnail,
+    accentClass: game.accentClass,
+  })),
+].slice(0, 8);
+const relatedGamesLeft = relatedGames.slice(0, 4);
+const relatedGamesRight = relatedGames.slice(4, 8);
 ---
 
 <BaseLayout
   title={`Play ${siteConfig.name} Online`}
-  description={`Play ${siteConfig.name} online free in your browser. Sort mixed liquid colors into matching bottles on desktop or mobile.`}
+  description={`Play Magic Sort online free in your browser. Sort mixed liquid colors into matching bottles on desktop, tablet, or mobile.`}
 >
   <section class="play-stage" id="top">
     <div class="play-stage-bg" aria-hidden="true"></div>
-    <div class="play-shell" data-game-shell>
-      <iframe src="/game/index.html" title="Magic Sort game" allow="autoplay; fullscreen *" allowfullscreen></iframe>
-      <div class="play-float-controls">
-        <button type="button" data-share-game aria-label="Share game">
-          <span>Share</span>
-        </button>
-        <button type="button" data-fullscreen-game aria-label="Fullscreen game">
-          <span>Fullscreen</span>
-        </button>
+    <div class="play-stage-lobby">
+      <div class="game-bento-grid game-bento-grid-side" aria-label="Games like Magic Sort">
+        {relatedGamesLeft.map((game, index) => (
+          <a class:list={["game-bento-card", game.accentClass, { "game-bento-card-featured": index === 0 }]} href={game.href}>
+            <img src={game.thumbnail} alt={`${game.title} thumbnail`} width="640" height="360" loading="lazy" />
+            <div>
+              <span>{game.category}</span>
+              <strong>{game.shortTitle}</strong>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div class="play-shell" data-game-shell>
+        <iframe src="/game/index.html" title="Play Magic Sort online" allow="autoplay; fullscreen *" allowfullscreen></iframe>
+        <div class="play-float-controls">
+          <button type="button" data-share-game aria-label="Share game">
+            <span>Share</span>
+          </button>
+          <button type="button" data-fullscreen-game aria-label="Fullscreen game">
+            <span>Fullscreen</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="game-bento-grid game-bento-grid-side" aria-label="More online puzzle games">
+        {relatedGamesRight.map((game, index) => (
+          <a class:list={["game-bento-card", game.accentClass, { "game-bento-card-featured": index === 0 }]} href={game.href}>
+            <img src={game.thumbnail} alt={`${game.title} thumbnail`} width="640" height="360" loading="lazy" />
+            <div>
+              <span>{game.category}</span>
+              <strong>{game.shortTitle}</strong>
+            </div>
+          </a>
+        ))}
       </div>
     </div>
   </section>
@@ -37,8 +86,8 @@ const tips = [
   <section class="play-info-section">
     <div class="play-info-head">
       <p class="eyebrow">Play online</p>
-      <h1>Magic Sort in your browser.</h1>
-      <p>Free, instant, and built for quick color sorting sessions.</p>
+      <h1>Play Magic Sort online.</h1>
+      <p>Magic Sort is free, instant, and built for quick color sorting sessions on desktop and mobile browsers.</p>
     </div>
     <div class="play-step-grid">
       {playSteps.map(([number, title, text]) => (
@@ -71,7 +120,7 @@ const tips = [
 
   <section class="play-info-section seo-copy-section" aria-labelledby="play-page-guide">
     <div class="section-head">
-      <h2 id="play-page-guide">Play guide.</h2>
+      <h2 id="play-page-guide">Magic Sort play guide.</h2>
     </div>
     <div class="seo-copy-grid">
       <article class="seo-copy-card seo-copy-wide">
@@ -79,12 +128,12 @@ const tips = [
         <p>Magic Sort keeps the rules simple and makes the planning visible. Every bottle shows its top layer, but the hidden colors underneath decide whether a move opens the board or creates a trap. The best sessions feel calm because every good pour makes the layout easier to understand.</p>
       </article>
       <article class="seo-copy-card">
-        <h3>How to start a strong solve</h3>
-        <p>Look for top colors that can join cleanly, then decide which empty bottle you need to protect. A move is strongest when it completes a color, exposes a needed layer, or creates more space for future pours.</p>
+        <h3>How to play Magic Sort</h3>
+        <p>Click or tap a source bottle, then choose a target bottle. You can pour into an empty bottle or onto the same top color if the target has enough room. Keep one helper bottle open whenever possible.</p>
       </article>
       <article class="seo-copy-card">
-        <h3>Best sessions</h3>
-        <p>Play an easier level when you want a short break, then move into tighter layouts when you want deeper focus. The browser game works without an account, so it is suitable for quick desktop sessions, tablet play, or mobile puzzle breaks.</p>
+        <h3>Magic Sort tips</h3>
+        <p>Play an easier level when you want a short break, then move into tighter layouts when you want deeper focus. Before each pour, check whether the move completes a color, exposes a useful layer, or protects future space.</p>
       </article>
     </div>
   </section>

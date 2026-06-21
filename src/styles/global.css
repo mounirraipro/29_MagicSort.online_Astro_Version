@@ -3999,9 +3999,17 @@
     opacity: 0.7;
   }
 
-  .play-shell {
+  .play-stage-lobby {
     position: relative;
     z-index: 1;
+    display: grid;
+    grid-template-columns: minmax(230px, 0.24fr) minmax(640px, 1.45fr) minmax(230px, 0.24fr);
+    gap: clamp(0.85rem, 1.6vw, 1.2rem);
+    align-items: center;
+  }
+
+  .play-shell {
+    position: relative;
     height: min(78vh, 760px);
     min-height: 590px;
     overflow: hidden;
@@ -4919,6 +4927,7 @@
     .blog-editorial,
     .blog-board,
     .home-game-lobby,
+    .play-stage-lobby,
     .embedded-game-layout,
     .level-hero-card,
     .content-page-shell,
@@ -4943,6 +4952,7 @@
     }
 
     .hero-game,
+    .play-shell,
     .embedded-game-frame {
       order: 1;
     }

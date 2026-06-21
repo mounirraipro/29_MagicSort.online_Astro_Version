@@ -57,19 +57,23 @@ const routeFallbackSeo = (route: SiteRoute): SeoPage => ({
 const pageOverrides: Partial<Record<string, Partial<SeoPage>>> = {
   "/": {
     title: siteConfig.name,
-    seoTitle: `${siteConfig.name} Online - Free Bottle Sorting Puzzle`,
+    seoTitle: `Magic Sort - Play Free Online Color Sorting Puzzle`,
     description: siteConfig.description,
+    keywords: ["Magic Sort", "Magic Sort online", "Magic Sort game", "play Magic Sort online", "free Magic Sort"],
     priority: 1,
     changeFrequency: "weekly",
   },
   "/play": {
-    seoTitle: `Play ${siteConfig.name} Online - Free Color Sort Game`,
-    description: `Play ${siteConfig.name} free in your browser. Sort mixed liquid colors into matching bottles with no download or account.`,
+    seoTitle: `Play Magic Sort Online - Free Browser Puzzle Game`,
+    description: `Play Magic Sort online for free. Sort mixed liquid colors into matching bottles in your browser with no download or account.`,
+    keywords: ["play Magic Sort", "play Magic Sort online", "Magic Sort free", "Magic Sort browser game", "Magic Sort unblocked"],
     priority: 0.9,
     changeFrequency: "weekly",
   },
   "/games": {
-    seoTitle: `Free Online Puzzle Games | ${siteConfig.name}`,
+    seoTitle: `Magic Sort Games - Free Online Puzzle Games`,
+    description: `Play Magic Sort and related free online puzzle games, including color sorting, logic, number, word, and block games in your browser.`,
+    keywords: ["Magic Sort games", "Magic Sort online games", "free puzzle games", "color sorting games", "browser puzzle games"],
     priority: 0.78,
     changeFrequency: "weekly",
   },
