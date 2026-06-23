@@ -33,6 +33,10 @@ const faqItems = [
   ["How do you play Magic Sort online?", "Choose a bottle, then pour into an empty bottle or onto the same top color when there is enough room. Keep planning until all colors are organized."],
   ["Is Magic Sort free?", "Yes. You can play Magic Sort free in the browser with no download, no account, and no app install required."],
   ["Does Magic Sort work on mobile?", "Yes. Magic Sort supports touch and mouse play, so it works on phones, tablets, laptops, and desktop browsers."],
+  ["What are the Magic Sort controls?", "Click or tap one tube or bottle to select it, then click or tap a second tube to pour when the move is allowed. The same logic works with mouse and touch controls."],
+  ["Do I need to download Magic Sort?", "No. Magic Sort runs directly in the browser. You can open the page, load the game, and start sorting colors without downloading an app or extension."],
+  ["Can I play Magic Sort unblocked?", "Magic Sort is a browser game, so it can work anywhere your network allows game websites. If a school, office, or public network blocks games, that local network rule controls access."],
+  ["Why do I get stuck in Magic Sort?", "Most stuck boards happen when every empty tube is filled too early. Keep one helper space open, uncover buried colors slowly, and restart before the board becomes fully locked."],
   ["How many levels are included?", `The current game includes ${totalLevels} browser levels with easier openings and tighter late-game layouts.`],
 ];
 
@@ -109,7 +113,7 @@ const homeStructuredData = [
       <div class="hero-copy-main">
         <p class="eyebrow">Instant play</p>
         <h1>Magic Sort</h1>
-        <p>Play Magic Sort online for free. Pour layered colors between bottles, protect your empty space, and solve relaxing color sorting levels with no download and no account.</p>
+        <p>Play Magic Sort online for free. Pour layered colors between tubes and bottles, protect your empty space, and solve relaxing color sorting levels with no download and no account.</p>
         <a class="text-link hero-note" href="/how-to-play/">Learn the rules</a>
       </div>
       <div class="hero-play-panel">
@@ -136,7 +140,7 @@ const homeStructuredData = [
         <p class="eyebrow">Magic Sort guide</p>
         <h2>Play Magic Sort online.</h2>
       </div>
-      <p>Magic Sort turns mixed liquid colors into a calm logic challenge built around readable bottles, smart space control, and satisfying clean finishes.</p>
+      <p>Magic Sort turns mixed liquid colors into a calm logic challenge built around readable tubes, smart bottle space control, and satisfying clean finishes.</p>
     </div>
     <div class="process-strip">
       <article>
@@ -147,12 +151,12 @@ const homeStructuredData = [
       <article>
         <span>Read</span>
         <h3>Layer logic</h3>
-        <p>Each move starts with the top liquid color, but the hidden layers underneath decide whether the next few pours will stay flexible.</p>
+        <p>Each move starts with the top liquid color in a tube or bottle, but the hidden layers underneath decide whether the next few pours will stay flexible.</p>
       </article>
       <article>
         <span>Plan</span>
         <h3>Empty space</h3>
-        <p>Empty bottles are your strongest tools. Use them to uncover colors, build clean stacks, and avoid trapping important layers.</p>
+        <p>Empty bottles and tubes are your strongest tools. Use them to uncover colors, build clean stacks, and avoid trapping important layers.</p>
       </article>
       <article>
         <span>Finish</span>
@@ -166,21 +170,81 @@ const homeStructuredData = [
     <div class="section-head">
       <p class="eyebrow">About the game</p>
       <h2 id="magic-sort-overview">What is Magic Sort?</h2>
-      <p>Magic Sort is a free color sorting puzzle about pouring liquids between glass bottles until every color is grouped cleanly.</p>
+      <p>Magic Sort is a free color sorting puzzle about pouring liquids between glass tubes and bottles until every color is grouped cleanly.</p>
     </div>
     <div class="seo-copy-grid">
       <article class="seo-copy-card seo-copy-wide">
         <h3>Magic Sort gameplay overview</h3>
-        <p>Each Magic Sort level starts with bottles full of mixed liquid layers and a small amount of empty space. You can pour the top color into an empty bottle or onto the same color when there is room. Those simple rules create a planning puzzle where one rushed move can block the next several pours.</p>
+        <p>Each Magic Sort level starts with tubes or bottles full of mixed liquid layers and a small amount of empty space. You can pour the top color into an empty bottle or onto the same color when there is room. Those simple rules create a planning puzzle where one rushed move can block the next several pours.</p>
       </article>
       <article class="seo-copy-card">
         <h3>How to play Magic Sort</h3>
-        <p>Start by scanning the top colors, then choose a helper bottle to keep open. Build one completed color at a time, avoid filling every spare bottle too early, and use restarts when the board becomes locked.</p>
+        <p>Start by scanning the top colors, then choose a helper tube to keep open. Build one completed color at a time, avoid filling every spare bottle too early, and use restarts when the board becomes locked.</p>
       </article>
       <article class="seo-copy-card">
         <h3>Why play Magic Sort here?</h3>
         <p>The browser version keeps Magic Sort easy to access on desktop, tablet, and mobile. You can open a short session, play a level, and return later without installing an app or creating an account.</p>
       </article>
+    </div>
+  </section>
+
+  <section class="home-section seo-copy-section" aria-labelledby="magic-sort-controls">
+    <div class="section-head">
+      <p class="eyebrow">Rules and controls</p>
+      <h2 id="magic-sort-controls">How to play and control Magic Sort</h2>
+      <p>Magic Sort is easy to start because the controls are the same on desktop and mobile: choose a source tube, then choose where the color should go.</p>
+    </div>
+    <div class="seo-copy-grid">
+      <article class="seo-copy-card">
+        <h3>Mouse controls</h3>
+        <p>On desktop, click a bottle or tube to select the top liquid color. Click a second tube to pour if it is empty or if the top color matches and there is enough room.</p>
+      </article>
+      <article class="seo-copy-card">
+        <h3>Touch controls</h3>
+        <p>On phones and tablets, tap the first tube, then tap the target tube. The browser version keeps the same Magic Sort rules whether you use a mouse, trackpad, or touchscreen.</p>
+      </article>
+      <article class="seo-copy-card seo-copy-wide">
+        <h3>Winning a Magic Sort level</h3>
+        <p>The goal is to finish every filled tube as one clean color. A good move either completes a color, reveals a buried layer, or protects the empty space you need for later. If a pour only makes the board busier, wait and look for a cleaner option.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="home-section seo-copy-section" aria-labelledby="magic-sort-free-online">
+    <div class="section-head">
+      <p class="eyebrow">Free browser game</p>
+      <h2 id="magic-sort-free-online">Play Magic Sort free, online, and without download</h2>
+      <p>The main Magic Sort game is built for quick browser sessions, so players can open a level, solve a few tubes, and leave without installing anything.</p>
+    </div>
+    <div class="seo-copy-grid">
+      <article class="seo-copy-card">
+        <h3>Magic Sort online</h3>
+        <p>The game loads in a web browser on desktop, tablet, and mobile. That makes Magic Sort useful for short breaks because there is no app store step and no account setup.</p>
+      </article>
+      <article class="seo-copy-card">
+        <h3>Magic Sort unblocked access</h3>
+        <p>If your network allows browser game sites, Magic Sort can be played directly from the page. Some schools, offices, or public networks block games, and those local rules decide access.</p>
+      </article>
+      <article class="seo-copy-card">
+        <h3>No download required</h3>
+        <p>You do not need a mod APK, installer, extension, or sign-in flow. Open Magic Sort, use the on-page game frame, and start sorting liquid colors between tubes.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="home-section home-process">
+    <div class="home-section-head split-head">
+      <div>
+        <p class="eyebrow">Strategy tips</p>
+        <h3>Better Magic Sort moves.</h3>
+      </div>
+      <p>These are the habits that stop most color sorting boards from getting stuck.</p>
+    </div>
+    <div class="process-strip">
+      <article><span>Tip</span><h3>Keep one tube open</h3><p>Empty space is your safety valve. Do not spend every helper bottle unless the move reveals or completes a useful color.</p></article>
+      <article><span>Tip</span><h3>Read hidden layers</h3><p>Look at what a pour uncovers. The best Magic Sort move often reveals the next color you need rather than simply moving the top color away.</p></article>
+      <article><span>Tip</span><h3>Finish one color</h3><p>When a tube is close to complete, use matching pours to lock that color cleanly and reduce the number of mixed bottles on the board.</p></article>
+      <article><span>Tip</span><h3>Restart early</h3><p>If every tube is blocked, reset before wasting time on random pours. A fresh route is faster than forcing a trapped layout.</p></article>
     </div>
   </section>
 
