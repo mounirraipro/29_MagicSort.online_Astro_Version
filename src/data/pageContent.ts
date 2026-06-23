@@ -100,12 +100,13 @@ export const pageContent = {
   },
   blog: {
     title: "Magic Sort Blog",
-    seoTitle: `Magic Sort Blog - Strategy, Focus, and Browser Puzzle Guides`,
-    description: "Read Magic Sort guides about bottle sorting strategy, calm play, family use, focus routines, and browser game quality.",
-    keywords: ["Magic Sort blog", "bottle sorting strategy", "browser puzzle guides"],
+    seoTitle: `Magic Sort Blog - Guides, Strategy, and Online Play Tips`,
+    description: "Read Magic Sort guides, strategy tips, controls help, and free online color sorting puzzle advice for better browser play.",
+    keywords: ["Magic Sort blog", "Magic Sort guides", "Magic Sort strategy", "Magic Sort tips", "play Magic Sort online"],
     schemaType: "Blog",
+    updated: "2026-06-23",
     eyebrow: "Guides",
-    intro: "Short reads for better color sorting, calmer play, and cleaner browser game habits.",
+    intro: "Short Magic Sort reads for better color sorting, calmer browser play, and cleaner bottle strategy.",
     sections: [
       {
         heading: "What We Cover",

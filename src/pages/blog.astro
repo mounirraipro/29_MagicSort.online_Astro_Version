@@ -3,67 +3,64 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import { articles } from "@/data/articles";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" });
-const [featuredPost, ...restPosts] = articles;
-const categories = Array.from(
-  articles.reduce((map, article) => {
-    map.set(article.category, (map.get(article.category) ?? 0) + 1);
-    return map;
-  }, new Map<string, number>()),
-).sort(([a], [b]) => a.localeCompare(b));
 ---
 
-<BaseLayout title="Magic Sort Blog" description="Read Magic Sort guides about bottle sorting strategy, calm play, family use, focus routines, and browser game quality.">
-  <main class="blog-card-page">
-    <header class="blog-card-hero" aria-labelledby="blog-directory-title">
-      <div class="blog-card-hero-copy">
-        <p>{articles.length} articles across {categories.length} topics</p>
-        <h1 id="blog-directory-title">Magic Sort Blog</h1>
-        <span>Guides, strategy, reviews, and practical notes for cleaner color sorting.</span>
-      </div>
-      <nav class="blog-card-topics" aria-label="Blog topics">
-        {categories.slice(0, 8).map(([category, count]) => (
-          <span>
-            <strong>{category}</strong>
-            <small>{count}</small>
-          </span>
-        ))}
+<BaseLayout
+  title="Magic Sort Blog"
+  description="Read Magic Sort guides, strategy tips, controls help, and free online color sorting puzzle advice for better browser play."
+  seo={{
+    path: "/blog",
+    title: "Magic Sort Blog",
+    seoTitle: "Magic Sort Blog - Guides, Strategy, and Online Play Tips",
+    description: "Read Magic Sort guides, strategy tips, controls help, and free online color sorting puzzle advice for better browser play.",
+    keywords: ["Magic Sort blog", "Magic Sort guides", "Magic Sort strategy", "Magic Sort tips", "play Magic Sort online"],
+    schemaType: "Blog",
+    updated: "2026-06-23",
+  }}
+>
+  <main class="blog-showcase-page">
+    <header class="blog-showcase-hero" aria-labelledby="blog-directory-title">
+      <nav class="blog-showcase-crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span>/</span>
+        <span>Blog</span>
       </nav>
+      <div class="blog-showcase-copy">
+        <h1 id="blog-directory-title">Magic Sort Guides, Tips & Strategy</h1>
+        <p>Learn how to play Magic Sort online, control empty bottles, solve color sorting levels, and enjoy a calmer free browser puzzle.</p>
+      </div>
     </header>
 
-    <h2 class="sr-only">Blog articles</h2>
-
-    {featuredPost && (
-      <a class="blog-feature-card" href={`/blog/${featuredPost.slug}/`}>
+    <section class="blog-posts-section" id="article-list" aria-labelledby="blog-list-title">
+      <header class="blog-posts-head">
         <div>
-          <p>Latest / {featuredPost.category}</p>
-          <h3>{featuredPost.title}</h3>
-          <span>{featuredPost.description}</span>
+          <p>Our Blog</p>
+          <h2 id="blog-list-title">View All Magic Sort Posts</h2>
         </div>
-        <footer>
-          <time datetime={featuredPost.datePublished}>{dateFormatter.format(new Date(featuredPost.datePublished))}</time>
-          <small>{featuredPost.readTime}</small>
-        </footer>
-      </a>
-    )}
-
-    <section class="blog-card-section" id="article-list" aria-labelledby="blog-list-title">
-      <header>
-        <h3 id="blog-list-title">All articles</h3>
-        <span>{restPosts.length} more guides</span>
+        <p>Browse simple Magic Sort articles about rules, controls, empty-bottle strategy, browser play, and short puzzle breaks.</p>
       </header>
-      <div class="blog-card-grid">
-        {restPosts.map((post) => (
-          <a class="blog-post-card" href={`/blog/${post.slug}/`}>
-            <div class="blog-post-card-top">
-              <span>{post.category}</span>
+
+      <div class="blog-post-grid">
+        {articles.map((post) => (
+          <a class="blog-post-tile" href={`/blog/${post.slug}/`}>
+            <div class="blog-post-meta">
               <time datetime={post.datePublished}>{dateFormatter.format(new Date(post.datePublished))}</time>
+              <span>{post.category}</span>
             </div>
             <h3>{post.title}</h3>
             <p>{post.description}</p>
-            <small>{post.readTime}</small>
+            <small>{post.readTime}<span>Read article</span></small>
           </a>
         ))}
       </div>
+
+      <aside class="blog-seo-note" aria-label="About Magic Sort guides">
+        <div>
+          <h2>Play Magic Sort with better plans.</h2>
+          <p>These guides support the main Magic Sort game with practical advice for bottle sorting, mouse and touch controls, free browser play, and common stuck-board mistakes.</p>
+        </div>
+        <a href="/play/">Play Magic Sort</a>
+      </aside>
     </section>
   </main>
 </BaseLayout>

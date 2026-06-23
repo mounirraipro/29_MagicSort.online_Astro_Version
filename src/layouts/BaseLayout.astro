@@ -29,8 +29,8 @@ const improveMetaDescription = (value: string) => {
     clean.length >= 110
       ? clean
       : `${clean} Play online free with browser bottle sorting, color matching, calm logic levels, and no downloads.`;
-  if (expanded.length <= 145) return expanded;
-  return `${expanded.slice(0, 142).replace(/\s+\S*$/, "")}...`;
+  if (expanded.length <= 155) return expanded;
+  return `${expanded.slice(0, 152).replace(/\s+\S*$/, "")}...`;
 };
 pageSeo.description = improveMetaDescription(pageSeo.description);
 const origin = Astro.site?.origin ?? siteConfig.siteUrl;

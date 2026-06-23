@@ -55,7 +55,7 @@ const articleStructuredData = [
 <BaseLayout
   title={article.title}
   description={article.description}
-  seo={{ title: article.title, seoTitle: articleSeoTitle, description: articleMetaDescription, keywords: article.keywords, schemaType: "Article", path }}
+  seo={{ title: article.title, seoTitle: articleSeoTitle, description: articleMetaDescription, keywords: article.keywords, schemaType: "Article", path, updated: article.dateModified }}
   structuredData={articleStructuredData}
 >
   <article class="blog-article">

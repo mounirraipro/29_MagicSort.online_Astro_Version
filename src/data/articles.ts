@@ -12,6 +12,127 @@ export type Article = {
 
 export const articles = [
   {
+    slug: "magic-sort-beginner-guide",
+    title: "Magic Sort Beginner Guide: Rules, Bottles, and First Wins",
+    description: "Learn how Magic Sort works, why empty bottles matter, and how to solve your first levels with calmer, cleaner moves.",
+    datePublished: "2026-06-22",
+    dateModified: "2026-06-22",
+    keywords: ["Magic Sort", "Magic Sort guide", "Magic Sort beginner guide", "Magic Sort rules", "bottle sort game"],
+    category: "How To Play",
+    readTime: "7 min read",
+    html: `
+      <h2>What You Are Trying to Do</h2>
+      <p>Magic Sort is a color sorting puzzle where mixed liquid bottles need to become clean single-color bottles. You pour from one bottle into another when the top color matches or when the target bottle is empty.</p>
+      <p>The rule set is simple, but the best moves are not always the fastest moves. A good Magic Sort level asks you to protect space, uncover hidden colors, and finish one color at a time.</p>
+      <h2>The Three Beginner Rules</h2>
+      <ol>
+        <li><strong>Do not waste empty bottles.</strong> Empty space is the main tool that lets you reorganize a messy board.</li>
+        <li><strong>Check the color under the top layer.</strong> A pour that reveals a useful color is often stronger than a pour that only looks neat.</li>
+        <li><strong>Finish clean bottles when possible.</strong> Once a full bottle contains one color, it stops creating problems.</li>
+      </ol>
+      <h2>A Simple First-Win Method</h2>
+      <p>Start by finding colors that are already close together. Move matching top colors into the same bottle, but keep at least one empty bottle available until the board becomes clearer. When a color has three or four matching layers visible, make that color your short-term target.</p>
+      <p>If every move feels risky, pause and look for the bottle that is blocking the most colors. Magic Sort rewards slow reading more than random tapping.</p>
+    `,
+  },
+  {
+    slug: "best-opening-moves-magic-sort",
+    title: "Best Opening Moves in Magic Sort",
+    description: "Use the first few pours in Magic Sort to create space, reveal useful colors, and avoid trapping important layers too early.",
+    datePublished: "2026-06-21",
+    dateModified: "2026-06-22",
+    keywords: ["Magic Sort opening moves", "Magic Sort tips", "Magic Sort strategy", "color sort puzzle tips"],
+    category: "Strategy",
+    readTime: "6 min read",
+    html: `
+      <h2>The Opening Decides Your Flexibility</h2>
+      <p>The first moves in Magic Sort are not about clearing the board immediately. They are about giving yourself more useful choices for the next ten moves.</p>
+      <p>A weak opening spends empty bottles quickly. A strong opening creates one clean stack, opens one blocked color, and keeps enough space to fix the next problem.</p>
+      <h2>Good First Pours</h2>
+      <ul>
+        <li>pour a top color onto the same top color when it reveals a new useful layer,</li>
+        <li>move a single color into an empty bottle only when it frees a stronger stack,</li>
+        <li>combine bottles that already share two or more layers of the same color,</li>
+        <li>avoid splitting a clean stack unless it unlocks a blocked bottle.</li>
+      </ul>
+      <h2>Opening Mistakes to Avoid</h2>
+      <p>Do not fill both empty bottles with unrelated colors just because the move is legal. That removes the safety valve that makes Magic Sort forgiving. If you are unsure, choose the move that leaves the most bottle space after the pour.</p>
+    `,
+  },
+  {
+    slug: "magic-sort-vs-water-sort",
+    title: "Magic Sort vs Water Sort: What Makes the Puzzle Click",
+    description: "A simple comparison of Magic Sort and classic water sort games, with notes on pacing, readability, and browser play.",
+    datePublished: "2026-06-20",
+    dateModified: "2026-06-22",
+    keywords: ["Magic Sort vs Water Sort", "Magic Sort online", "water sort puzzle", "color sorting game"],
+    category: "Reviews",
+    readTime: "7 min read",
+    html: `
+      <h2>The Core Idea Is Familiar</h2>
+      <p>Magic Sort belongs to the same family as water sort and bottle sort puzzles. The appeal is easy to understand: mixed colors look messy, and the player turns that mess into clean order.</p>
+      <p>That familiar structure is useful because new players do not need a long tutorial. The board explains the problem almost immediately.</p>
+      <h2>Where Magic Sort Feels Different</h2>
+      <p>Magic Sort works best as a quick browser puzzle. You can open a level, make a few careful decisions, and step away without downloading anything. That makes the game feel lighter than a large app, while still giving you the same satisfying sorting loop.</p>
+      <h2>What To Look For In Any Sorting Game</h2>
+      <ul>
+        <li>clear bottle shapes and readable colors,</li>
+        <li>stable controls on desktop and mobile,</li>
+        <li>levels that reward planning instead of only trial and error,</li>
+        <li>a clean page that makes playing easy.</li>
+      </ul>
+      <p>If those pieces are in place, a simple color sorting game can stay interesting for many short sessions.</p>
+    `,
+  },
+  {
+    slug: "magic-sort-empty-bottle-strategy",
+    title: "Magic Sort Empty Bottle Strategy: How to Use Free Space",
+    description: "Empty bottles are the strongest resource in Magic Sort. This guide explains when to save them, spend them, and reset the board.",
+    datePublished: "2026-06-19",
+    dateModified: "2026-06-22",
+    keywords: ["Magic Sort empty bottle", "Magic Sort strategy", "bottle sorting strategy", "free space puzzle"],
+    category: "Strategy",
+    readTime: "8 min read",
+    html: `
+      <h2>Empty Bottles Are Not Bonus Space</h2>
+      <p>In Magic Sort, an empty bottle is the difference between a flexible board and a trapped board. It lets you move a blocking color, park a stack temporarily, or uncover the layer you need next.</p>
+      <p>The mistake is treating every empty bottle like storage. If you fill all of them with random colors, you remove the very tool that can save the level.</p>
+      <h2>When To Use an Empty Bottle</h2>
+      <ul>
+        <li>use it to uncover a color that can immediately join a matching stack,</li>
+        <li>use it to separate a clean group from a mixed bottle,</li>
+        <li>use it when the move creates a new empty bottle soon after,</li>
+        <li>avoid using it when the moved color has no clear next destination.</li>
+      </ul>
+      <h2>The One-Empty Rule</h2>
+      <p>Try to keep one empty bottle available until the level is nearly solved. This is not always possible, but it is a useful habit. The board stays calmer when you have one place to correct a mistake.</p>
+    `,
+  },
+  {
+    slug: "magic-sort-focus-break",
+    title: "How to Use Magic Sort as a Short Focus Break",
+    description: "Turn Magic Sort into a clean five-minute reset by choosing one level, playing slowly, and stopping before the break becomes a scroll.",
+    datePublished: "2026-06-18",
+    dateModified: "2026-06-22",
+    keywords: ["Magic Sort focus break", "Magic Sort online", "short puzzle break", "calm puzzle game"],
+    category: "Focus",
+    readTime: "6 min read",
+    html: `
+      <h2>A Good Break Has a Clear Edge</h2>
+      <p>Magic Sort can work well as a focus break because the task is bounded. You are not opening a feed with endless new posts. You are solving a visible puzzle with clear progress.</p>
+      <p>The trick is to keep the break intentional. Choose one level or one short session before you start.</p>
+      <h2>A Five-Minute Reset</h2>
+      <ol>
+        <li>Open Magic Sort with one goal: solve or restart one level.</li>
+        <li>Play slowly enough to notice why each pour helps.</li>
+        <li>Stop after the level or after five minutes.</li>
+        <li>Return to your main task before opening another tab.</li>
+      </ol>
+      <h2>Why This Works</h2>
+      <p>Color sorting gives your attention a simple job. You scan, decide, pour, and check the result. That rhythm can feel calming when it stays short and deliberate.</p>
+    `,
+  },
+  {
     slug: "water-sort-strategy",
     title: "Magic Sort Strategy: 7 Simple Habits That Make Levels Easier",
     description: "A practical guide to reading bottles, protecting empty space, and making cleaner pours without overthinking every move.",

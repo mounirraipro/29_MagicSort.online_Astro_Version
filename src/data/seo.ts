@@ -57,16 +57,16 @@ const routeFallbackSeo = (route: SiteRoute): SeoPage => ({
 const pageOverrides: Partial<Record<string, Partial<SeoPage>>> = {
   "/": {
     title: siteConfig.name,
-    seoTitle: `Magic Sort - Play Free Online Color Sorting Puzzle`,
+    seoTitle: `Magic Sort - Play Free Color Sorting Puzzle Online`,
     description: siteConfig.description,
-    keywords: ["Magic Sort", "Magic Sort online", "Magic Sort game", "play Magic Sort online", "free Magic Sort"],
+    keywords: ["Magic Sort", "Magic Sort online", "Magic Sort game", "play Magic Sort online", "free Magic Sort", "Magic Sort controls"],
     priority: 1,
     changeFrequency: "weekly",
   },
   "/play": {
-    seoTitle: `Play Magic Sort Online - Free Browser Puzzle Game`,
-    description: `Play Magic Sort online for free. Sort mixed liquid colors into matching bottles in your browser with no download or account.`,
-    keywords: ["play Magic Sort", "play Magic Sort online", "Magic Sort free", "Magic Sort browser game", "Magic Sort unblocked"],
+    seoTitle: `Play Magic Sort Online - Free Browser Color Sort Game`,
+    description: `Play Magic Sort online for free. Use simple mouse or touch controls to pour liquid colors between bottles with no download or account.`,
+    keywords: ["play Magic Sort", "play Magic Sort online", "Magic Sort free", "Magic Sort browser game", "Magic Sort controls", "Magic Sort unblocked"],
     priority: 0.9,
     changeFrequency: "weekly",
   },
@@ -87,6 +87,9 @@ const pageOverrides: Partial<Record<string, Partial<SeoPage>>> = {
     changeFrequency: "monthly",
   },
   "/blog": {
+    seoTitle: `Magic Sort Blog - Guides, Strategy, and Online Play Tips`,
+    description: `Read Magic Sort guides, strategy tips, controls help, and free online color sorting puzzle advice for better browser play.`,
+    keywords: ["Magic Sort blog", "Magic Sort guides", "Magic Sort strategy", "Magic Sort tips", "play Magic Sort online"],
     schemaType: "Blog",
     priority: 0.75,
     changeFrequency: "weekly",
