@@ -30,7 +30,7 @@ function initGameCanvas(w, h) {
 var guide = false;
 var canvasContainer, mainContainer, gameContainer, resultContainer, confirmContainer;
 var guideline, bg, logo, buttonOk, result, shadowResult, buttonReplay, buttonFacebook, buttonTwitter, buttonWhatsapp, buttonFullscreen, buttonSoundOn, buttonSoundOff;
-var bgP, logoP, themeBackdrop, themeGlowLeft, themeGlowRight, bgDecor, heroPanel, buttonPanel, titleUnderline, startButtonCard, levelsButtonCard, startButtonLabel, levelsButtonLabel, startButtonSub, levelsButtonSub, cozyTitleTxt, resultCard, confirmCard;
+var bgP, logoP, themeBackdrop, themeBackgroundBitmap, themeShade, themeGlowLeft, themeGlowRight, bgDecor, heroPanel, buttonPanel, titleUnderline, startButtonCard, levelsButtonCard, startButtonLabel, levelsButtonLabel, startButtonSub, levelsButtonSub, cozyTitleTxt, resultCard, confirmCard;
 
 $.tubes = {};
 $.level = {};
@@ -63,6 +63,8 @@ function buildGameCanvas() {
     logoP = new createjs.Container();
 
     themeBackdrop = new createjs.Shape();
+    themeBackgroundBitmap = new createjs.Bitmap(loader.getResult('magicTableBg'));
+    themeShade = new createjs.Shape();
     themeGlowLeft = new createjs.Shape();
     themeGlowRight = new createjs.Shape();
     bgDecor = new createjs.Container();
@@ -298,7 +300,7 @@ function buildGameCanvas() {
         resultContainer.addChild(resultShareTxt, buttonFacebook, buttonTwitter, buttonWhatsapp);
     }
 
-    canvasContainer.addChild(themeBackdrop, themeGlowLeft, themeGlowRight, bgDecor, bg, bgP, mainContainer, levelContainer, waterContainer, selectContainer, gameContainer, resultContainer, confirmContainer, optionsContainer, buttonSettings, guideline);
+    canvasContainer.addChild(themeBackdrop, themeBackgroundBitmap, themeShade, themeGlowLeft, themeGlowRight, bgDecor, bg, bgP, mainContainer, levelContainer, waterContainer, selectContainer, gameContainer, resultContainer, confirmContainer, optionsContainer, buttonSettings, guideline);
     stage.addChild(canvasContainer);
 
     changeViewport(viewport.isLandscape);
@@ -306,87 +308,98 @@ function buildGameCanvas() {
 }
 
 function drawCozyTheme() {
-    var glowRadius = viewport.isLandscape ? 230 : 190;
-    var heroW = viewport.isLandscape ? 620 : 430;
-    var heroH = viewport.isLandscape ? 170 : 146;
+    var glowRadius = viewport.isLandscape ? 190 : 150;
+    var heroW = viewport.isLandscape ? 560 : 408;
+    var heroH = viewport.isLandscape ? 150 : 132;
     var heroX = (canvasW - heroW) / 2;
-    var heroY = viewport.isLandscape ? 70 : 96;
-    var buttonW = viewport.isLandscape ? 442 : 268;
-    var buttonH = viewport.isLandscape ? 102 : 176;
+    var heroY = viewport.isLandscape ? 62 : 88;
+    var buttonW = viewport.isLandscape ? 420 : 270;
+    var buttonH = viewport.isLandscape ? 96 : 168;
     var buttonX = (canvasW - buttonW) / 2;
-    var buttonY = viewport.isLandscape ? canvasH * .68 : canvasH * .6;
-    var cardW = viewport.isLandscape ? 480 : 430;
+    var buttonY = viewport.isLandscape ? canvasH * .7 : canvasH * .62;
+    var cardW = viewport.isLandscape ? 470 : 410;
     var cardH = viewport.isLandscape ? 250 : 280;
     var cardX = (canvasW - cardW) / 2;
     var resultY = viewport.isLandscape ? canvasH * .28 : canvasH * .32;
     var confirmY = viewport.isLandscape ? canvasH * .28 : canvasH * .32;
 
     themeBackdrop.graphics.clear();
-    themeBackdrop.graphics.beginLinearGradientFill(["#F2ECFF", "#E6D8FF", "#D7C5FF"], [0, .58, 1], 0, 0, 0, canvasH).drawRect(0, 0, canvasW, canvasH);
+    themeBackdrop.graphics.beginLinearGradientFill(["#2B063E", "#661278", "#DA8B12"], [0, .62, 1], 0, 0, 0, canvasH).drawRect(0, 0, canvasW, canvasH);
+
+    coverThemeBackground();
+
+    themeShade.graphics.clear();
+    themeShade.graphics.beginLinearGradientFill(["rgba(23,5,35,0.34)", "rgba(23,5,35,0.05)", "rgba(255,184,44,0.1)"], [0, .55, 1], 0, 0, 0, canvasH).drawRect(0, 0, canvasW, canvasH);
 
     themeGlowLeft.graphics.clear();
-    themeGlowLeft.graphics.beginRadialGradientFill(["rgba(244,236,255,0.96)", "rgba(244,236,255,0)"], [0, 1], 0, 0, 0, 0, 0, glowRadius).drawCircle(0, 0, glowRadius);
-    themeGlowLeft.x = canvasW * .16;
-    themeGlowLeft.y = canvasH * .18;
+    themeGlowLeft.graphics.beginRadialGradientFill(["rgba(255,212,91,0.42)", "rgba(255,212,91,0)"], [0, 1], 0, 0, 0, 0, 0, glowRadius).drawCircle(0, 0, glowRadius);
+    themeGlowLeft.x = canvasW * .22;
+    themeGlowLeft.y = canvasH * .78;
 
     themeGlowRight.graphics.clear();
-    themeGlowRight.graphics.beginRadialGradientFill(["rgba(203,183,255,0.88)", "rgba(203,183,255,0)"], [0, 1], 0, 0, 0, 0, 0, glowRadius).drawCircle(0, 0, glowRadius);
-    themeGlowRight.x = canvasW * .84;
-    themeGlowRight.y = canvasH * .24;
+    themeGlowRight.graphics.beginRadialGradientFill(["rgba(255,79,179,0.3)", "rgba(255,79,179,0)"], [0, 1], 0, 0, 0, 0, 0, glowRadius).drawCircle(0, 0, glowRadius);
+    themeGlowRight.x = canvasW * .78;
+    themeGlowRight.y = canvasH * .2;
 
     bgDecor.removeAllChildren();
-    addDecorativeBubble(canvasW * .17, canvasH * .2, viewport.isLandscape ? 26 : 20, "rgba(255, 250, 255, 0.8)");
-    addDecorativeBubble(canvasW * .27, canvasH * .13, viewport.isLandscape ? 12 : 10, "rgba(208, 190, 255, 0.65)");
-    addDecorativeBubble(canvasW * .82, canvasH * .17, viewport.isLandscape ? 22 : 16, "rgba(250, 244, 255, 0.78)");
-    addDecorativeBubble(canvasW * .88, canvasH * .26, viewport.isLandscape ? 10 : 8, "rgba(189, 168, 245, 0.65)");
-    addDecorativeBubble(canvasW * .12, canvasH * .78, viewport.isLandscape ? 18 : 14, "rgba(226, 216, 255, 0.7)");
-    addDecorativeBubble(canvasW * .92, canvasH * .74, viewport.isLandscape ? 28 : 22, "rgba(243, 235, 255, 0.76)");
-    addDecorativeBubble(canvasW * .74, canvasH * .68, viewport.isLandscape ? 16 : 12, "rgba(214, 201, 255, 0.66)");
-    addDecorativeSpark(canvasW * .23, canvasH * .31, 12, "rgba(139, 92, 246, 0.7)");
-    addDecorativeSpark(canvasW * .79, canvasH * .34, 10, "rgba(139, 92, 246, 0.65)");
-    addDecorativeSpark(canvasW * .15, canvasH * .66, 8, "rgba(139, 92, 246, 0.55)");
-    addDecorativeStar(canvasW * .31, canvasH * .24, 10, "rgba(255, 209, 102, 0.9)");
-    addDecorativeStar(canvasW * .69, canvasH * .22, 12, "rgba(255, 209, 102, 0.82)");
-    addDecorativeTube(canvasW * .18, canvasH * .55, viewport.isLandscape ? 1 : .82, "#FFD166", "#FFE29A");
-    addDecorativeTube(canvasW * .82, canvasH * .56, viewport.isLandscape ? 1 : .82, "#B8A6FF", "#7C3AED");
+    addDecorativeSpark(canvasW * .23, canvasH * .25, 10, "rgba(255, 224, 128, 0.55)");
+    addDecorativeSpark(canvasW * .78, canvasH * .22, 9, "rgba(255, 224, 128, 0.5)");
+    addDecorativeStar(canvasW * .5, canvasH * .14, 9, "rgba(255, 250, 255, 0.62)");
 
     heroPanel.graphics.clear();
-    heroPanel.graphics.beginFill("rgba(246,238,255,0.9)").drawRoundRect(0, 0, heroW, heroH, 38);
-    heroPanel.graphics.beginStroke("rgba(139,92,246,0.72)").setStrokeStyle(2).drawRoundRect(0, 0, heroW, heroH, 38);
+    heroPanel.graphics.beginFill("rgba(43,6,62,0.68)").drawRoundRect(0, 0, heroW, heroH, 18);
+    heroPanel.graphics.beginStroke("rgba(255,206,81,0.78)").setStrokeStyle(2).drawRoundRect(0, 0, heroW, heroH, 18);
     heroPanel.x = heroX;
     heroPanel.y = heroY;
-    heroPanel.shadow = new createjs.Shadow("rgba(124,58,237,0.16)", 0, 12, 24);
+    heroPanel.shadow = new createjs.Shadow("rgba(13,3,22,0.36)", 0, 12, 24);
 
     titleUnderline.graphics.clear();
-    titleUnderline.graphics.setStrokeStyle(4, 'round').beginStroke("rgba(139,92,246,0.92)");
+    titleUnderline.graphics.setStrokeStyle(4, 'round').beginStroke("rgba(255,206,81,0.92)");
     titleUnderline.graphics.moveTo(-90, 0).quadraticCurveTo(0, viewport.isLandscape ? 20 : 16, 90, 0);
     titleUnderline.x = canvasW / 2;
-    titleUnderline.y = heroY + (viewport.isLandscape ? 118 : 105);
+    titleUnderline.y = heroY + (viewport.isLandscape ? 108 : 98);
 
     buttonPanel.graphics.clear();
-    buttonPanel.graphics.beginFill("rgba(237,226,255,0.92)").drawRoundRect(0, 0, buttonW, buttonH, 34);
-    buttonPanel.graphics.beginStroke("rgba(139,92,246,0.72)").setStrokeStyle(2).drawRoundRect(0, 0, buttonW, buttonH, 34);
+    buttonPanel.graphics.beginFill("rgba(43,6,62,0.62)").drawRoundRect(0, 0, buttonW, buttonH, 18);
+    buttonPanel.graphics.beginStroke("rgba(255,206,81,0.66)").setStrokeStyle(2).drawRoundRect(0, 0, buttonW, buttonH, 18);
     buttonPanel.x = buttonX;
     buttonPanel.y = buttonY;
-    buttonPanel.shadow = new createjs.Shadow("rgba(124,58,237,0.14)", 0, 12, 22);
+    buttonPanel.shadow = new createjs.Shadow("rgba(13,3,22,0.28)", 0, 12, 22);
 
-    cozyTitleTxt.font = viewport.isLandscape ? "90px comicyregular" : "64px comicyregular";
+    cozyTitleTxt.font = viewport.isLandscape ? "82px comicyregular" : "58px comicyregular";
+    cozyTitleTxt.color = "#FFEEC6";
     cozyTitleTxt.x = canvasW / 2;
-    cozyTitleTxt.y = heroY + (viewport.isLandscape ? 98 : 88);
+    cozyTitleTxt.y = heroY + (viewport.isLandscape ? 90 : 80);
+    cozyTitleTxt.shadow = new createjs.Shadow("rgba(43,6,62,0.72)", 0, 3, 5);
 
     resultCard.graphics.clear();
-    resultCard.graphics.beginFill("rgba(246,238,255,0.94)").drawRoundRect(0, 0, cardW, cardH, 34);
-    resultCard.graphics.beginStroke("rgba(139,92,246,0.7)").setStrokeStyle(2).drawRoundRect(0, 0, cardW, cardH, 34);
+    resultCard.graphics.beginFill("rgba(43,6,62,0.72)").drawRoundRect(0, 0, cardW, cardH, 18);
+    resultCard.graphics.beginStroke("rgba(255,206,81,0.7)").setStrokeStyle(2).drawRoundRect(0, 0, cardW, cardH, 18);
     resultCard.x = cardX;
     resultCard.y = resultY;
-    resultCard.shadow = new createjs.Shadow("rgba(124,58,237,0.18)", 0, 10, 22);
+    resultCard.shadow = new createjs.Shadow("rgba(13,3,22,0.32)", 0, 10, 22);
 
     confirmCard.graphics.clear();
-    confirmCard.graphics.beginFill("rgba(246,238,255,0.95)").drawRoundRect(0, 0, cardW, cardH, 34);
-    confirmCard.graphics.beginStroke("rgba(139,92,246,0.72)").setStrokeStyle(2).drawRoundRect(0, 0, cardW, cardH, 34);
+    confirmCard.graphics.beginFill("rgba(43,6,62,0.76)").drawRoundRect(0, 0, cardW, cardH, 18);
+    confirmCard.graphics.beginStroke("rgba(255,206,81,0.7)").setStrokeStyle(2).drawRoundRect(0, 0, cardW, cardH, 18);
     confirmCard.x = cardX;
     confirmCard.y = confirmY;
-    confirmCard.shadow = new createjs.Shadow("rgba(124,58,237,0.18)", 0, 10, 22);
+    confirmCard.shadow = new createjs.Shadow("rgba(13,3,22,0.32)", 0, 10, 22);
+}
+
+function coverThemeBackground() {
+    if (!themeBackgroundBitmap || !themeBackgroundBitmap.image) {
+        return;
+    }
+
+    var imageW = themeBackgroundBitmap.image.width || themeBackgroundBitmap.image.naturalWidth;
+    var imageH = themeBackgroundBitmap.image.height || themeBackgroundBitmap.image.naturalHeight;
+    var scale = Math.max(canvasW / imageW, canvasH / imageH);
+
+    themeBackgroundBitmap.scaleX = scale;
+    themeBackgroundBitmap.scaleY = scale;
+    themeBackgroundBitmap.x = (canvasW - (imageW * scale)) / 2;
+    themeBackgroundBitmap.y = (canvasH - (imageH * scale)) / 2;
 }
 
 function addDecorativeBubble(x, y, radius, color) {
@@ -445,12 +458,12 @@ function createActionButton(title, subtitle, width, height, fillColor, accentCol
     var titleTxt = new createjs.Text();
     var subTxt = new createjs.Text();
 
-    bg.graphics.beginFill(fillColor).drawRoundRect(0, 0, width, height, 28);
-    bg.graphics.beginStroke("rgba(139,92,246,0.88)").setStrokeStyle(2).drawRoundRect(0, 0, width, height, 28);
+    bg.graphics.beginLinearGradientFill([fillColor, "#FFD76C"], [0, 1], 0, 0, 0, height).drawRoundRect(0, 0, width, height, 18);
+    bg.graphics.beginStroke("rgba(255,238,198,0.88)").setStrokeStyle(2).drawRoundRect(0, 0, width, height, 18);
     stripe.graphics.beginFill(accentColor).drawRoundRect(12, 10, 10, height - 20, 5);
 
     titleTxt.font = (height <= 70 ? "27px comicyregular" : "31px comicyregular");
-    titleTxt.color = '#34205C';
+    titleTxt.color = '#3B113E';
     titleTxt.textAlign = 'center';
     titleTxt.textBaseline = 'alphabetic';
     titleTxt.text = title;
@@ -458,7 +471,7 @@ function createActionButton(title, subtitle, width, height, fillColor, accentCol
     titleTxt.y = height <= 70 ? height / 2 - 2 : height / 2 - 4;
 
     subTxt.font = (height <= 70 ? "13px Arial" : "15px Arial");
-    subTxt.color = '#735C9E';
+    subTxt.color = '#6D3A12';
     subTxt.textAlign = 'center';
     subTxt.textBaseline = 'alphabetic';
     subTxt.text = subtitle;
@@ -466,7 +479,7 @@ function createActionButton(title, subtitle, width, height, fillColor, accentCol
     subTxt.y = height <= 70 ? height / 2 + 15 : height / 2 + 19;
 
     button.addChild(bg, stripe, titleTxt, subTxt);
-    button.shadow = new createjs.Shadow("rgba(124,58,237,0.12)", 0, 6, 12);
+    button.shadow = new createjs.Shadow("rgba(13,3,22,0.24)", 0, 6, 12);
     button.mouseChildren = false;
     button.cursor = 'pointer';
     button.setBounds(0, 0, width, height);
@@ -483,14 +496,14 @@ function createMiniButton(label, width, height, fillColor, accentColor) {
     var dot = new createjs.Shape();
     var labelTxt = new createjs.Text();
 
-    bg.graphics.beginFill(fillColor).drawRoundRect(0, 0, width, height, 22);
-    bg.graphics.beginStroke("rgba(139,92,246,0.86)").setStrokeStyle(2).drawRoundRect(0, 0, width, height, 22);
+    bg.graphics.beginFill(fillColor).drawRoundRect(0, 0, width, height, 14);
+    bg.graphics.beginStroke("rgba(255,206,81,0.76)").setStrokeStyle(2).drawRoundRect(0, 0, width, height, 14);
     dot.graphics.beginFill(accentColor).drawCircle(0, 0, width > 60 ? 5 : 4);
     dot.x = width > 60 ? 14 : 11;
     dot.y = height / 2;
 
     labelTxt.font = width > 60 ? "14px comicyregular" : "24px comicyregular";
-    labelTxt.color = '#34205C';
+    labelTxt.color = '#3B113E';
     labelTxt.textAlign = 'center';
     labelTxt.textBaseline = 'middle';
     labelTxt.text = label;
@@ -498,7 +511,7 @@ function createMiniButton(label, width, height, fillColor, accentColor) {
     labelTxt.y = height / 2;
 
     button.addChild(bg, dot, labelTxt);
-    button.shadow = new createjs.Shadow("rgba(124,58,237,0.1)", 0, 4, 8);
+    button.shadow = new createjs.Shadow("rgba(13,3,22,0.22)", 0, 4, 8);
     button.mouseChildren = false;
     button.cursor = 'pointer';
     button.setBounds(0, 0, width, height);
@@ -525,8 +538,8 @@ function createLevelTile(unlocked) {
     var fillColor = unlocked ? '#F6EEFF' : '#E5D9F8';
     var accentColor = unlocked ? '#A855F7' : '#BBA7E6';
 
-    bg.graphics.beginFill(fillColor).drawRoundRect(0, 0, width, height, 22);
-    bg.graphics.beginStroke("rgba(139,92,246,0.86)").setStrokeStyle(2).drawRoundRect(0, 0, width, height, 22);
+    bg.graphics.beginFill(fillColor).drawRoundRect(0, 0, width, height, 12);
+    bg.graphics.beginStroke("rgba(255,206,81,0.72)").setStrokeStyle(2).drawRoundRect(0, 0, width, height, 12);
     glow.graphics.beginFill(accentColor).drawRoundRect(12, 10, 10, height - 20, 5);
 
     labelTxt.font = '28px comicyregular';

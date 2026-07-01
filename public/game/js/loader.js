@@ -21,6 +21,11 @@ function initPreload() {
     loader = new createjs.LoadQueue(false);
     manifest = [];
 
+    manifest.push({
+        src: 'assets/magic-sort-table-bg.png',
+        id: 'magicTableBg'
+    });
+
     for (var n = 0; n < tubes_arr.length; n++) {
         manifest.push({
             src: tubes_arr[n].imageBack,
