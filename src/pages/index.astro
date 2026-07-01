@@ -4,6 +4,7 @@ import { articles } from "@/data/articles";
 import { externalGames } from "@/data/externalGames";
 import { siteConfig } from "@/data/siteConfig";
 import { brandAccentClass } from "@/data/accentClasses";
+import { GAME_ASSET_VERSION } from "@/data/gameVersion";
 
 const recentPosts = articles.slice(0, 3);
 const totalLevels = 30;
@@ -27,6 +28,7 @@ const homeBentoGames = [
 ].slice(0, 8);
 const homeBentoLeft = homeBentoGames.slice(0, 4);
 const homeBentoRight = homeBentoGames.slice(4, 8);
+const gameIframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}`;
 
 const faqItems = [
   ["What is Magic Sort?", "Magic Sort is a free online bottle sorting puzzle where you pour layered colors between tubes until every filled bottle contains one clean color."],
@@ -95,7 +97,7 @@ const homeStructuredData = [
         ))}
       </div>
       <div class="hero-game">
-        <iframe src="/game/index.html" title="Play Magic Sort" loading="eager"></iframe>
+        <iframe src={gameIframeSrc} title="Play Magic Sort" loading="eager"></iframe>
       </div>
       <div class="game-bento-grid game-bento-grid-side" aria-label="More games">
         {homeBentoRight.map((game, index) => (

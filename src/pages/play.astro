@@ -3,6 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import { externalGames } from "@/data/externalGames";
 import { brandAccentClass } from "@/data/accentClasses";
 import { siteConfig } from "@/data/siteConfig";
+import { GAME_ASSET_VERSION } from "@/data/gameVersion";
 
 const playSteps = [
   ["1", "Pick", "Select the tube or bottle with the top color you want to move."],
@@ -44,6 +45,7 @@ const relatedGames = [
 ].slice(0, 8);
 const relatedGamesLeft = relatedGames.slice(0, 4);
 const relatedGamesRight = relatedGames.slice(4, 8);
+const gameIframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}`;
 ---
 
 <BaseLayout
@@ -80,7 +82,7 @@ const relatedGamesRight = relatedGames.slice(4, 8);
       </div>
 
       <div class="play-shell" data-game-shell>
-        <iframe src="/game/index.html" title="Play Magic Sort online" allow="autoplay; fullscreen *" allowfullscreen></iframe>
+        <iframe src={gameIframeSrc} title="Play Magic Sort online" allow="autoplay; fullscreen *" allowfullscreen></iframe>
         <div class="play-float-controls">
           <button type="button" data-share-game aria-label="Share game">
             <span>Share</span>

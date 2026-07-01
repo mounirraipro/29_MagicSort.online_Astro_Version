@@ -204,33 +204,62 @@ body {
 
 .menu-ui__actions {
     display: grid;
-    gap: 12px;
+    gap: 14px;
 }
 
 .menu-ui__button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
-    min-height: 54px;
-    padding: 12px 18px;
-    border: 2px solid rgba(255, 238, 198, 0.78);
-    border-radius: 14px;
-    background: linear-gradient(180deg, #ffe29a 0%, #ffb627 100%);
+    min-height: 60px;
+    padding: 13px 18px;
+    border: 2px solid rgba(255, 245, 213, 0.86);
+    border-radius: 12px;
+    background: linear-gradient(180deg, #fff2bb 0%, #ffd261 48%, #f4a51d 100%);
     color: #3b113e;
     font-family: 'comicyregular', sans-serif;
-    font-size: 28px;
+    font-size: 30px;
     line-height: 1;
     cursor: pointer;
-    transition: transform .16s ease, box-shadow .16s ease, background-color .16s ease;
-    box-shadow: 0 8px 18px rgba(13, 3, 22, 0.28);
+    text-shadow: 0 1px 0 rgba(255, 245, 213, 0.55);
+    transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
+    box-shadow: 0 9px 0 rgba(123, 60, 3, 0.58), 0 18px 24px rgba(13, 3, 22, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+    touch-action: manipulation;
 }
 
-.menu-ui__button:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 12px 22px rgba(13, 3, 22, 0.34);
+.menu-ui__button:hover,
+.chip-button:hover,
+.level-grid__button:not(:disabled):hover,
+.settings-ui__toggle:hover,
+.settings-ui__button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.06);
+}
+
+.menu-ui__button:active,
+.chip-button:active,
+.level-grid__button:not(:disabled):active,
+.settings-ui__toggle:active,
+.settings-ui__button:active {
+    transform: translateY(3px);
+    box-shadow: 0 4px 0 rgba(123, 60, 3, 0.55), 0 9px 16px rgba(13, 3, 22, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.menu-ui__button:focus-visible,
+.chip-button:focus-visible,
+.level-grid__button:focus-visible,
+.settings-ui__toggle:focus-visible,
+.settings-ui__button:focus-visible {
+    outline: 3px solid #f8d2ff;
+    outline-offset: 3px;
 }
 
 .menu-ui__button--alt {
-    background: linear-gradient(180deg, #f8d2ff 0%, #d35bf2 100%);
+    background: linear-gradient(180deg, #f9d7ff 0%, #e06af8 52%, #bc38dc 100%);
     color: #2b063e;
+    box-shadow: 0 9px 0 rgba(92, 12, 112, 0.62), 0 18px 24px rgba(13, 3, 22, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .overlay-card,
@@ -269,8 +298,13 @@ body {
     width: min(540px, calc(100vw - 36px));
 }
 
+#htmlTubeMenu {
+    align-items: flex-end;
+    padding-bottom: clamp(20px, 4vh, 36px);
+}
+
 #htmlTubeMenu .overlay-card__panel {
-    transform: translateY(clamp(92px, 18vh, 150px));
+    transform: none;
 }
 
 .overlay-card__head {
@@ -322,29 +356,34 @@ body {
 }
 
 .chip-button {
-    min-height: 46px;
-    padding: 10px 16px;
-    border: 2px solid rgba(255, 238, 198, 0.74);
-    border-radius: 14px;
-    background: linear-gradient(180deg, #ffe29a 0%, #ffb627 100%);
+    position: relative;
+    min-height: 50px;
+    padding: 11px 18px;
+    border: 2px solid rgba(255, 245, 213, 0.82);
+    border-radius: 12px;
+    background: linear-gradient(180deg, #fff2bb 0%, #ffd261 48%, #f4a51d 100%);
     color: #3b113e;
     font-family: 'comicyregular', sans-serif;
     font-size: 24px;
     line-height: 1;
     cursor: pointer;
-    box-shadow: 0 8px 18px rgba(13, 3, 22, 0.26);
+    text-shadow: 0 1px 0 rgba(255, 245, 213, 0.5);
+    box-shadow: 0 7px 0 rgba(123, 60, 3, 0.58), 0 14px 20px rgba(13, 3, 22, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
+    touch-action: manipulation;
 }
 
 .chip-button--primary {
-    background: linear-gradient(180deg, #fff1b6 0%, #ffd25b 100%);
+    background: linear-gradient(180deg, #fff7cf 0%, #ffe07a 48%, #ffc22f 100%);
 }
 
 .chip-button--danger {
-    background: linear-gradient(180deg, #ffd3e9 0%, #ff62b7 100%);
+    background: linear-gradient(180deg, #ffd8ec 0%, #ff7bc3 48%, #ed3f9d 100%);
+    box-shadow: 0 7px 0 rgba(126, 18, 79, 0.58), 0 14px 20px rgba(13, 3, 22, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.42);
 }
 
 .chip-button--icon {
-    min-width: 52px;
+    min-width: 56px;
     padding: 10px 0;
 }
 
@@ -355,20 +394,26 @@ body {
 }
 
 .level-grid__button {
-    min-height: 58px;
-    border: 2px solid rgba(255, 238, 198, 0.7);
+    min-height: 60px;
+    border: 2px solid rgba(255, 245, 213, 0.78);
     border-radius: 12px;
-    background: linear-gradient(180deg, #ffe29a 0%, #ffb627 100%);
+    background: linear-gradient(180deg, #fff2bb 0%, #ffd261 48%, #f4a51d 100%);
     color: #3b113e;
     font-family: 'comicyregular', sans-serif;
     font-size: 24px;
     cursor: pointer;
+    box-shadow: 0 6px 0 rgba(123, 60, 3, 0.5), 0 10px 16px rgba(13, 3, 22, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
+    touch-action: manipulation;
 }
 
 .level-grid__button.is-locked {
     background: rgba(92, 34, 101, 0.72);
     color: rgba(255, 238, 198, 0.58);
     cursor: default;
+    box-shadow: inset 0 0 0 1px rgba(255, 238, 198, 0.12);
+    filter: none;
+    transform: none;
 }
 
 .settings-ui {
@@ -378,14 +423,17 @@ body {
 .settings-ui__toggle,
 .settings-ui__button {
     pointer-events: auto;
-    border: 2px solid rgba(255, 238, 198, 0.72);
-    border-radius: 14px;
-    background: linear-gradient(180deg, rgba(255, 226, 154, 0.96), rgba(255, 182, 39, 0.96));
+    border: 2px solid rgba(255, 245, 213, 0.78);
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255, 242, 187, 0.98), rgba(255, 194, 47, 0.98));
     color: #3b113e;
     font-family: 'comicyregular', sans-serif;
     font-size: 20px;
     line-height: 1;
     cursor: pointer;
+    box-shadow: 0 6px 0 rgba(123, 60, 3, 0.5), 0 12px 18px rgba(13, 3, 22, 0.22);
+    transition: transform .14s ease, box-shadow .14s ease, filter .14s ease;
+    touch-action: manipulation;
 }
 
 .settings-ui__toggle {
@@ -412,7 +460,7 @@ body {
 }
 
 .settings-ui__button--danger {
-    background: linear-gradient(180deg, #ffd3e9 0%, #ff62b7 100%);
+    background: linear-gradient(180deg, #ffd8ec 0%, #ff7bc3 48%, #ed3f9d 100%);
 }
 
 @media only screen and (max-width: 640px) {
