@@ -18,113 +18,16 @@ function initPreload() {
     });
     resizeGameFunc();
 
+    soundOn = getGameSoundEnabled();
+
     loader = new createjs.LoadQueue(false);
-    manifest = [];
-
-    manifest.push({
-        src: 'assets/magic-sort-table-bg.png?v=20260701-gameplay2',
-        id: 'magicTableBg'
-    });
-
-    for (var n = 0; n < tubes_arr.length; n++) {
-        manifest.push({
-            src: tubes_arr[n].imageBack,
-            id: 'tubeBack' + n
-        });
-        manifest.push({
-            src: tubes_arr[n].imageFront,
-            id: 'tubeFront' + n
-        });
-    }
-
-    for (var n = 0; n < bubbles_arr.length; n++) {
-        manifest.push({
-            src: bubbles_arr[n],
-            id: 'bubble' + n
-        });
-    }
+    manifest = buildCriticalAssetManifest();
 
     if (typeof addScoreboardAssets == 'function') {
         addScoreboardAssets();
     }
 
-    soundOn = true;
-    if ($.browser.mobile || isTablet) {
-        if (!enableMobileSound) {
-            soundOn = false;
-        }
-    } else {
-        if (!enableDesktopSound) {
-            soundOn = false;
-        }
-    }
-
-    if (soundOn) {
-        manifest.push({
-            src: 'assets/sounds/sound_click.ogg',
-            id: 'soundButton'
-        });
-        manifest.push({
-            src: 'assets/sounds/sound_score.ogg',
-            id: 'soundScore'
-        });
-        manifest.push({
-            src: 'assets/sounds/sound_timer.ogg',
-            id: 'soundTimer'
-        });
-        manifest.push({
-            src: 'assets/sounds/sound_timer_end.ogg',
-            id: 'soundTimerEnd'
-        });
-        manifest.push({
-            src: 'assets/sounds/sound_result.ogg',
-            id: 'soundResult'
-        });
-        manifest.push({
-            src: 'assets/sounds/sound_error.ogg',
-            id: 'soundError'
-        });
-        manifest.push({
-            src: 'assets/sounds/sound_clear.ogg',
-            id: 'soundClear'
-        });
-        manifest.push({
-            src: 'assets/sounds/sound_start.ogg',
-            id: 'soundStart'
-        });
-        manifest.push({
-            src: 'assets/sounds/sound_select.ogg',
-            id: 'soundSelect'
-        });
-        manifest.push({
-            src: 'assets/sounds/sound_pour1.ogg',
-            id: 'soundPour1'
-        });
-        manifest.push({
-            src: 'assets/sounds/sound_pour2.ogg',
-            id: 'soundPour2'
-        });
-        manifest.push({
-            src: 'assets/sounds/sound_pour3.ogg',
-            id: 'soundPour3'
-        });
-        manifest.push({
-            src: 'assets/sounds/sound_match.ogg',
-            id: 'soundMatch'
-        });
-        manifest.push({
-            src: 'assets/sounds/music_main.ogg',
-            id: 'musicMain'
-        });
-        manifest.push({
-            src: 'assets/sounds/music_game.ogg',
-            id: 'musicGame'
-        });
-
-        createjs.Sound.alternateExtensions = ["mp3"];
-        loader.installPlugin(createjs.Sound);
-    }
-
+    installSoundPlugin(loader);
     loader.addEventListener("complete", handleComplete);
     loader.addEventListener("fileload", fileComplete);
     loader.addEventListener("error", handleFileError);
@@ -168,6 +71,7 @@ function handleProgress() {
 function handleComplete() {
     toggleLoader(false);
     initMain();
+    scheduleLazyMusicLoad();
 };
 
 /*!

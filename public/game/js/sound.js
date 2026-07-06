@@ -13,6 +13,7 @@ var soundID = 0;
 var soundPushArr = [];
 var soundLoopPushArr = [];
 var musicPushArr = [];
+var pendingMusicLoop = null;
 
 function playSound(soundName, vol) {
     if (soundOn) {
@@ -80,6 +81,17 @@ function stopSoundLoop(soundName) {
 
 function playMusicLoop(soundName) {
     if (soundOn) {
+        // Music is intentionally loaded after the playable assets, so remember the
+        // requested loop until CreateJS has registered the lazy-loaded sound file.
+        if (typeof isLazySoundReady == 'function' && !isLazySoundReady(soundName)) {
+            pendingMusicLoop = soundName;
+
+            if (typeof loadLazyMusic == 'function') {
+                loadLazyMusic(resumePendingMusicLoop);
+            }
+            return;
+        }
+
         if ($.sound[soundName] == null) {
             musicPushArr.push(soundName);
 
@@ -109,6 +121,10 @@ function toggleMusicLoop(soundName, con) {
 
 function stopMusicLoop(soundName) {
     if (soundOn) {
+        if (pendingMusicLoop == soundName) {
+            pendingMusicLoop = null;
+        }
+
         if ($.sound[soundName] != null) {
             $.sound[soundName].stop();
             $.sound[soundName] = null;
@@ -122,7 +138,22 @@ function stopMusicLoop(soundName) {
 }
 
 function stopSound() {
+    pendingMusicLoop = null;
     createjs.Sound.stop();
+}
+
+function resumePendingMusicLoop() {
+    if (pendingMusicLoop == null) {
+        return;
+    }
+
+    var soundName = pendingMusicLoop;
+    pendingMusicLoop = null;
+    playMusicLoop(soundName);
+}
+
+function onLazyMusicReady() {
+    resumePendingMusicLoop();
 }
 
 function toggleSoundInMute(con) {
