@@ -508,7 +508,12 @@ var textDisplay = {
     share: 'SHARE YOUR SCORE',
     resultTitle: 'SESSION COMPLETE',
     resultLevelTitle: 'STAGE [NUMBER] COMPLETE',
-    resultDesc: '[NUMBER] PTS'
+    resultDesc: '[NUMBER] PTS',
+    moves: 'Moves: [NUMBER]',
+    perfectSort: 'PERFECT SORT',
+    greatSort: 'GREAT SORT',
+    clearedSort: 'CLEARED',
+    tryAgain: 'TRY AGAIN'
 }
 
 //Social share, [SCORE] will replace with game score
@@ -542,6 +547,15 @@ var gameData = {
     tubeNum: 0,
     complete: false,
     levelCompleted: 1
+};
+var gameplayPolishData = {
+    moveCount: 0,
+    undoCount: 0,
+    undoStack: [],
+    pendingMove: null,
+    stars: 3,
+    completedTubes: 0,
+    complete: false
 };
 var tweenData = {
     score: 0,
@@ -590,7 +604,226 @@ function saveLevelData() {
     }
 }
 
-/*!
+function resetGameplayPolish() {
+    gameplayPolishData.moveCount = 0;
+    gameplayPolishData.undoCount = 0;
+    gameplayPolishData.undoStack = [];
+    gameplayPolishData.pendingMove = null;
+    gameplayPolishData.stars = 3;
+    gameplayPolishData.completedTubes = 0;
+    gameplayPolishData.complete = false;
+    updateGameplayPolishUI();
+}
+
+function getTubeColorSnapshot(thisTube) {
+    var colors = [];
+    for (var n = 0; n < thisTube.data.colors.length; n++) {
+        colors.push({
+            index: thisTube.data.colors[n].index,
+            height: thisTube.data.colors[n].height
+        });
+    }
+    return colors;
+}
+
+function createGameplaySnapshot() {
+    var tubes = [];
+    for (var n = 0; n < gameData.tubes.length; n++) {
+        tubes.push({
+            fill: gameData.tubes[n].data.fill,
+            colors: getTubeColorSnapshot(gameData.tubes[n])
+        });
+    }
+
+    return {
+        moveCount: gameplayPolishData.moveCount,
+        undoCount: gameplayPolishData.undoCount,
+        completedTubes: gameplayPolishData.completedTubes,
+        tubes: tubes
+    };
+}
+
+function stagePendingMoveSnapshot() {
+    gameplayPolishData.pendingMove = createGameplaySnapshot();
+}
+
+function commitPendingMoveSnapshot() {
+    if (gameplayPolishData.pendingMove == null || gameplayPolishData.complete) {
+        gameplayPolishData.pendingMove = null;
+        return;
+    }
+
+    gameplayPolishData.undoStack.push(gameplayPolishData.pendingMove);
+    gameplayPolishData.pendingMove = null;
+    gameplayPolishData.moveCount++;
+    updateCompletedTubeCount();
+    updateGameplayPolishUI();
+}
+
+function resetTubeTweenState(thisTube) {
+    TweenMax.killTweensOf(thisTube);
+    TweenMax.killTweensOf(thisTube.data.mask);
+    TweenMax.killTweensOf(thisTube.data.imageBack);
+    TweenMax.killTweensOf(thisTube.data.imageFront);
+    TweenMax.killTweensOf(thisTube.data.container);
+    thisTube.data.mask.rotation = 0;
+    thisTube.data.imageBack.rotation = 0;
+    thisTube.data.imageFront.rotation = 0;
+    thisTube.data.container.y = 0;
+    thisTube.data.fillShape.graphics.clear();
+    thisTube.data.fillShape.visible = false;
+    thisTube.data.active = true;
+    thisTube.data.direction = "";
+}
+
+function restoreGameplaySnapshot(snapshot) {
+    if (snapshot == null) {
+        return;
+    }
+
+    gameData.pouring = [];
+    gameData.filling = false;
+
+    for (var n = 0; n < gameData.tubes.length; n++) {
+        var thisTube = gameData.tubes[n];
+        var tubeSnapshot = snapshot.tubes[n];
+        resetTubeTweenState(thisTube);
+        thisTube.data.colors = [];
+        thisTube.data.fill = tubeSnapshot.fill;
+
+        // Snapshots store only serializable color data; display objects are rebuilt here.
+        for (var c = 0; c < tubeSnapshot.colors.length; c++) {
+            thisTube.data.colors.push({
+                shape: null,
+                surface: null,
+                bottom: null,
+                index: tubeSnapshot.colors[c].index,
+                height: tubeSnapshot.colors[c].height
+            });
+        }
+
+        fillLiquid(n);
+        updateTubeData(thisTube);
+    }
+
+    positionTubes();
+    gameplayPolishData.moveCount = snapshot.moveCount;
+    gameplayPolishData.completedTubes = snapshot.completedTubes;
+    gameplayPolishData.pendingMove = null;
+    gameData.action = true;
+    updateGameplayPolishUI();
+}
+
+function undoLastMove() {
+    if (!canUndoMove()) {
+        playSound('soundError');
+        return;
+    }
+
+    var snapshot = gameplayPolishData.undoStack.pop();
+    gameplayPolishData.undoCount++;
+    restoreGameplaySnapshot(snapshot);
+    playSound('soundButton');
+}
+
+function canUndoMove() {
+    return curPage == 'game' &&
+        !gameData.paused &&
+        gameData.action &&
+        !gameData.filling &&
+        !gameplayPolishData.complete &&
+        gameplayPolishData.undoStack.length > 0;
+}
+
+function getStageTargetTubeCount() {
+    var stageSettings = levelSettings[gameData.levelNum];
+    return Math.max(1, stageSettings.tubes - stageSettings.empty);
+}
+
+function updateCompletedTubeCount() {
+    var completed = 0;
+    for (var n = 0; n < gameData.tubes.length; n++) {
+        var thisTube = gameData.tubes[n];
+        var checkColor = -1;
+        var completeColor = thisTube.data.fill >= gameData.tube.fillH - 5 && thisTube.data.fill > 0;
+
+        for (var c = 0; c < thisTube.data.colors.length; c++) {
+            if (checkColor == -1) {
+                checkColor = thisTube.data.colors[c].index;
+            } else if (checkColor != thisTube.data.colors[c].index) {
+                completeColor = false;
+            }
+        }
+
+        if (completeColor) {
+            completed++;
+        }
+    }
+    gameplayPolishData.completedTubes = completed;
+}
+
+function calculateStageStars() {
+    var stageSettings = levelSettings[gameData.levelNum];
+    var targetTubes = getStageTargetTubeCount();
+    var colorLayers = Math.max(1, stageSettings.levels);
+    var parMoves = Math.max(4, targetTubes * Math.max(2, colorLayers - 1));
+    var adjustedMoves = gameplayPolishData.moveCount + (gameplayPolishData.undoCount * 2);
+
+    if (adjustedMoves <= Math.ceil(parMoves * 1.2)) {
+        return 3;
+    }
+    if (adjustedMoves <= Math.ceil(parMoves * 1.8)) {
+        return 2;
+    }
+    return 1;
+}
+
+function getStarText(stars) {
+    var text = '';
+    for (var n = 0; n < 3; n++) {
+        text += n < stars ? '★' : '☆';
+    }
+    return text;
+}
+
+function getResultPolishMessage() {
+    if (!gameplayPolishData.complete) {
+        return textDisplay.tryAgain;
+    }
+    if (gameplayPolishData.stars == 3) {
+        return textDisplay.perfectSort;
+    }
+    if (gameplayPolishData.stars == 2) {
+        return textDisplay.greatSort;
+    }
+    return textDisplay.clearedSort;
+}
+
+function completeGameplayPolish() {
+    gameplayPolishData.complete = true;
+    gameplayPolishData.pendingMove = null;
+    updateCompletedTubeCount();
+    gameplayPolishData.stars = calculateStageStars();
+    updateGameplayPolishUI();
+}
+
+function updateGameplayPolishUI() {
+    if ($('#htmlMoveCounter').length == 0) {
+        return;
+    }
+
+    var canUndo = canUndoMove();
+    if ($('#htmlMoveCountValue').length > 0) {
+        $('#htmlMoveCountValue').text(gameplayPolishData.moveCount);
+    } else {
+        $('#htmlMoveCounter').text(textDisplay.moves.replace('[NUMBER]', gameplayPolishData.moveCount));
+    }
+    $('#htmlUndoButton')
+        .prop('disabled', !canUndo)
+        .attr('aria-label', canUndo ? 'Undo last move' : 'No move to undo');
+}
+
+/*! 
  * 
  * GAME BUTTONS - This is the function that runs to setup button event
  * 
@@ -854,6 +1087,10 @@ function initHTMLInterface() {
         togglePop(true);
         toggleOption();
     });
+
+    $('#htmlUndoButton').on('click', function() {
+        undoLastMove();
+    });
 }
 
 function updateHTMLInterface() {
@@ -861,12 +1098,14 @@ function updateHTMLInterface() {
     var showLevelMenu = curPage === 'level' && !$.editor.enable;
     var showTubeMenu = curPage === 'select' && !$.editor.enable;
     var showResultMenu = curPage === 'result' && !$.editor.enable;
+    var showGameHud = curPage === 'game' && !$.editor.enable;
     var showSettings = !$.editor.enable && (curPage === 'game' || curPage === 'select' || curPage === 'level');
 
     $('#htmlMainMenu').toggleClass('is-hidden', !showMainMenu);
     $('#htmlLevelMenu').toggleClass('is-hidden', !showLevelMenu);
     $('#htmlTubeMenu').toggleClass('is-hidden', !showTubeMenu);
     $('#htmlResultMenu').toggleClass('is-hidden', !showResultMenu);
+    $('#htmlGameHud').toggleClass('is-hidden', !showGameHud);
     $('#htmlSettingsMenu').toggleClass('is-hidden', !showSettings);
 
     if (!showSettings) {
@@ -878,6 +1117,7 @@ function updateHTMLInterface() {
     updateHTMLResult();
     updateHTMLConfirm();
     updateHTMLSettings();
+    updateGameplayPolishUI();
 }
 
 function updateHTMLLevels() {
@@ -914,6 +1154,8 @@ function updateHTMLTubeMenu() {
 
 function updateHTMLResult() {
     $('#htmlResultTitle').text(gameData.type == 'level' ? textDisplay.resultLevelTitle.replace('[NUMBER]', gameData.challengeNum) : textDisplay.resultTitle);
+    $('#htmlResultStars').text(getStarText(gameplayPolishData.complete ? gameplayPolishData.stars : 0));
+    $('#htmlResultMessage').text(getResultPolishMessage());
     $('#htmlResultScore').text(textDisplay.resultDesc.replace('[NUMBER]', addCommas(Math.floor(tweenData.tweenScore || playerData.score))));
 }
 
@@ -1378,6 +1620,7 @@ function prepareStage() {
     gameData.tubes = [];
     gameData.pouring = [];
     gameData.filling = false;
+    resetGameplayPolish();
 
     gameData.tube = {
         w: 0,
@@ -1453,6 +1696,7 @@ function setupStage() {
             overwrite: true,
             onComplete: function() {
                 gameData.action = true;
+                updateGameplayPolishUI();
                 playSound('soundStart');
                 timerContainer.visible = true;
                 toggleGameTimer(true);
@@ -1689,6 +1933,7 @@ function actionTube(obj) {
             var thisHeight = gameData.pouring[pourIndex].from.data.colors[shapeIndex].height;
 
             if (gameData.pouring[pourIndex].to.data.fill + thisHeight <= gameData.tube.fillH) {
+                stagePendingMoveSnapshot();
                 moveTube(pourIndex);
                 focusTube(gameData.pouring[pourIndex].to, false);
             } else {
@@ -1984,6 +2229,7 @@ function pourLiquidComplete(pourIndex) {
             gameData.pouring[pourIndex].filling = false;
             gameData.pouring[pourIndex].complete = true;
             clearPourArray();
+            commitPendingMoveSnapshot();
             checkLiquidComplete(true);
             if (gameData.resize) {
                 positionTubes();
@@ -2094,6 +2340,7 @@ function checkLiquidComplete(con) {
 
         if (leftTubesArr.length == 0) {
             gameData.action = false;
+            completeGameplayPolish();
             animateBubbles();
             calculateScore();
             toggleGameSessionTimer(false);
@@ -2428,7 +2675,9 @@ function showGameStatus(con) {
     if (con == 'timesup') {
         statusTxt.text = textDisplay.timesup;
     } else if (con == 'clear') {
-        if (gameData.type == "level") {
+        if (gameplayPolishData.complete) {
+            statusTxt.text = getResultPolishMessage();
+        } else if (gameData.type == "level") {
             statusTxt.text = textDisplay.clear.replace("[NUMBER]", gameData.levelNum + 1);
         } else {
             statusTxt.text = textDisplay.clear.replace("[NUMBER]", gameData.challengeNum);

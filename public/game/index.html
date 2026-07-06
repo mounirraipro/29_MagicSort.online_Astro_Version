@@ -9,9 +9,9 @@
     <meta name="keywords" content="magic sort, pastel puzzle, color sorting, tube puzzle, cozy game, browser puzzle">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <link rel="shortcut icon" href="assets/icon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/normalize.css?v=20260701-ux2">
-    <link rel="stylesheet" href="css/main.css?v=20260701-ux2">
-    <script src="js/vendor/modernizr-2.6.2.min.js?v=20260701-ux2"></script>
+    <link rel="stylesheet" href="css/normalize.css?v=20260701-gameplay2">
+    <link rel="stylesheet" href="css/main.css?v=20260701-gameplay2">
+    <script src="js/vendor/modernizr-2.6.2.min.js?v=20260701-gameplay2"></script>
     <script>
     if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
         var msViewportStyle = document.createElement("style");
@@ -65,6 +65,8 @@
             <div id="htmlResultMenu" class="overlay-card is-hidden">
                 <div class="overlay-card__panel">
                     <h2 id="htmlResultTitle" class="overlay-card__title">Session Complete</h2>
+                    <div id="htmlResultStars" class="overlay-card__stars" aria-label="Star rating">★★★</div>
+                    <div id="htmlResultMessage" class="overlay-card__message">Perfect Sort</div>
                     <div id="htmlResultScore" class="overlay-card__score">0 PTS</div>
                     <div class="overlay-card__footer">
                         <button id="htmlResultContinue" class="chip-button chip-button--primary" type="button">Continue</button>
@@ -90,22 +92,32 @@
                     <button id="htmlQuitButton" class="settings-ui__button settings-ui__button--danger" type="button">Quit</button>
                 </div>
             </div>
+            <div id="htmlGameHud" class="game-hud is-hidden">
+                <div id="htmlMoveCounter" class="game-hud__counter" aria-live="polite">
+                    <span class="game-hud__label">Moves</span>
+                    <strong id="htmlMoveCountValue" class="game-hud__value">0</strong>
+                </div>
+                <button id="htmlUndoButton" class="game-hud__button" type="button" aria-label="Undo last move" disabled>
+                    <span class="game-hud__button-icon" aria-hidden="true"></span>
+                    <span class="game-hud__button-text">Undo</span>
+                </button>
+            </div>
         </div>
     </div>
 
-    <script src="js/vendor/jquery.min.js?v=20260701-ux2"></script>
-    <script src="js/vendor/detectmobilebrowser.js?v=20260701-ux2"></script>
-    <script src="js/vendor/createjs.min.js?v=20260701-ux2"></script>
-    <script src="js/vendor/TweenMax.min.js?v=20260701-ux2"></script>
-    <script src="js/vendor/js.cookie.js?v=20260701-ux2"></script>
-    <script src="js/plugins.js?v=20260701-ux2"></script>
-    <script src="js/sound.js?v=20260701-ux2"></script>
-    <script src="js/canvas.js?v=20260701-ux2"></script>
-    <script src="js/levels.js?v=20260701-ux2"></script>
-    <script src="js/game.js?v=20260701-ux2"></script>
-    <script src="js/mobile.js?v=20260701-ux2"></script>
-    <script src="js/main.js?v=20260701-ux2"></script>
-    <script src="js/loader.js?v=20260701-ux2"></script>
-    <script src="js/init.js?v=20260701-ux2"></script>
+    <script src="js/vendor/jquery.min.js?v=20260701-gameplay2"></script>
+    <script src="js/vendor/detectmobilebrowser.js?v=20260701-gameplay2"></script>
+    <script src="js/vendor/createjs.min.js?v=20260701-gameplay2"></script>
+    <script src="js/vendor/TweenMax.min.js?v=20260701-gameplay2"></script>
+    <script src="js/vendor/js.cookie.js?v=20260701-gameplay2"></script>
+    <script src="js/plugins.js?v=20260701-gameplay2"></script>
+    <script src="js/sound.js?v=20260701-gameplay2"></script>
+    <script src="js/canvas.js?v=20260701-gameplay2"></script>
+    <script src="js/levels.js?v=20260701-gameplay2"></script>
+    <script src="js/game.js?v=20260701-gameplay2"></script>
+    <script src="js/mobile.js?v=20260701-gameplay2"></script>
+    <script src="js/main.js?v=20260701-gameplay2"></script>
+    <script src="js/loader.js?v=20260701-gameplay2"></script>
+    <script src="js/init.js?v=20260701-gameplay2"></script>
 </body>
 </html>

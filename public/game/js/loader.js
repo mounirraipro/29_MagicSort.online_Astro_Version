@@ -22,7 +22,7 @@ function initPreload() {
     manifest = [];
 
     manifest.push({
-        src: 'assets/magic-sort-table-bg.png?v=20260701-ux2',
+        src: 'assets/magic-sort-table-bg.png?v=20260701-gameplay2',
         id: 'magicTableBg'
     });
 
