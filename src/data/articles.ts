@@ -1,3 +1,5 @@
+import { longArticles } from "./longArticles";
+
 export type Article = {
   slug: string;
   title: string;
@@ -11,6 +13,7 @@ export type Article = {
 };
 
 export const articles = [
+  ...longArticles,
   {
     slug: "magic-sort-beginner-guide",
     title: "Magic Sort Beginner Guide: Rules, Bottles, and First Wins",
