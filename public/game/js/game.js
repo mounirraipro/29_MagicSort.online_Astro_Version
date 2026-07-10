@@ -517,7 +517,6 @@ var textDisplay = {
 }
 
 //Social share, [SCORE] will replace with game score
-var shareEnable = false; //toggle share
 var shareTitle = 'My Magic Sort score is [SCORE] PTS'; //social share score title
 var shareMessage = 'I reached [SCORE] PTS in Magic Sort. Try the cozy puzzle now!'; //social share score message
 
@@ -603,7 +602,6 @@ function saveLevelData() {
         });
     }
 }
-
 function resetGameplayPolish() {
     gameplayPolishData.moveCount = 0;
     gameplayPolishData.undoCount = 0;
@@ -818,6 +816,7 @@ function updateGameplayPolishUI() {
     } else {
         $('#htmlMoveCounter').text(textDisplay.moves.replace('[NUMBER]', gameplayPolishData.moveCount));
     }
+    $('#htmlSortedCountValue').text(gameplayPolishData.completedTubes + '/' + getStageTargetTubeCount());
     $('#htmlUndoButton')
         .prop('disabled', !canUndo)
         .attr('aria-label', canUndo ? 'Undo last move' : 'No move to undo');
@@ -914,20 +913,6 @@ function buildGameButton() {
         }
     });
 
-    buttonFacebook.cursor = "pointer";
-    buttonFacebook.addEventListener("click", function(evt) {
-        share('facebook');
-    });
-
-    buttonTwitter.cursor = "pointer";
-    buttonTwitter.addEventListener("click", function(evt) {
-        share('twitter');
-    });
-    buttonWhatsapp.cursor = "pointer";
-    buttonWhatsapp.addEventListener("click", function(evt) {
-        share('whatsapp');
-    });
-
     buttonSoundOff.cursor = "pointer";
     buttonSoundOff.addEventListener("click", function(evt) {
         toggleSoundMute(true);
@@ -1015,6 +1000,11 @@ function initHTMLInterface() {
         goPage('level');
     });
 
+    $('#htmlQuickFullscreen').on('click', function() {
+        playSound('soundButton');
+        toggleFullScreen();
+    });
+
     $('#htmlLevelPrev').on('click', function() {
         playSound('soundButton');
         toggleSelect(false);
@@ -1079,10 +1069,6 @@ function initHTMLInterface() {
         toggleMusicMute(!buttonMusicOn.visible);
     });
 
-    $('#htmlFullscreenButton').on('click', function() {
-        toggleFullScreen();
-    });
-
     $('#htmlQuitButton').on('click', function() {
         togglePop(true);
         toggleOption();
@@ -1100,6 +1086,7 @@ function updateHTMLInterface() {
     var showResultMenu = curPage === 'result' && !$.editor.enable;
     var showGameHud = curPage === 'game' && !$.editor.enable;
     var showSettings = !$.editor.enable && (curPage === 'game' || curPage === 'select' || curPage === 'level');
+    var showQuickControls = !$.editor.enable && (curPage === 'main' || curPage === 'game' || curPage === 'select' || curPage === 'level' || curPage === 'result');
 
     $('#htmlMainMenu').toggleClass('is-hidden', !showMainMenu);
     $('#htmlLevelMenu').toggleClass('is-hidden', !showLevelMenu);
@@ -1107,6 +1094,7 @@ function updateHTMLInterface() {
     $('#htmlResultMenu').toggleClass('is-hidden', !showResultMenu);
     $('#htmlGameHud').toggleClass('is-hidden', !showGameHud);
     $('#htmlSettingsMenu').toggleClass('is-hidden', !showSettings);
+    $('#htmlQuickControls').toggleClass('is-hidden', !showQuickControls);
 
     if (!showSettings) {
         $('#htmlSettingsPanel').addClass('is-hidden');
@@ -1157,6 +1145,18 @@ function updateHTMLResult() {
     $('#htmlResultStars').text(getStarText(gameplayPolishData.complete ? gameplayPolishData.stars : 0));
     $('#htmlResultMessage').text(getResultPolishMessage());
     $('#htmlResultScore').text(textDisplay.resultDesc.replace('[NUMBER]', addCommas(Math.floor(tweenData.tweenScore || playerData.score))));
+    $('#htmlResultMeta').text(getResultMetaText());
+}
+
+function getResultMetaText() {
+    var mode = gameData.type == 'level' ? 'Stage' : 'Challenge';
+    var meta = mode + ' ' + gameData.challengeNum + ' | Moves ' + gameplayPolishData.moveCount;
+
+    if (gameplayPolishData.undoCount > 0) {
+        meta += ' | Undos ' + gameplayPolishData.undoCount;
+    }
+
+    return meta;
 }
 
 function updateHTMLConfirm() {
@@ -2803,30 +2803,4 @@ function toggleFullScreen() {
             document.webkitExitFullscreen();
         }
     }
-}
-
-/*!
- * 
- * SHARE - This is the function that runs to open share url
- * 
- */
-function share(action) {
-    gtag('event', 'click', {
-        'event_category': 'share',
-        'event_label': action
-    });
-
-    var loc = location.href
-    loc = loc.substring(0, loc.lastIndexOf("/") + 1);
-
-    var title = '';
-    var text = '';
-
-    title = shareTitle.replace("[SCORE]", addCommas(playerData.score));
-    text = shareMessage.replace("[SCORE]", addCommas(playerData.score));
-
-    var shareurl = '';
-
-
-    window.open(shareurl);
 }

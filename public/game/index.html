@@ -9,9 +9,9 @@
     <meta name="keywords" content="magic sort, pastel puzzle, color sorting, tube puzzle, cozy game, browser puzzle">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <link rel="shortcut icon" href="assets/icon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/normalize.css?v=20260706-loader1">
-    <link rel="stylesheet" href="css/main.css?v=20260706-loader1">
-    <script src="js/vendor/modernizr-2.6.2.min.js?v=20260706-loader1"></script>
+    <link rel="stylesheet" href="css/normalize.css?v=20260710-ux2">
+    <link rel="stylesheet" href="css/main.css?v=20260710-ux2">
+    <script src="js/vendor/modernizr-2.6.2.min.js?v=20260710-ux2"></script>
     <script>
     if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
         var msViewportStyle = document.createElement("style");
@@ -68,6 +68,7 @@
                     <div id="htmlResultStars" class="overlay-card__stars" aria-label="Star rating">★★★</div>
                     <div id="htmlResultMessage" class="overlay-card__message">Perfect Sort</div>
                     <div id="htmlResultScore" class="overlay-card__score">0 PTS</div>
+                    <div id="htmlResultMeta" class="overlay-card__meta">Stage 1 | Moves 0</div>
                     <div class="overlay-card__footer">
                         <button id="htmlResultContinue" class="chip-button chip-button--primary" type="button">Continue</button>
                     </div>
@@ -88,7 +89,6 @@
                 <div id="htmlSettingsPanel" class="settings-ui__panel is-hidden">
                     <button id="htmlSoundButton" class="settings-ui__button" type="button">Sound: On</button>
                     <button id="htmlMusicButton" class="settings-ui__button" type="button">Music: On</button>
-                    <button id="htmlFullscreenButton" class="settings-ui__button" type="button">Fullscreen</button>
                     <button id="htmlQuitButton" class="settings-ui__button settings-ui__button--danger" type="button">Quit</button>
                 </div>
             </div>
@@ -97,28 +97,37 @@
                     <span class="game-hud__label">Moves</span>
                     <strong id="htmlMoveCountValue" class="game-hud__value">0</strong>
                 </div>
+                <div class="game-hud__progress" aria-live="polite">
+                    <span class="game-hud__label">Sorted</span>
+                    <strong id="htmlSortedCountValue" class="game-hud__progress-value">0/0</strong>
+                </div>
                 <button id="htmlUndoButton" class="game-hud__button" type="button" aria-label="Undo last move" disabled>
                     <span class="game-hud__button-icon" aria-hidden="true"></span>
                     <span class="game-hud__button-text">Undo</span>
                 </button>
             </div>
+            <div id="htmlQuickControls" class="quick-controls is-hidden">
+                <button id="htmlQuickFullscreen" class="quick-controls__button" type="button" aria-label="Toggle fullscreen">
+                    <span class="quick-controls__fullscreen-icon" aria-hidden="true"></span>
+                </button>
+            </div>
         </div>
     </div>
 
-    <script src="js/vendor/jquery.min.js?v=20260706-loader1"></script>
-    <script src="js/vendor/detectmobilebrowser.js?v=20260706-loader1"></script>
-    <script src="js/vendor/createjs.min.js?v=20260706-loader1"></script>
-    <script src="js/vendor/TweenMax.min.js?v=20260706-loader1"></script>
-    <script src="js/vendor/js.cookie.js?v=20260706-loader1"></script>
-    <script src="js/plugins.js?v=20260706-loader1"></script>
-    <script src="js/sound.js?v=20260706-loader1"></script>
-    <script src="js/lazy-assets.js?v=20260706-loader1"></script>
-    <script src="js/canvas.js?v=20260706-loader1"></script>
-    <script src="js/levels.js?v=20260706-loader1"></script>
-    <script src="js/game.js?v=20260706-loader1"></script>
-    <script src="js/mobile.js?v=20260706-loader1"></script>
-    <script src="js/main.js?v=20260706-loader1"></script>
-    <script src="js/loader.js?v=20260706-loader1"></script>
-    <script src="js/init.js?v=20260706-loader1"></script>
+    <script src="js/vendor/jquery.min.js?v=20260710-ux2"></script>
+    <script src="js/vendor/detectmobilebrowser.js?v=20260710-ux2"></script>
+    <script src="js/vendor/createjs.min.js?v=20260710-ux2"></script>
+    <script src="js/vendor/TweenMax.min.js?v=20260710-ux2"></script>
+    <script src="js/vendor/js.cookie.js?v=20260710-ux2"></script>
+    <script src="js/plugins.js?v=20260710-ux2"></script>
+    <script src="js/sound.js?v=20260710-ux2"></script>
+    <script src="js/lazy-assets.js?v=20260710-ux2"></script>
+    <script src="js/canvas.js?v=20260710-ux2"></script>
+    <script src="js/levels.js?v=20260710-ux2"></script>
+    <script src="js/game.js?v=20260710-ux2"></script>
+    <script src="js/mobile.js?v=20260710-ux2"></script>
+    <script src="js/main.js?v=20260710-ux2"></script>
+    <script src="js/loader.js?v=20260710-ux2"></script>
+    <script src="js/init.js?v=20260710-ux2"></script>
 </body>
 </html>

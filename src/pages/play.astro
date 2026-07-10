@@ -85,12 +85,13 @@ const gameIframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}`;
         <iframe src={gameIframeSrc} title="Play Magic Sort online" allow="autoplay; fullscreen *" allowfullscreen></iframe>
         <div class="play-float-controls">
           <button type="button" data-share-game aria-label="Share game">
-            <span>Share</span>
+            Share game
           </button>
           <button type="button" data-fullscreen-game aria-label="Fullscreen game">
-            <span>Fullscreen</span>
+            Fullscreen
           </button>
         </div>
+        <p class="play-share-feedback" data-share-feedback aria-live="polite"></p>
       </div>
 
       <div class="game-bento-grid game-bento-grid-side" aria-label="More online puzzle games">
@@ -227,6 +228,17 @@ const gameIframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}`;
       const iframe = shell?.querySelector("iframe");
       const fullscreen = document.querySelector("[data-fullscreen-game]");
       const share = document.querySelector("[data-share-game]");
+      const feedback = document.querySelector("[data-share-feedback]");
+      const isMobileShare = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      const setFeedback = (message) => {
+        if (!feedback) return;
+        feedback.textContent = message;
+        feedback.classList.add("is-visible");
+        window.clearTimeout(setFeedback.timer);
+        setFeedback.timer = window.setTimeout(() => feedback.classList.remove("is-visible"), 3200);
+      };
+
       fullscreen?.addEventListener("click", async () => {
         const active = document.fullscreenElement;
         if (active) {
@@ -236,11 +248,18 @@ const gameIframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}`;
         await (iframe?.requestFullscreen?.() ?? shell?.requestFullscreen?.());
       });
       share?.addEventListener("click", async () => {
-        const data = { title: "Magic Sort", text: "Play Magic Sort online.", url: location.href };
+        const url = new URL("/play/", location.origin).href;
+        const data = { title: "Magic Sort", text: "Can you beat my Magic Sort score?", url };
         try {
-          if (navigator.share) await navigator.share(data);
-          else await navigator.clipboard?.writeText(location.href);
-        } catch {}
+          if (isMobileShare && navigator.share) {
+            await navigator.share(data);
+            return;
+          }
+          await navigator.clipboard.writeText(url);
+          setFeedback("Link copied. Challenge a friend to beat your score.");
+        } catch {
+          setFeedback("Copy this link: " + url);
+        }
       });
     })();
   </script>

@@ -29,7 +29,7 @@ function initGameCanvas(w, h) {
 
 var guide = false;
 var canvasContainer, mainContainer, gameContainer, resultContainer, confirmContainer;
-var guideline, bg, logo, buttonOk, result, shadowResult, buttonReplay, buttonFacebook, buttonTwitter, buttonWhatsapp, buttonFullscreen, buttonSoundOn, buttonSoundOff;
+var guideline, bg, logo, buttonOk, result, shadowResult, buttonReplay, buttonFullscreen, buttonSoundOn, buttonSoundOff;
 var bgP, logoP, themeBackdrop, themeBackgroundBitmap, themeShade, themeGlowLeft, themeGlowRight, bgDecor, heroPanel, buttonPanel, titleUnderline, startButtonCard, levelsButtonCard, startButtonLabel, levelsButtonLabel, startButtonSub, levelsButtonSub, cozyTitleTxt, resultCard, confirmCard;
 
 $.tubes = {};
@@ -200,14 +200,6 @@ function buildGameCanvas() {
     buttonContinue = createActionButton('Continue', 'Keep sorting', 176, 70, '#F6EEFF', '#A855F7');
     buttonContinue.visible = false;
 
-    resultShareTxt = new createjs.Text();
-    resultShareTxt.font = "20px comicyregular";
-    resultShareTxt.color = '#735C9E';
-    resultShareTxt.textAlign = "center";
-    resultShareTxt.textBaseline = 'alphabetic';
-    resultShareTxt.text = textDisplay.share;
-    resultShareTxt.visible = false;
-
     resultTitleTxt = new createjs.Text();
     resultTitleTxt.font = "45px comicyregular";
     resultTitleTxt.color = '#34205C';
@@ -231,10 +223,6 @@ function buildGameCanvas() {
     resultDescTxt.text = '';
     resultDescTxt.visible = false;
 
-
-    buttonFacebook = createShareButton('f', '#F0E7FF', '#C084FC');
-    buttonTwitter = createShareButton('X', '#F0E7FF', '#C084FC');
-    buttonWhatsapp = createShareButton('WA', '#F0E7FF', '#C084FC');
 
     buttonFullscreen = createMiniButton('FULL', 64, 48, '#F6EEFF', '#C084FC');
     buttonSoundOn = createMiniButton('SFX', 64, 48, '#E7DDFF', '#9B8AC5');
@@ -295,10 +283,6 @@ function buildGameCanvas() {
 
     gameContainer.addChild(editContainer, levelDisplayContainer, timerContainer, statusContainer);
     resultContainer.addChild(resultCard, itemResult, itemResultP, buttonContinue, resultTitleTxt, resultDescTxt);
-
-    if (shareEnable) {
-        resultContainer.addChild(resultShareTxt, buttonFacebook, buttonTwitter, buttonWhatsapp);
-    }
 
     canvasContainer.addChild(themeBackdrop, themeBackgroundBitmap, themeShade, themeGlowLeft, themeGlowRight, bgDecor, bg, bgP, mainContainer, levelContainer, waterContainer, selectContainer, gameContainer, resultContainer, confirmContainer, optionsContainer, buttonSettings, guideline);
     stage.addChild(canvasContainer);
@@ -521,13 +505,6 @@ function createMiniButton(label, width, height, fillColor, accentColor) {
     return button;
 }
 
-function createShareButton(label, fillColor, accentColor) {
-    var button = createMiniButton(label, 62, 52, fillColor, accentColor);
-    button.label.font = label.length > 1 ? '16px comicyregular' : '24px comicyregular';
-    button.label.x = label.length > 1 ? 35 : 31;
-    return button;
-}
-
 function createLevelTile(unlocked) {
     var tile = new createjs.Container();
     var bg = new createjs.Shape();
@@ -641,18 +618,8 @@ function changeCanvasViewport() {
             itemResult.visible = false;
             itemResultP.visible = false;
 
-            buttonFacebook.x = canvasW / 100 * 45;
-            buttonFacebook.y = canvasH / 100 * 57;
-            buttonTwitter.x = canvasW / 2;
-            buttonTwitter.y = canvasH / 100 * 57;
-            buttonWhatsapp.x = canvasW / 100 * 55;
-            buttonWhatsapp.y = canvasH / 100 * 57;
-
             buttonContinue.x = canvasW / 2;
             buttonContinue.y = canvasH / 100 * 67;
-
-            resultShareTxt.x = canvasW / 2;
-            resultShareTxt.y = canvasH / 100 * 53;
 
             resultTitleTxt.x = canvasW / 2;
             resultTitleTxt.y = canvasH / 100 * 40;
@@ -707,18 +674,8 @@ function changeCanvasViewport() {
             itemResult.visible = false;
             itemResultP.visible = false;
 
-            buttonFacebook.x = canvasW / 100 * 40;
-            buttonFacebook.y = canvasH / 100 * 55;
-            buttonTwitter.x = canvasW / 2;
-            buttonTwitter.y = canvasH / 100 * 55;
-            buttonWhatsapp.x = canvasW / 100 * 60;
-            buttonWhatsapp.y = canvasH / 100 * 55;
-
             buttonContinue.x = canvasW / 2;
             buttonContinue.y = canvasH / 100 * 63;
-
-            resultShareTxt.x = canvasW / 2;
-            resultShareTxt.y = canvasH / 100 * 55;
 
             resultTitleTxt.x = canvasW / 2;
             resultTitleTxt.y = canvasH / 100 * 43;
