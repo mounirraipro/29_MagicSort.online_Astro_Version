@@ -2,7 +2,6 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { externalGames } from "@/data/externalGames";
 import { brandAccentClass } from "@/data/accentClasses";
-import { siteConfig } from "@/data/siteConfig";
 import { GAME_ASSET_VERSION } from "@/data/gameVersion";
 
 const playSteps = [
@@ -49,8 +48,8 @@ const gameIframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}`;
 ---
 
 <BaseLayout
-  title={`Play ${siteConfig.name} Online`}
-  description={`Play Magic Sort online for free. Use mouse or touch controls to sort liquid colors between tubes and bottles with no download or account.`}
+  title="Play Magic Sort Game Online Free - No Download"
+  description="Play Magic Sort game online free. Sort liquid colors with mouse or touch controls, Undo a move when needed, and play with no download or account."
   structuredData={[
     {
       "@context": "https://schema.org",
@@ -133,6 +132,7 @@ const gameIframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}`;
         <a href="/strategy/">Strategy</a>
         <a href="/difficulty-guide/">Difficulty</a>
         <a href="/game-mechanics/">Mechanics</a>
+        <a href="/magic-sort-help/">Help</a>
       </div>
     </div>
     <div class="play-tip-panel">

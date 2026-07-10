@@ -14,6 +14,13 @@
 	@www header_regexp host Host ^www\.(.+)$
 	redir @www https://{re.host.1}{uri} 308
 
+	# Serve one public URL for the core routes reported with slash and non-slash variants.
+	@missingTrailingSlash path /play /games /how-to-play /strategy /difficulty-guide /game-mechanics /blog /parents /faq /about /contact /accessibility /privacy-policy /cookie-policy /terms /disclaimer /sitemap /magic-sort-help
+	redir @missingTrailingSlash {http.request.uri.path}/ 308
+
+	@missingNestedTrailingSlash path_regexp missingNestedTrailingSlash ^/(blog|games)/([^/.]+)$
+	redir @missingNestedTrailingSlash /{re.missingNestedTrailingSlash.1}/{re.missingNestedTrailingSlash.2}/ 308
+
 	header {
 		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
 		Referrer-Policy "strict-origin-when-cross-origin"

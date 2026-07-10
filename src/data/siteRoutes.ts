@@ -12,6 +12,7 @@ export const siteRoutes: SiteRoute[] = [
   { path: "/strategy", title: "Strategy", group: "content" },
   { path: "/difficulty-guide", title: "Difficulty Guide", group: "content" },
   { path: "/game-mechanics", title: "Game Mechanics", group: "content" },
+  { path: "/magic-sort-help", title: "Magic Sort Help", group: "content" },
   { path: "/blog", title: "Blog", group: "content" },
   { path: "/parents", title: "Parents", group: "content" },
   { path: "/faq", title: "FAQ", group: "content" },

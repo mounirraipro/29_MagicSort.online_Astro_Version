@@ -17,7 +17,7 @@ const slugify = (value: string) =>
     .replace(/(^-|-$)/g, "");
 
 const extraStructuredData =
-  pageKey === "faq"
+  page.schemaType === "FAQPage"
     ? [
         {
           "@context": "https://schema.org",
@@ -105,6 +105,10 @@ const splitContactEmail = (value: string) =>
         <p>Quick Links</p>
         <nav>
           {page.sections.map((section: ContentSection) => <a class={quickLinkClass} href={`#${slugify(section.heading)}`}>{section.heading}</a>)}
+          <a class={quickLinkClass} href="/play/">Play Magic Sort</a>
+          <a class={quickLinkClass} href="/how-to-play/">How To Play</a>
+          <a class={quickLinkClass} href="/strategy/">Strategy Guide</a>
+          <a class={quickLinkClass} href="/magic-sort-help/">Magic Sort Help</a>
           <a class={quickLinkClass} href="/faq/">FAQ</a>
           <a class={quickLinkClass} href="/contact/">Contact</a>
         </nav>

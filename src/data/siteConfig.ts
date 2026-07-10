@@ -2,7 +2,7 @@ export const siteConfig = {
   name: "Magic Sort",
   tagline: "Sort colors, protect empty bottles, and finish each bright liquid puzzle.",
   description:
-    "Play Magic Sort online for free. Sort liquid colors between tubes and bottles in a relaxing browser puzzle with simple controls, no download, and no account.",
+    "Play Magic Sort game online free. Sort liquid colors between bottles, use Undo, and solve 30 browser levels with no download or account.",
   gameGenre: "bottle sorting puzzle game",
   audience: "puzzle players, families, students, adults, and casual brain-game fans",
   contactEmail: "contact@magicsort.online",

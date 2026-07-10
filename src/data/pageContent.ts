@@ -255,8 +255,8 @@ export const pageContent = {
   },
   "how-to-play": {
     title: "How to Play Magic Sort",
-    seoTitle: `How to Play Magic Sort - Complete Bottle Sorting Guide`,
-    description: `Learn how to play ${gameName} step by step, from basic bottle-pouring rules to strategy, planning, and common mistakes.`,
+    seoTitle: `How to Play Magic Sort: Rules, Controls, and Tips`,
+    description: `Learn Magic Sort rules, valid pours, mouse and touch controls, Undo, and simple strategy tips for avoiding stuck boards.`,
     keywords: ["how to play Magic Sort", "Magic Sort guide", "liquid sorting strategy guide", "bottle sort instructions"],
     schemaType: "HowTo",
     intro: "A full beginner-friendly guide to Magic Sort rules, controls, strategy, and common mistakes.",
@@ -289,6 +289,41 @@ export const pageContent = {
           "Avoid burying a color that has no matching destination.",
           "Restart early when every path feels blocked.",
         ],
+      },
+    ],
+  },
+  "magic-sort-help": {
+    title: "Magic Sort Help",
+    seoTitle: `Magic Sort Help: Failed Pours, Undo, and Stuck Boards`,
+    description: `Get Magic Sort help for failed pours, Undo, stuck boards, free browser play, and no-download access on desktop or mobile.`,
+    keywords: ["Magic Sort help", "why can't I pour in Magic Sort", "Magic Sort undo", "Magic Sort stuck", "is Magic Sort free", "Magic Sort no download"],
+    schemaType: "FAQPage",
+    updated: "July 10, 2026",
+    intro: "Practical help for the browser version of Magic Sort, from a blocked pour to a board that no longer has a clean route.",
+    sections: [
+      {
+        heading: "Why can't I pour in Magic Sort?",
+        body: "A pour only works when the target bottle has room and is either empty or already shows the same color on top. Check both the target's top layer and its remaining space before choosing a different move.",
+      },
+      {
+        heading: "How does Undo work?",
+        body: "Undo restores the most recent completed pour. Use it to test a route, then step back when the move hides a useful color or spends the empty bottle you still need. Undo is available during an active level, but not while liquid is pouring or after a level is complete.",
+      },
+      {
+        heading: "What should I do when I am stuck?",
+        body: "Pause before making another legal move. Look for a way to recover one empty bottle, then check which buried color becomes useful after that. Restarting is often the cleanest choice when every available pour makes the board tighter.",
+      },
+      {
+        heading: "Is Magic Sort free and does it need a download?",
+        body: "Yes. Magic Sort is free to play in a browser with no account, app install, or download. Open the game page, let the initial assets load, and start a level with a mouse or touch screen.",
+      },
+      {
+        heading: "Does Magic Sort work on mobile?",
+        body: "Yes. On phones and tablets, tap the source bottle and then tap the target bottle. The same pour rules apply on mobile and desktop, so the best strategy is still to protect empty space and read the next exposed layer.",
+      },
+      {
+        heading: "Where can I learn the rules and strategy?",
+        body: "Start with the How to Play guide for the basic rules, then use the Strategy Guide when you want cleaner routes and fewer restarts. The current browser version contains 30 levels with more crowded layouts later in the run.",
       },
     ],
   },

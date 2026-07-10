@@ -30,6 +30,7 @@ const contentPagePaths: Record<PageKey, string> = {
   strategy: "/strategy",
   "difficulty-guide": "/difficulty-guide",
   "game-mechanics": "/game-mechanics",
+  "magic-sort-help": "/magic-sort-help",
   "privacy-policy": "/privacy-policy",
   terms: "/terms",
 };
@@ -57,15 +58,15 @@ const routeFallbackSeo = (route: SiteRoute): SeoPage => ({
 const pageOverrides: Partial<Record<string, Partial<SeoPage>>> = {
   "/": {
     title: siteConfig.name,
-    seoTitle: `Magic Sort - Play Free Color Sorting Puzzle Online`,
+    seoTitle: `Magic Sort Game Online - Play Free Color Sorting Puzzle`,
     description: siteConfig.description,
     keywords: ["Magic Sort", "Magic Sort online", "Magic Sort game", "play Magic Sort online", "free Magic Sort", "Magic Sort controls", "Magic Sort tubes", "Magic Sort unblocked"],
     priority: 1,
     changeFrequency: "weekly",
   },
   "/play": {
-    seoTitle: `Play Magic Sort Online - Free Browser Color Sort Game`,
-    description: `Play Magic Sort online for free. Use mouse or touch controls to pour liquid colors between tubes and bottles with no download or account.`,
+    seoTitle: `Play Magic Sort Game Online Free - No Download`,
+    description: `Play Magic Sort game online free. Sort liquid colors with mouse or touch controls, Undo a move when needed, and play with no download or account.`,
     keywords: ["play Magic Sort", "play Magic Sort online", "Magic Sort free", "Magic Sort browser game", "Magic Sort controls", "Magic Sort unblocked", "Magic Sort tubes"],
     priority: 0.9,
     changeFrequency: "weekly",
