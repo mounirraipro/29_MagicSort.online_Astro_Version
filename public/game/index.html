@@ -9,9 +9,9 @@
     <meta name="keywords" content="magic sort, pastel puzzle, color sorting, tube puzzle, cozy game, browser puzzle">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <link rel="shortcut icon" href="assets/icon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/normalize.css?v=20260710-ux2">
-    <link rel="stylesheet" href="css/main.css?v=20260710-ux2">
-    <script src="js/vendor/modernizr-2.6.2.min.js?v=20260710-ux2"></script>
+    <link rel="stylesheet" href="css/normalize.css?v=20260710-gameplay1">
+    <link rel="stylesheet" href="css/main.css?v=20260710-gameplay1">
+    <script src="js/vendor/modernizr-2.6.2.min.js?v=20260710-gameplay1"></script>
     <script>
     if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
         var msViewportStyle = document.createElement("style");
@@ -35,6 +35,10 @@
                     <h1 class="menu-ui__title">Magic Sort</h1>
                     <div class="menu-ui__actions">
                         <button id="htmlStartButton" class="menu-ui__button" type="button">Start</button>
+                        <button id="htmlDailyButton" class="menu-ui__button menu-ui__button--daily" type="button">
+                            <span>Daily Challenge</span>
+                            <small id="htmlDailyLabel">Today's puzzle</small>
+                        </button>
                         <button id="htmlLevelsButton" class="menu-ui__button menu-ui__button--alt" type="button">Levels</button>
                     </div>
                 </div>
@@ -69,6 +73,7 @@
                     <div id="htmlResultMessage" class="overlay-card__message">Perfect Sort</div>
                     <div id="htmlResultScore" class="overlay-card__score">0 PTS</div>
                     <div id="htmlResultMeta" class="overlay-card__meta">Stage 1 | Moves 0</div>
+                    <div id="htmlResultBest" class="overlay-card__best">Best: 0 moves</div>
                     <div class="overlay-card__footer">
                         <button id="htmlResultContinue" class="chip-button chip-button--primary" type="button">Continue</button>
                     </div>
@@ -106,6 +111,19 @@
                     <span class="game-hud__button-text">Undo</span>
                 </button>
             </div>
+            <div id="htmlGameAssists" class="game-assists is-hidden">
+                <div id="htmlAssistMessage" class="game-assists__message is-hidden" role="status" aria-live="polite"></div>
+                <div class="game-assists__actions">
+                    <button id="htmlHintButton" class="game-assists__button" type="button">
+                        <span class="game-assists__icon game-assists__icon--hint" aria-hidden="true">?</span>
+                        <span>Hint</span>
+                    </button>
+                    <button id="htmlRestartButton" class="game-assists__button" type="button">
+                        <span class="game-assists__icon game-assists__icon--restart" aria-hidden="true"></span>
+                        <span>Restart</span>
+                    </button>
+                </div>
+            </div>
             <div id="htmlQuickControls" class="quick-controls is-hidden">
                 <button id="htmlQuickFullscreen" class="quick-controls__button" type="button" aria-label="Toggle fullscreen">
                     <span class="quick-controls__fullscreen-icon" aria-hidden="true"></span>
@@ -114,20 +132,23 @@
         </div>
     </div>
 
-    <script src="js/vendor/jquery.min.js?v=20260710-ux2"></script>
-    <script src="js/vendor/detectmobilebrowser.js?v=20260710-ux2"></script>
-    <script src="js/vendor/createjs.min.js?v=20260710-ux2"></script>
-    <script src="js/vendor/TweenMax.min.js?v=20260710-ux2"></script>
-    <script src="js/vendor/js.cookie.js?v=20260710-ux2"></script>
-    <script src="js/plugins.js?v=20260710-ux2"></script>
-    <script src="js/sound.js?v=20260710-ux2"></script>
-    <script src="js/lazy-assets.js?v=20260710-ux2"></script>
-    <script src="js/canvas.js?v=20260710-ux2"></script>
-    <script src="js/levels.js?v=20260710-ux2"></script>
-    <script src="js/game.js?v=20260710-ux2"></script>
-    <script src="js/mobile.js?v=20260710-ux2"></script>
-    <script src="js/main.js?v=20260710-ux2"></script>
-    <script src="js/loader.js?v=20260710-ux2"></script>
-    <script src="js/init.js?v=20260710-ux2"></script>
+    <script src="js/vendor/jquery.min.js?v=20260710-gameplay1"></script>
+    <script src="js/vendor/detectmobilebrowser.js?v=20260710-gameplay1"></script>
+    <script src="js/vendor/createjs.min.js?v=20260710-gameplay1"></script>
+    <script src="js/vendor/TweenMax.min.js?v=20260710-gameplay1"></script>
+    <script src="js/vendor/js.cookie.js?v=20260710-gameplay1"></script>
+    <script src="js/plugins.js?v=20260710-gameplay1"></script>
+    <script src="js/sound.js?v=20260710-gameplay1"></script>
+    <script src="js/lazy-assets.js?v=20260710-gameplay1"></script>
+    <script src="js/canvas.js?v=20260710-gameplay1"></script>
+    <script src="js/levels.js?v=20260710-gameplay1"></script>
+    <script src="js/daily-challenge.js?v=20260710-gameplay1"></script>
+    <script src="js/player-progress.js?v=20260710-gameplay1"></script>
+    <script src="js/gameplay-assists.js?v=20260710-gameplay1"></script>
+    <script src="js/game.js?v=20260710-gameplay1"></script>
+    <script src="js/mobile.js?v=20260710-gameplay1"></script>
+    <script src="js/main.js?v=20260710-gameplay1"></script>
+    <script src="js/loader.js?v=20260710-gameplay1"></script>
+    <script src="js/init.js?v=20260710-gameplay1"></script>
 </body>
 </html>

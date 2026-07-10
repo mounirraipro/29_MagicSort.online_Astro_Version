@@ -550,11 +550,13 @@ var gameData = {
 var gameplayPolishData = {
     moveCount: 0,
     undoCount: 0,
+    hintCount: 0,
     undoStack: [],
     pendingMove: null,
     stars: 3,
     completedTubes: 0,
-    complete: false
+    complete: false,
+    bestResult: null
 };
 var tweenData = {
     score: 0,
@@ -605,11 +607,17 @@ function saveLevelData() {
 function resetGameplayPolish() {
     gameplayPolishData.moveCount = 0;
     gameplayPolishData.undoCount = 0;
+    gameplayPolishData.hintCount = 0;
     gameplayPolishData.undoStack = [];
     gameplayPolishData.pendingMove = null;
     gameplayPolishData.stars = 3;
     gameplayPolishData.completedTubes = 0;
     gameplayPolishData.complete = false;
+    gameplayPolishData.bestResult = null;
+    clearAssistMessage();
+    if (typeof GameplayAssists != 'undefined') {
+        GameplayAssists.clearRestartConfirmation();
+    }
     updateGameplayPolishUI();
 }
 
@@ -655,6 +663,7 @@ function commitPendingMoveSnapshot() {
     gameplayPolishData.pendingMove = null;
     gameplayPolishData.moveCount++;
     updateCompletedTubeCount();
+    clearAssistMessage();
     updateGameplayPolishUI();
 }
 
@@ -729,8 +738,21 @@ function canUndoMove() {
         !gameData.paused &&
         gameData.action &&
         !gameData.filling &&
+        !isPourInProgress() &&
         !gameplayPolishData.complete &&
         gameplayPolishData.undoStack.length > 0;
+}
+
+function isPourInProgress() {
+    if (!gameData.pouring) {
+        return false;
+    }
+    for (var index = 0; index < gameData.pouring.length; index++) {
+        if (gameData.pouring[index].filling) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function getStageTargetTubeCount() {
@@ -765,7 +787,7 @@ function calculateStageStars() {
     var targetTubes = getStageTargetTubeCount();
     var colorLayers = Math.max(1, stageSettings.levels);
     var parMoves = Math.max(4, targetTubes * Math.max(2, colorLayers - 1));
-    var adjustedMoves = gameplayPolishData.moveCount + (gameplayPolishData.undoCount * 2);
+    var adjustedMoves = gameplayPolishData.moveCount + (gameplayPolishData.undoCount * 2) + (gameplayPolishData.hintCount * 2);
 
     if (adjustedMoves <= Math.ceil(parMoves * 1.2)) {
         return 3;
@@ -802,7 +824,28 @@ function completeGameplayPolish() {
     gameplayPolishData.pendingMove = null;
     updateCompletedTubeCount();
     gameplayPolishData.stars = calculateStageStars();
+    gameplayPolishData.bestResult = recordGameplayBest();
     updateGameplayPolishUI();
+}
+
+function recordGameplayBest() {
+    if (typeof PlayerProgress == 'undefined' || (gameData.type != 'level' && gameData.type != 'daily')) {
+        return null;
+    }
+
+    var identifier = gameData.levelNum + 1;
+    if (gameData.type == 'daily') {
+        identifier = DailyChallenge.getDescriptor().dateKey;
+    }
+
+    return PlayerProgress.recordBest({
+        mode: gameData.type,
+        identifier: identifier,
+        stars: gameplayPolishData.stars,
+        moves: gameplayPolishData.moveCount,
+        undos: gameplayPolishData.undoCount,
+        hints: gameplayPolishData.hintCount
+    });
 }
 
 function updateGameplayPolishUI() {
@@ -820,6 +863,125 @@ function updateGameplayPolishUI() {
     $('#htmlUndoButton')
         .prop('disabled', !canUndo)
         .attr('aria-label', canUndo ? 'Undo last move' : 'No move to undo');
+    $('#htmlHintButton').prop('disabled', !canUseGameplayAssist());
+    $('#htmlRestartButton').prop('disabled', !canUseGameplayAssist());
+}
+
+function canUseGameplayAssist() {
+    return curPage == 'game' &&
+        !gameData.paused &&
+        gameData.action &&
+        !gameData.filling &&
+        !isPourInProgress() &&
+        !gameplayPolishData.complete;
+}
+
+function getGameplayAssistTubes() {
+    var tubes = [];
+    for (var index = 0; index < gameData.tubes.length; index++) {
+        tubes.push({
+            index: index,
+            fill: gameData.tubes[index].data.fill,
+            colors: getTubeColorSnapshot(gameData.tubes[index])
+        });
+    }
+    return tubes;
+}
+
+function cancelSelectedTube() {
+    for (var index = 0; index < gameData.pouring.length; index++) {
+        if (gameData.pouring[index].from && !gameData.pouring[index].to) {
+            focusTube(gameData.pouring[index].from, false);
+        }
+    }
+    gameData.pouring = [];
+}
+
+function showAssistMessage(message) {
+    $('#htmlAssistMessage')
+        .text(message)
+        .toggleClass('is-hidden', !message);
+}
+
+function clearAssistMessage() {
+    showAssistMessage('');
+}
+
+function highlightHintMove(hint) {
+    var fromTube = gameData.tubes[hint.from];
+    var toTube = gameData.tubes[hint.to];
+    TweenMax.to(fromTube, .18, {
+        alpha: .55,
+        repeat: 3,
+        yoyo: true,
+        overwrite: false,
+        onComplete: function() {
+            fromTube.alpha = 1;
+        }
+    });
+    TweenMax.to(toTube, .18, {
+        delay: .09,
+        alpha: .55,
+        repeat: 3,
+        yoyo: true,
+        overwrite: false,
+        onComplete: function() {
+            toTube.alpha = 1;
+        }
+    });
+}
+
+function requestGameplayHint() {
+    if (!canUseGameplayAssist() || typeof GameplayAssists == 'undefined') {
+        playSound('soundError');
+        return;
+    }
+
+    cancelSelectedTube();
+    var hint = GameplayAssists.findHint(getGameplayAssistTubes(), gameData.tube.fillH);
+    if (!hint) {
+        showAssistMessage('No useful move is available. Try restarting this puzzle.');
+        playSound('soundError');
+        return;
+    }
+
+    gameplayPolishData.hintCount++;
+    showAssistMessage(hint.message);
+    highlightHintMove(hint);
+    playSound('soundButton');
+}
+
+function requestStageRestart() {
+    if (!canUseGameplayAssist() || typeof GameplayAssists == 'undefined') {
+        playSound('soundError');
+        return;
+    }
+
+    var restart = GameplayAssists.requestRestart(gameplayPolishData.moveCount > 0);
+    if (!restart.confirmed) {
+        showAssistMessage(restart.message);
+        playSound('soundButton');
+        return;
+    }
+
+    gameData.action = false;
+    toggleGameTimer(false);
+    toggleGameSessionTimer(false);
+    clearAssistMessage();
+    playSound('soundButton');
+    setupStage();
+}
+
+function startDailyChallenge() {
+    if (typeof DailyChallenge == 'undefined') {
+        return;
+    }
+
+    var daily = DailyChallenge.activate(levelSettings.length);
+    gameData.type = 'daily';
+    gameData.levelNum = daily.levelIndex;
+    playSound('soundButton');
+    goPage('select');
 }
 
 /*! 
@@ -855,6 +1017,7 @@ function buildGameButton() {
     });
     buttonStart.cursor = "pointer";
     buttonStart.addEventListener("click", function(evt) {
+        DailyChallenge.deactivate();
         gameData.type = "challenge";
         playSound('soundButton');
         goPage('select');
@@ -862,6 +1025,7 @@ function buildGameButton() {
 
     buttonLevels.cursor = "pointer";
     buttonLevels.addEventListener("click", function(evt) {
+        DailyChallenge.deactivate();
         gameData.type = "level";
         playSound('soundButton');
         goPage('level');
@@ -989,15 +1153,21 @@ function initHTMLInterface() {
     window.htmlInterfaceReady = true;
 
     $('#htmlStartButton').on('click', function() {
+        DailyChallenge.deactivate();
         gameData.type = 'challenge';
         playSound('soundButton');
         goPage('select');
     });
 
     $('#htmlLevelsButton').on('click', function() {
+        DailyChallenge.deactivate();
         gameData.type = 'level';
         playSound('soundButton');
         goPage('level');
+    });
+
+    $('#htmlDailyButton').on('click', function() {
+        startDailyChallenge();
     });
 
     $('#htmlQuickFullscreen').on('click', function() {
@@ -1077,6 +1247,14 @@ function initHTMLInterface() {
     $('#htmlUndoButton').on('click', function() {
         undoLastMove();
     });
+
+    $('#htmlHintButton').on('click', function() {
+        requestGameplayHint();
+    });
+
+    $('#htmlRestartButton').on('click', function() {
+        requestStageRestart();
+    });
 }
 
 function updateHTMLInterface() {
@@ -1093,6 +1271,7 @@ function updateHTMLInterface() {
     $('#htmlTubeMenu').toggleClass('is-hidden', !showTubeMenu);
     $('#htmlResultMenu').toggleClass('is-hidden', !showResultMenu);
     $('#htmlGameHud').toggleClass('is-hidden', !showGameHud);
+    $('#htmlGameAssists').toggleClass('is-hidden', !showGameHud);
     $('#htmlSettingsMenu').toggleClass('is-hidden', !showSettings);
     $('#htmlQuickControls').toggleClass('is-hidden', !showQuickControls);
 
@@ -1101,6 +1280,7 @@ function updateHTMLInterface() {
     }
 
     updateHTMLLevels();
+    updateHTMLDailyChallenge();
     updateHTMLTubeMenu();
     updateHTMLResult();
     updateHTMLConfirm();
@@ -1125,7 +1305,9 @@ function updateHTMLLevels() {
             break;
         }
         var unlocked = levelNum <= gameData.levelCompleted;
-        html += '<button class="level-grid__button' + (unlocked ? '' : ' is-locked') + '" type="button" data-level="' + levelNum + '"' + (unlocked ? '' : ' disabled') + '>' + levelNum + '</button>';
+        var best = typeof PlayerProgress == 'undefined' ? null : PlayerProgress.getLevelBest(levelNum);
+        var bestText = best ? '<small>' + best.stars + '&#9733; &middot; ' + best.moves + '</small>' : '';
+        html += '<button class="level-grid__button' + (unlocked ? '' : ' is-locked') + '" type="button" data-level="' + levelNum + '"' + (unlocked ? '' : ' disabled') + '><span>' + levelNum + '</span>' + bestText + '</button>';
     }
     $('#htmlLevelGrid').html(html);
 
@@ -1136,24 +1318,56 @@ function updateHTMLLevels() {
     });
 }
 
+function updateHTMLDailyChallenge() {
+    if ($('#htmlDailyLabel').length == 0 || typeof DailyChallenge == 'undefined') {
+        return;
+    }
+
+    var dateKey = DailyChallenge.getDateKey();
+    var wasActive = DailyChallenge.isActive();
+    var daily = wasActive ? DailyChallenge.getDescriptor() : DailyChallenge.activate(levelSettings.length);
+    var best = typeof PlayerProgress == 'undefined' ? null : PlayerProgress.getDailyBest(dateKey);
+    if (!wasActive) {
+        DailyChallenge.deactivate();
+    }
+    $('#htmlDailyLabel').text(daily.dateLabel + (best ? ' | Best ' + best.moves + ' moves' : ' | New puzzle'));
+}
+
 function updateHTMLTubeMenu() {
-    $('#htmlTubePlay').text('Play ' + (gameData.levelNum + 1));
+    $('#htmlTubePlay').text(gameData.type == 'daily' ? 'Play Daily' : 'Play ' + (gameData.levelNum + 1));
 }
 
 function updateHTMLResult() {
-    $('#htmlResultTitle').text(gameData.type == 'level' ? textDisplay.resultLevelTitle.replace('[NUMBER]', gameData.challengeNum) : textDisplay.resultTitle);
+    var resultTitle = textDisplay.resultTitle;
+    if (gameData.type == 'level') {
+        resultTitle = textDisplay.resultLevelTitle.replace('[NUMBER]', gameData.challengeNum);
+    } else if (gameData.type == 'daily') {
+        resultTitle = 'Daily Challenge Complete';
+    }
+    $('#htmlResultTitle').text(resultTitle);
     $('#htmlResultStars').text(getStarText(gameplayPolishData.complete ? gameplayPolishData.stars : 0));
     $('#htmlResultMessage').text(getResultPolishMessage());
     $('#htmlResultScore').text(textDisplay.resultDesc.replace('[NUMBER]', addCommas(Math.floor(tweenData.tweenScore || playerData.score))));
     $('#htmlResultMeta').text(getResultMetaText());
+    var bestResult = gameplayPolishData.bestResult;
+    $('#htmlResultBest')
+        .toggleClass('is-hidden', !bestResult || !bestResult.best)
+        .text(bestResult && bestResult.best ? (bestResult.isNewBest ? 'New best: ' : 'Best: ') + bestResult.best.moves + ' moves' : '');
 }
 
 function getResultMetaText() {
-    var mode = gameData.type == 'level' ? 'Stage' : 'Challenge';
-    var meta = mode + ' ' + gameData.challengeNum + ' | Moves ' + gameplayPolishData.moveCount;
+    var mode = gameData.type == 'level' ? 'Stage ' + gameData.challengeNum : 'Challenge ' + gameData.challengeNum;
+    if (gameData.type == 'daily') {
+        mode = DailyChallenge.getDescriptor().dateLabel;
+    }
+    var meta = mode + ' | Moves ' + gameplayPolishData.moveCount;
 
     if (gameplayPolishData.undoCount > 0) {
         meta += ' | Undos ' + gameplayPolishData.undoCount;
+    }
+
+    if (gameplayPolishData.hintCount > 0) {
+        meta += ' | Hints ' + gameplayPolishData.hintCount;
     }
 
     return meta;
@@ -1419,6 +1633,11 @@ function startGame() {
 
     if (gameData.type == "challenge") {
         gameData.levelNum = 0;
+    } else if (gameData.type == 'daily') {
+        gameData.levelNum = DailyChallenge.getDescriptor().levelIndex;
+        gameData.colorsArr.sort(function(a, b) {
+            return a - b;
+        });
     }
     gameData.challengeNum = gameData.levelNum + 1;
 
@@ -1659,6 +1878,13 @@ function prepareStage() {
 function setupStage() {
     prepareStage();
 
+    if (gameData.type == 'daily') {
+        gameData.colorsArr.sort(function(a, b) {
+            return a - b;
+        });
+        DailyChallenge.beginStage();
+    }
+
     /*createTube(-50, 50);
     createTube(50, 50);
     createTube(150, 50);
@@ -1720,7 +1946,7 @@ function fillAllTubes() {
     for (var n = 0; n < gameData.tubes.length; n++) {
         tubeArr.push(n);
     }
-    shuffle(tubeArr);
+    shuffleStageData(tubeArr);
     for (var n = 0; n < totalEmpty; n++) {
         emptyTubesArr.push(tubeArr[n]);
     }
@@ -1735,7 +1961,7 @@ function fillAllTubes() {
 
     //store colors
     gameData.colorIndex = 0;
-    shuffle(gameData.colorsArr);
+    shuffleStageData(gameData.colorsArr);
     for (var n = 0; n < tubeArr.length; n++) {
         var colorIndex = getTubeColor();
         for (var l = 0; l < levelSettings[gameData.levelNum].levels; l++) {
@@ -1748,8 +1974,8 @@ function fillAllTubes() {
     }
 
     //insert store colors to tubes
-    shuffle(storeColorArr);
-    shuffle(tubeArr);
+    shuffleStageData(storeColorArr);
+    shuffleStageData(tubeArr);
 
     var tubeIndex = 0;
     for (var n = 0; n < storeColorArr.length; n++) {
@@ -1766,7 +1992,7 @@ function fillAllTubes() {
         tubeIndex++;
         if (tubeIndex > tubeArr.length - 1) {
             tubeIndex = 0;
-            shuffle(tubeArr);
+            shuffleStageData(tubeArr);
         }
     }
 
@@ -1780,8 +2006,20 @@ function fillAllTubes() {
     }
 
     if (checkLiquidComplete(false)) {
+        if (gameData.type == 'daily') {
+            DailyChallenge.retryGeneration();
+        }
         setupStage();
+    } else if (gameData.type == 'daily') {
+        DailyChallenge.confirmGeneration();
     };
+}
+
+function shuffleStageData(array) {
+    if (gameData.type == 'daily' && typeof DailyChallenge != 'undefined' && DailyChallenge.isActive()) {
+        return DailyChallenge.shuffle(array);
+    }
+    return shuffle(array);
 }
 
 function getTubeColor() {
@@ -1789,7 +2027,7 @@ function getTubeColor() {
     gameData.colorIndex++;
     if (gameData.colorIndex > gameData.colorsArr.length - 1) {
         gameData.colorIndex = 0;
-        shuffle(gameData.colorsArr);
+        shuffleStageData(gameData.colorsArr);
     }
 
     return colourIndex;
@@ -2084,6 +2322,7 @@ function moveTube(pourIndex) {
     thisFillLiquid.data.active = false;
 
     gameData.pouring[pourIndex].filling = true;
+    updateGameplayPolishUI();
 
     thisLiquid.data.direction = thisLiquid.x > thisFillLiquid.x ? "right" : "left";
     updateTubeData(thisLiquid);
@@ -2629,17 +2868,19 @@ function calculateScore() {
                     TweenMax.to(timerContainer, tweenSpeed, {
                         overwrite: true,
                         onComplete: function() {
-                            gameData.revealLevel = false;
-                            gameData.levelNum++;
-                            if (gameData.levelNum >= gameData.levelCompleted && gameData.levelNum < levelSettings.length) {
-                                gameData.revealLevel = true;
+                            if (gameData.type != 'daily') {
+                                gameData.revealLevel = false;
+                                gameData.levelNum++;
+                                if (gameData.levelNum >= gameData.levelCompleted && gameData.levelNum < levelSettings.length) {
+                                    gameData.revealLevel = true;
+                                }
+                                var nextLevel = gameData.levelNum + 1;
+                                nextLevel = nextLevel > levelSettings.length ? levelSettings.length : nextLevel;
+                                findSelectPage(nextLevel);
+                                saveLevelData();
                             }
-                            var nextLevel = gameData.levelNum + 1;
-                            nextLevel = nextLevel > levelSettings.length ? levelSettings.length : nextLevel;
-                            findSelectPage(nextLevel);
-                            saveLevelData();
 
-                            if (gameData.type == "level") {
+                            if (gameData.type == "level" || gameData.type == 'daily') {
                                 endGame();
                             } else {
                                 gameData.levelNum--;
@@ -2667,7 +2908,7 @@ function proceedNextStage() {
  * 
  */
 function updateGameLevel() {
-    levelTxt.text = textDisplay.level.replace("[NUMBER]", gameData.challengeNum);
+    levelTxt.text = gameData.type == 'daily' ? 'DAILY' : textDisplay.level.replace("[NUMBER]", gameData.challengeNum);
 }
 
 function showGameStatus(con) {
