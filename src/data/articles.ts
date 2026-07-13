@@ -1,4 +1,5 @@
 import { longArticles } from "./longArticles";
+import { questionArticles } from "./questionArticles";
 
 export type Article = {
   slug: string;
@@ -13,6 +14,7 @@ export type Article = {
 };
 
 export const articles = [
+  ...questionArticles,
   ...longArticles,
   {
     slug: "magic-sort-beginner-guide",
