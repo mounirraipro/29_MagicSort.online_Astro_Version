@@ -17,6 +17,13 @@ var pendingMusicLoop = null;
 
 function playSound(soundName, vol) {
     if (soundOn) {
+        if (typeof isLazySoundReady == 'function' && !isLazySoundReady(soundName)) {
+            if (typeof activateLazyAudioLoad == 'function') {
+                activateLazyAudioLoad();
+            }
+            return;
+        }
+
         var thisSoundID = soundID;
         soundPushArr.push(thisSoundID);
         soundID++;
@@ -86,8 +93,10 @@ function playMusicLoop(soundName) {
         if (typeof isLazySoundReady == 'function' && !isLazySoundReady(soundName)) {
             pendingMusicLoop = soundName;
 
-            if (typeof loadLazyMusic == 'function') {
+            if (typeof lazyAudioActivated != 'undefined' && lazyAudioActivated && typeof loadLazyMusic == 'function') {
                 loadLazyMusic(resumePendingMusicLoop);
+            } else if (typeof armLazyAudioLoad == 'function') {
+                armLazyAudioLoad();
             }
             return;
         }

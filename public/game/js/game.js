@@ -431,56 +431,6 @@ var bubbles_arr = [
     "assets/bubble_05.png",
 ];
 
-var colors_arr = [{
-        fill: "#7C3AED",
-        surface: "#B8A6FF"
-    },
-    {
-        fill: "#C79BD3",
-        surface: "#DCBCE5"
-    },
-    {
-        fill: "#E88B7A",
-        surface: "#F1B1A5"
-    },
-    {
-        fill: "#E6B65C",
-        surface: "#F1D08E"
-    },
-    {
-        fill: "#7BA9E8",
-        surface: "#A6C5F0"
-    },
-    {
-        fill: "#74C9D4",
-        surface: "#9EDCE4"
-    },
-    {
-        fill: "#F97316",
-        surface: "#FDBA74"
-    },
-    {
-        fill: "#E1A0B8",
-        surface: "#EDBDD0"
-    },
-    {
-        fill: "#C8C2BA",
-        surface: "#DDD8D1"
-    },
-    {
-        fill: "#8D8278",
-        surface: "#B2A79D"
-    },
-    {
-        fill: "#D9C56B",
-        surface: "#E8D894"
-    },
-    {
-        fill: "#D6A6C8",
-        surface: "#E7C5DD"
-    },
-];
-
 //game settings
 var gameSettings = {
     timer: {
@@ -704,6 +654,7 @@ function restoreGameplaySnapshot(snapshot) {
                 shape: null,
                 surface: null,
                 bottom: null,
+                symbol: null,
                 index: tubeSnapshot.colors[c].index,
                 height: tubeSnapshot.colors[c].height
             });
@@ -865,6 +816,8 @@ function updateGameplayPolishUI() {
         .attr('aria-label', canUndo ? 'Undo last move' : 'No move to undo');
     $('#htmlHintButton').prop('disabled', !canUseGameplayAssist());
     $('#htmlRestartButton').prop('disabled', !canUseGameplayAssist());
+    $('#htmlSymbolsButton').prop('disabled', isPourInProgress());
+    updatePuzzleAccessibilityDescription();
 }
 
 function canUseGameplayAssist() {
@@ -1101,11 +1054,6 @@ function buildGameButton() {
         });
     }
 
-    buttonFullscreen.cursor = "pointer";
-    buttonFullscreen.addEventListener("click", function(evt) {
-        toggleFullScreen();
-    });
-
     buttonExit.cursor = "pointer";
     buttonExit.addEventListener("click", function(evt) {
         togglePop(true);
@@ -1168,11 +1116,6 @@ function initHTMLInterface() {
 
     $('#htmlDailyButton').on('click', function() {
         startDailyChallenge();
-    });
-
-    $('#htmlQuickFullscreen').on('click', function() {
-        playSound('soundButton');
-        toggleFullScreen();
     });
 
     $('#htmlLevelPrev').on('click', function() {
@@ -1239,6 +1182,10 @@ function initHTMLInterface() {
         toggleMusicMute(!buttonMusicOn.visible);
     });
 
+    $('#htmlSymbolsButton').on('click', function() {
+        toggleLiquidSymbols();
+    });
+
     $('#htmlQuitButton').on('click', function() {
         togglePop(true);
         toggleOption();
@@ -1264,7 +1211,6 @@ function updateHTMLInterface() {
     var showResultMenu = curPage === 'result' && !$.editor.enable;
     var showGameHud = curPage === 'game' && !$.editor.enable;
     var showSettings = !$.editor.enable && (curPage === 'game' || curPage === 'select' || curPage === 'level');
-    var showQuickControls = !$.editor.enable && (curPage === 'main' || curPage === 'game' || curPage === 'select' || curPage === 'level' || curPage === 'result');
 
     $('#htmlMainMenu').toggleClass('is-hidden', !showMainMenu);
     $('#htmlLevelMenu').toggleClass('is-hidden', !showLevelMenu);
@@ -1273,7 +1219,6 @@ function updateHTMLInterface() {
     $('#htmlGameHud').toggleClass('is-hidden', !showGameHud);
     $('#htmlGameAssists').toggleClass('is-hidden', !showGameHud);
     $('#htmlSettingsMenu').toggleClass('is-hidden', !showSettings);
-    $('#htmlQuickControls').toggleClass('is-hidden', !showQuickControls);
 
     if (!showSettings) {
         $('#htmlSettingsPanel').addClass('is-hidden');
@@ -1382,7 +1327,33 @@ function updateHTMLConfirm() {
 function updateHTMLSettings() {
     $('#htmlSoundButton').text(buttonSoundOn.visible ? 'Sound: Off' : 'Sound: On');
     $('#htmlMusicButton').text(buttonMusicOn.visible ? 'Music: Off' : 'Music: On');
+    $('#htmlSymbolsButton')
+        .text(LiquidAccessibility.isEnabled() ? 'Symbols: On' : 'Symbols: Off')
+        .prop('disabled', isPourInProgress());
     $('#htmlQuitButton').toggle(curPage === 'game');
+}
+
+function toggleLiquidSymbols() {
+    if (isPourInProgress()) {
+        playSound('soundError');
+        return;
+    }
+
+    LiquidAccessibility.setEnabled(!LiquidAccessibility.isEnabled());
+    for (var index = 0; index < gameData.tubes.length; index++) {
+        fillLiquid(index);
+        updateTubeData(gameData.tubes[index]);
+    }
+    updateHTMLSettings();
+    updatePuzzleAccessibilityDescription();
+    playSound('soundButton');
+}
+
+function updatePuzzleAccessibilityDescription() {
+    if ($('#htmlPuzzleDescription').length == 0 || curPage != 'game') {
+        return;
+    }
+    $('#htmlPuzzleDescription').text(LiquidAccessibility.describeTubes(gameData.tubes));
 }
 
 function toggleTube(con) {
@@ -2039,6 +2010,7 @@ function pushColours(index, color, height) {
         shape: null,
         surface: null,
         bottom: null,
+        symbol: null,
         index: color,
         height: height
     });
@@ -2270,6 +2242,7 @@ function fillLiquid(index) {
         thisArray.shape.graphics.beginFill(colors_arr[thisLiquid.data.colors[n].index].fill).drawRect(-(pos.w / 2), thisArray.shape.extraH, (pos.w), -(thisArray.height + thisArray.shape.extraH));
         thisArray.shape.fillH = -thisArray.height;
         thisArray.shape.color = thisLiquid.data.colors[n].index;
+        thisArray.symbol = LiquidAccessibility.createSymbol(thisLiquid.data.colors[n].index);
 
         thisArray.surface = new createjs.Shape();
         thisArray.surface.graphics.beginFill(colors_arr[thisLiquid.data.colors[n].index].surface).drawCircle(0, 0, gameData.tube.fillW / 2);
@@ -2293,11 +2266,12 @@ function fillLiquid(index) {
 
         pos.y -= thisArray.height;
         thisArray.surface.y = pos.y;
+        LiquidAccessibility.positionSymbol(thisArray.symbol, thisArray.shape);
 
         thisLiquid.data.fill = Math.abs(pos.y);
         thisLiquid.data.surface.addChild(thisArray.surface);
         thisLiquid.data.bottom.addChild(thisArray.bottom);
-        thisLiquid.data.container.addChild(thisArray.shape);
+        thisLiquid.data.container.addChild(thisArray.shape, thisArray.symbol);
     }
 }
 
@@ -2402,6 +2376,7 @@ function pourLiquid(pourIndex) {
             thisLiquid.data.fill = Math.abs(thisShape.y + thisShape.fillH);
             thisShape.graphics.clear().beginFill(colors_arr[colorIndex].fill).drawRect(-(gameData.tube.colorW / 2), thisShape.extraH, (gameData.tube.colorW), thisShape.fillH - thisShape.extraH);
             thisSurface.y = thisShape.y + thisShape.fillH;
+            LiquidAccessibility.positionSymbol(thisLiquid.data.colors[shapeIndex].symbol, thisShape);
             updateLiquid(pourIndex);
             updateTubeData(thisLiquid);
             updateTubeData(thisFillLiquid);
@@ -2417,6 +2392,7 @@ function pourLiquid(pourIndex) {
 
     var shapeFillIndex = thisFillLiquid.data.colors.length - 1;
     var thisFillShape = thisFillLiquid.data.colors[shapeFillIndex].shape;
+    var thisFillColor = thisFillLiquid.data.colors[shapeFillIndex];
     thisFillLiquid.data.fillShape.graphics.clear().setStrokeStyle(gameData.tube.pourW, 'round', 'round').beginStroke(colors_arr[colorIndex].fill).mt(0, 0).lt(0, -gameData.tube.pourH);
 
     TweenMax.to(thisFillShape, gameSettings.fillSpeed, {
@@ -2426,6 +2402,7 @@ function pourLiquid(pourIndex) {
         onUpdate: function() {
             thisFillLiquid.data.fill = Math.abs(thisFillShape.y + thisFillShape.fillH);
             thisFillShape.graphics.clear().beginFill(colors_arr[colorIndex].fill).drawRect(-(gameData.tube.colorW / 2), 0, (gameData.tube.colorW), thisFillShape.fillH);
+            LiquidAccessibility.positionSymbol(thisFillColor.symbol, thisFillShape);
         },
         onComplete: function() {
             thisFillLiquid.data.colors[thisFillLiquid.data.colors.length - 1].height = Math.abs(thisFillShape.fillH);
@@ -2994,7 +2971,7 @@ function toggleOption() {
 
 /*!
  * 
- * OPTIONS - This is the function that runs to mute and fullscreen
+ * OPTIONS - This is the function that runs to mute game audio
  * 
  */
 function toggleSoundMute(con) {
@@ -3019,29 +2996,4 @@ function toggleMusicMute(con) {
         buttonMusicOff.visible = true;
     }
     updateHTMLSettings();
-}
-
-function toggleFullScreen() {
-    if (!document.fullscreenElement && // alternative standard method
-        !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) { // current working methods
-        if (document.documentElement.requestFullscreen) {
-            document.documentElement.requestFullscreen();
-        } else if (document.documentElement.msRequestFullscreen) {
-            document.documentElement.msRequestFullscreen();
-        } else if (document.documentElement.mozRequestFullScreen) {
-            document.documentElement.mozRequestFullScreen();
-        } else if (document.documentElement.webkitRequestFullscreen) {
-            document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
-        }
-    } else {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        }
-    }
 }

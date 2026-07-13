@@ -71,7 +71,12 @@ function handleProgress() {
 function handleComplete() {
     toggleLoader(false);
     initMain();
-    scheduleLazyMusicLoad();
+    armLazyAudioLoad();
+    if (window.parent && window.parent !== window) {
+        window.parent.postMessage({
+            type: 'magic-sort-ready'
+        }, window.location.origin);
+    }
 };
 
 /*!

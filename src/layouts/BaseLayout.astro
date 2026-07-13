@@ -4,6 +4,7 @@ import GoogleTags from "@/components/GoogleTags.astro";
 import { siteConfig } from "@/data/siteConfig";
 import { siteRoutes } from "@/data/siteRoutes";
 import { buildJsonLd, buildPageTitle, getCanonicalUrl, getSeoForPath, withTrailingSlash, type SeoPage } from "@/data/seo";
+import { GAME_ASSET_VERSION } from "@/data/gameVersion";
 
 type Props = {
   title?: string;
@@ -15,6 +16,7 @@ type Props = {
 const { title, description, seo = {}, structuredData = [] } = Astro.props;
 
 const pathname = Astro.url.pathname;
+const preloadGameBackground = pathname === "/" || pathname.startsWith("/play");
 const routeSeo = getSeoForPath(pathname);
 const pageSeo = {
   ...routeSeo,
@@ -64,6 +66,7 @@ const routeHref = (path: string) => withTrailingSlash(path);
     <link rel="icon" href="/favicon.ico" sizes="any" />
     <link rel="shortcut icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {preloadGameBackground && <link rel="preload" as="image" type="image/webp" href={`/game/assets/magic-sort-table-bg.webp?v=${GAME_ASSET_VERSION}`} />}
     <link rel="canonical" href={canonicalUrl} />
     <meta property="og:site_name" content={siteConfig.name} />
     <meta property="og:type" content={pageSeo.schemaType === "Article" || pageSeo.schemaType === "Blog" ? "article" : "website"} />

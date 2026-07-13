@@ -29,7 +29,7 @@ function initGameCanvas(w, h) {
 
 var guide = false;
 var canvasContainer, mainContainer, gameContainer, resultContainer, confirmContainer;
-var guideline, bg, logo, buttonOk, result, shadowResult, buttonReplay, buttonFullscreen, buttonSoundOn, buttonSoundOff;
+var guideline, bg, logo, buttonOk, result, shadowResult, buttonReplay, buttonSoundOn, buttonSoundOff;
 var bgP, logoP, themeBackdrop, themeBackgroundBitmap, themeShade, themeGlowLeft, themeGlowRight, bgDecor, heroPanel, buttonPanel, titleUnderline, startButtonCard, levelsButtonCard, startButtonLabel, levelsButtonLabel, startButtonSub, levelsButtonSub, cozyTitleTxt, resultCard, confirmCard;
 
 $.tubes = {};
@@ -224,7 +224,6 @@ function buildGameCanvas() {
     resultDescTxt.visible = false;
 
 
-    buttonFullscreen = createMiniButton('FULL', 64, 48, '#F6EEFF', '#C084FC');
     buttonSoundOn = createMiniButton('SFX', 64, 48, '#E7DDFF', '#9B8AC5');
     buttonSoundOff = createMiniButton('MUTE', 64, 48, '#F6EEFF', '#FF4FB3');
     buttonSoundOn.visible = false;
@@ -234,7 +233,6 @@ function buildGameCanvas() {
 
     buttonExit = createMiniButton('QUIT', 64, 48, '#F6EEFF', '#FF4FB3');
     buttonSettings = createMiniButton('SET', 58, 44, '#F6EEFF', '#C084FC');
-    buttonFullscreen.visible = false;
     buttonSoundOn.visible = false;
     buttonSoundOff.visible = false;
     buttonMusicOn.visible = false;
@@ -243,7 +241,7 @@ function buildGameCanvas() {
     buttonSettings.visible = false;
 
     optionsContainer = new createjs.Container();
-    optionsContainer.addChild(buttonFullscreen, buttonSoundOn, buttonSoundOff, buttonMusicOn, buttonMusicOff, buttonExit);
+    optionsContainer.addChild(buttonSoundOn, buttonSoundOff, buttonMusicOn, buttonMusicOff, buttonExit);
     optionsContainer.visible = false;
 
     //exit
@@ -735,8 +733,6 @@ function resizeCanvas() {
                 nextCount = 1;
             }
 
-            buttonFullscreen.x = buttonSettings.x;
-            buttonFullscreen.y = buttonSettings.y + (distanceNum * (nextCount + 1));
         } else {
             buttonExit.visible = true;
             buttonSoundOn.x = buttonSoundOff.x = buttonSettings.x;
@@ -754,11 +750,8 @@ function resizeCanvas() {
                 nextCount = 1;
             }
 
-            buttonFullscreen.x = buttonSettings.x;
-            buttonFullscreen.y = buttonSettings.y + (distanceNum * (nextCount + 1));
-
             buttonExit.x = buttonSettings.x;
-            buttonExit.y = buttonSettings.y + (distanceNum * (nextCount + 2));
+            buttonExit.y = buttonSettings.y + (distanceNum * (nextCount + 1));
         }
 
         resizeGameUI();

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 // GAME ASSETS
 ////////////////////////////////////////////////////////////
-var GAME_ASSET_VERSION = '20260710-gameplay1';
+var GAME_ASSET_VERSION = '20260712-alchemy3';
 
 var lazyMusicLoad = {
     queue: null,
@@ -9,6 +9,14 @@ var lazyMusicLoad = {
     loaded: false,
     callbacks: []
 };
+var lazySoundEffectLoad = {
+    queue: null,
+    loading: false,
+    loaded: false,
+    callbacks: []
+};
+var lazyAudioActivated = false;
+var lazyAudioArmed = false;
 
 function getGameSoundEnabled() {
     if ($.browser.mobile || isTablet) {
@@ -75,8 +83,12 @@ function buildCriticalAssetManifest() {
     var criticalManifest = [];
 
     criticalManifest.push({
-        src: 'assets/magic-sort-table-bg.png?v=' + GAME_ASSET_VERSION,
+        src: 'assets/magic-sort-table-bg.webp?v=' + GAME_ASSET_VERSION,
         id: 'magicTableBg'
+    });
+    criticalManifest.push({
+        src: 'assets/alchemy-symbols.svg?v=' + GAME_ASSET_VERSION,
+        id: 'alchemySymbols'
     });
 
     for (var n = 0; n < tubes_arr.length; n++) {
@@ -97,10 +109,6 @@ function buildCriticalAssetManifest() {
         });
     }
 
-    if (soundOn) {
-        criticalManifest = criticalManifest.concat(getSoundEffectManifest());
-    }
-
     return criticalManifest;
 }
 
@@ -114,11 +122,76 @@ function installSoundPlugin(loadQueue) {
 }
 
 function isLazySoundReady(soundName) {
-    if (soundName != 'musicMain' && soundName != 'musicGame') {
+    if (!soundOn) {
         return true;
     }
+    if (soundName == 'musicMain' || soundName == 'musicGame') {
+        return lazyMusicLoad.loaded;
+    }
+    return lazySoundEffectLoad.loaded;
+}
 
-    return lazyMusicLoad.loaded;
+function armLazyAudioLoad() {
+    if (!soundOn || lazyAudioArmed || lazyAudioActivated) {
+        return;
+    }
+
+    lazyAudioArmed = true;
+    window.addEventListener('pointerdown', activateLazyAudioLoad, { once: true });
+    window.addEventListener('keydown', activateLazyAudioLoad, { once: true });
+}
+
+function activateLazyAudioLoad() {
+    if (!soundOn || lazyAudioActivated) {
+        return;
+    }
+
+    lazyAudioActivated = true;
+    loadLazySoundEffects(function() {
+        if (pendingMusicLoop != null) {
+            loadLazyMusic(resumePendingMusicLoop);
+        }
+    });
+}
+
+function loadLazySoundEffects(callback) {
+    if (!soundOn) {
+        return;
+    }
+    if (typeof callback == 'function') {
+        lazySoundEffectLoad.callbacks.push(callback);
+    }
+    if (lazySoundEffectLoad.loaded) {
+        flushLazySoundEffectCallbacks();
+        return;
+    }
+    if (lazySoundEffectLoad.loading) {
+        return;
+    }
+
+    lazySoundEffectLoad.loading = true;
+    lazySoundEffectLoad.queue = new createjs.LoadQueue(false);
+    installSoundPlugin(lazySoundEffectLoad.queue);
+    lazySoundEffectLoad.queue.addEventListener('complete', handleLazySoundEffectComplete);
+    lazySoundEffectLoad.queue.addEventListener('error', handleLazySoundEffectError);
+    lazySoundEffectLoad.queue.loadManifest(getSoundEffectManifest());
+}
+
+function handleLazySoundEffectComplete() {
+    lazySoundEffectLoad.loading = false;
+    lazySoundEffectLoad.loaded = true;
+    flushLazySoundEffectCallbacks();
+}
+
+function handleLazySoundEffectError(evt) {
+    lazySoundEffectLoad.loading = false;
+    console.log('lazy sound effect error ', evt);
+}
+
+function flushLazySoundEffectCallbacks() {
+    while (lazySoundEffectLoad.callbacks.length) {
+        lazySoundEffectLoad.callbacks.shift()();
+    }
 }
 
 function loadLazyMusic(callback) {
@@ -128,6 +201,11 @@ function loadLazyMusic(callback) {
 
     if (typeof callback == 'function') {
         lazyMusicLoad.callbacks.push(callback);
+    }
+
+    if (!lazyAudioActivated) {
+        armLazyAudioLoad();
+        return;
     }
 
     if (lazyMusicLoad.loaded) {
@@ -145,16 +223,6 @@ function loadLazyMusic(callback) {
     lazyMusicLoad.queue.addEventListener('complete', handleLazyMusicComplete);
     lazyMusicLoad.queue.addEventListener('error', handleLazyMusicError);
     lazyMusicLoad.queue.loadManifest(getMusicManifest());
-}
-
-function scheduleLazyMusicLoad() {
-    if (!soundOn) {
-        return;
-    }
-
-    setTimeout(function() {
-        loadLazyMusic();
-    }, 250);
 }
 
 function handleLazyMusicComplete() {

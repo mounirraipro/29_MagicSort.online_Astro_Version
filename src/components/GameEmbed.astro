@@ -1,0 +1,75 @@
+---
+import { GAME_ASSET_VERSION } from "@/data/gameVersion";
+
+type Props = {
+  title?: string;
+};
+
+const { title = "Play Magic Sort online" } = Astro.props;
+const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}`;
+---
+
+<div class="play-shell" data-game-embed>
+  <div class="game-embed-stage">
+    <iframe src={iframeSrc} title={title} loading="eager" allow="autoplay; fullscreen *" allowfullscreen></iframe>
+    <div class="game-embed-loading" data-game-loading role="status" aria-live="polite">
+      <span></span>
+      <strong>Loading Magic Sort</strong>
+      <small>Preparing the first screen...</small>
+    </div>
+  </div>
+  <div class="play-float-controls">
+    <button type="button" data-share-game aria-label="Share game">Share game</button>
+    <button type="button" data-fullscreen-game aria-label="Fullscreen game">Fullscreen</button>
+  </div>
+  <p class="play-share-feedback" data-share-feedback aria-live="polite"></p>
+</div>
+
+<script is:inline>
+  (() => {
+    document.querySelectorAll("[data-game-embed]:not([data-game-ready])").forEach((shell) => {
+      shell.setAttribute("data-game-ready", "false");
+      const iframe = shell.querySelector("iframe");
+      const fullscreen = shell.querySelector("[data-fullscreen-game]");
+      const share = shell.querySelector("[data-share-game]");
+      const feedback = shell.querySelector("[data-share-feedback]");
+      const isMobileShare = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      const setFeedback = (message) => {
+        if (!feedback) return;
+        feedback.textContent = message;
+        feedback.classList.add("is-visible");
+        window.clearTimeout(setFeedback.timer);
+        setFeedback.timer = window.setTimeout(() => feedback.classList.remove("is-visible"), 3200);
+      };
+
+      const markReady = (event) => {
+        if (event.source !== iframe?.contentWindow || event.data?.type !== "magic-sort-ready") return;
+        shell.setAttribute("data-game-ready", "true");
+      };
+
+      window.addEventListener("message", markReady);
+      fullscreen?.addEventListener("click", async () => {
+        if (document.fullscreenElement) {
+          await document.exitFullscreen?.();
+          return;
+        }
+        await (iframe?.requestFullscreen?.() ?? shell.requestFullscreen?.());
+      });
+      share?.addEventListener("click", async () => {
+        const url = new URL("/play/", location.origin).href;
+        const data = { title: "Magic Sort", text: "Can you beat my Magic Sort score?", url };
+        try {
+          if (isMobileShare && navigator.share) {
+            await navigator.share(data);
+            return;
+          }
+          await navigator.clipboard.writeText(url);
+          setFeedback("Link copied. Challenge a friend to beat your score.");
+        } catch {
+          setFeedback("Copy this link: " + url);
+        }
+      });
+    });
+  })();
+</script>

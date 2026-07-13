@@ -4024,6 +4024,20 @@
       inset 0 1px 0 rgb(255 255 255 / 0.9);
   }
 
+  .home-game-lobby .play-shell {
+    height: min(70vh, 690px);
+    min-height: 520px;
+    border-width: 6px;
+    border-radius: 30px;
+  }
+
+  .game-embed-stage {
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    background: #2f0a45;
+  }
+
   .play-shell iframe {
     display: block;
     width: 100%;
@@ -4038,6 +4052,48 @@
     border-top: 1px solid var(--color-line);
     background: #fff;
     padding: 0.7rem 0.8rem;
+  }
+
+  .game-embed-loading {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-content: center;
+    justify-items: center;
+    gap: 0.45rem;
+    background: #2f0a45;
+    color: #fff4cd;
+    text-align: center;
+    transition: opacity 180ms ease, visibility 180ms ease;
+  }
+
+  .game-embed-loading span {
+    width: 42px;
+    height: 42px;
+    border: 4px solid rgb(255 255 255 / 0.24);
+    border-top-color: #ffd45d;
+    border-radius: 50%;
+    animation: game-embed-spin 700ms linear infinite;
+  }
+
+  .game-embed-loading strong {
+    font-size: 1rem;
+    letter-spacing: 0;
+  }
+
+  .game-embed-loading small {
+    color: rgb(255 255 255 / 0.72);
+    font-size: 0.78rem;
+  }
+
+  .play-shell[data-game-ready="true"] .game-embed-loading {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @keyframes game-embed-spin {
+    to { transform: rotate(360deg); }
   }
 
   .play-float-controls button {
@@ -5602,6 +5658,13 @@
 
     .game-guide-tips {
       grid-template-columns: 1fr;
+      border-radius: 20px;
+    }
+
+    .home-game-lobby .play-shell {
+      height: min(62vh, 560px);
+      min-height: 430px;
+      border-width: 5px;
       border-radius: 20px;
     }
   }
