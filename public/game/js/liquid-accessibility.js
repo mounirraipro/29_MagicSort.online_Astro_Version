@@ -75,7 +75,7 @@
 
     function createSymbol(colorIndex) {
         var symbol = new createjs.Container();
-        var sprite = new createjs.Bitmap(loader.getResult('alchemySymbols'));
+        var sprite = new createjs.Bitmap(getGameAssetResult('alchemySymbols'));
         sprite.sourceRect = new createjs.Rectangle(colorIndex * 40, 0, 40, 40);
         sprite.regX = 20;
         sprite.regY = 20;

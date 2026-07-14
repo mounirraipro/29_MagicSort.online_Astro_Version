@@ -1,1 +1,1 @@
-export const GAME_ASSET_VERSION = "20260712-alchemy3";
+export const GAME_ASSET_VERSION = "20260714-stream1";

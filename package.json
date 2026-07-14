@@ -7,7 +7,10 @@
     "node": ">=20.19.0"
   },
   "scripts": {
+    "build:game": "node scripts/build-game-bundle.mjs",
+    "predev": "npm run build:game",
     "dev": "astro dev",
+    "prebuild": "npm run build:game",
     "build": "astro check && astro build && node scripts/cleanup-dist-seo.mjs",
     "preview": "astro preview",
     "astro": "astro",

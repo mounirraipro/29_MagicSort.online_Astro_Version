@@ -9,8 +9,8 @@
  */
 
 var tubes_arr = [{
-        imageBack: "assets/tube_back_01.png",
-        imageFront: "assets/tube_front_01.png",
+        imageBack: "assets/tube_back_01.webp",
+        imageFront: "assets/tube_front_01.webp",
         regX: 44,
         regY: 310,
         fillW: 50,
@@ -66,8 +66,8 @@ var tubes_arr = [{
     },
 
     {
-        imageBack: "assets/tube_back_02.png",
-        imageFront: "assets/tube_front_02.png",
+        imageBack: "assets/tube_back_02.webp",
+        imageFront: "assets/tube_front_02.webp",
         regX: 44,
         regY: 310,
         fillW: 54,
@@ -123,8 +123,8 @@ var tubes_arr = [{
     },
 
     {
-        imageBack: "assets/tube_back_03.png",
-        imageFront: "assets/tube_front_03.png",
+        imageBack: "assets/tube_back_03.webp",
+        imageFront: "assets/tube_front_03.webp",
         regX: 104,
         regY: 310,
         fillW: 40,
@@ -220,8 +220,8 @@ var tubes_arr = [{
     },
 
     {
-        imageBack: "assets/tube_back_04.png",
-        imageFront: "assets/tube_front_04.png",
+        imageBack: "assets/tube_back_04.webp",
+        imageFront: "assets/tube_front_04.webp",
         regX: 90,
         regY: 310,
         fillW: 150,
@@ -285,8 +285,8 @@ var tubes_arr = [{
     },
 
     {
-        imageBack: "assets/tube_back_05.png",
-        imageFront: "assets/tube_front_05.png",
+        imageBack: "assets/tube_back_05.webp",
+        imageFront: "assets/tube_front_05.webp",
         regX: 96,
         regY: 310,
         fillW: 40,
@@ -366,8 +366,8 @@ var tubes_arr = [{
     },
 
     {
-        imageBack: "assets/tube_back_06.png",
-        imageFront: "assets/tube_front_06.png",
+        imageBack: "assets/tube_back_06.webp",
+        imageFront: "assets/tube_front_06.webp",
         regX: 44,
         regY: 310,
         fillW: 54,
@@ -424,11 +424,11 @@ var tubes_arr = [{
 ];
 
 var bubbles_arr = [
-    "assets/bubble_01.png",
-    "assets/bubble_02.png",
-    "assets/bubble_03.png",
-    "assets/bubble_04.png",
-    "assets/bubble_05.png",
+    "assets/bubble_01.webp",
+    "assets/bubble_02.webp",
+    "assets/bubble_03.webp",
+    "assets/bubble_04.webp",
+    "assets/bubble_05.webp",
 ];
 
 //game settings
@@ -1512,6 +1512,13 @@ function togglePop(con) {
 var curPage = ''
 
 function goPage(page) {
+    if ((page == 'select' || page == 'game') && !areGameplayAssetsReady()) {
+        ensureGameplayAssets(function() {
+            goPage(page);
+        });
+        return;
+    }
+
     curPage = page;
 
     mainContainer.visible = false;
@@ -1520,7 +1527,12 @@ function goPage(page) {
     gameContainer.visible = false;
     waterContainer.visible = false;
     resultContainer.visible = false;
-    stopMusicLoop("musicGame");
+    if (page != 'main') {
+        stopMusicLoop('musicMain');
+    }
+    if (page != 'game') {
+        stopMusicLoop('musicGame');
+    }
 
     var targetContainer = null;
     switch (page) {
@@ -2047,8 +2059,8 @@ function createTube(x, y) {
         newLiquidContainer.data.imageBack = new createjs.Bitmap(tubeLoader.getResult('tubeBack' + gameData.tubeNum));
         newLiquidContainer.data.imageFront = new createjs.Bitmap(tubeLoader.getResult('tubeFront' + gameData.tubeNum));
     } else {
-        newLiquidContainer.data.imageBack = new createjs.Bitmap(loader.getResult('tubeBack' + gameData.tubeNum));
-        newLiquidContainer.data.imageFront = new createjs.Bitmap(loader.getResult('tubeFront' + gameData.tubeNum));
+        newLiquidContainer.data.imageBack = new createjs.Bitmap(getGameAssetResult('tubeBack' + gameData.tubeNum));
+        newLiquidContainer.data.imageFront = new createjs.Bitmap(getGameAssetResult('tubeFront' + gameData.tubeNum));
     }
 
     newLiquidContainer.data.imageBack.regX = tubes_arr[gameData.tubeNum].regX;
@@ -2581,7 +2593,7 @@ function animateBubbles() {
 
             for (var b = 0; b < totalBubbles; b++) {
                 var randomBubbleIndex = Math.floor(Math.random() * bubbles_arr.length);
-                var newBubble = new createjs.Bitmap(loader.getResult('bubble' + randomBubbleIndex));
+                var newBubble = new createjs.Bitmap(getGameAssetResult('bubble' + randomBubbleIndex));
                 centerReg(newBubble);
 
                 animateBubble(newBubble, -(thisTube.data.fill));

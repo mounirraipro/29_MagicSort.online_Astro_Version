@@ -16,7 +16,7 @@ export type GameCategory = {
   levels: GameLevel[];
 };
 
-const tubeThumb = (index: number) => `/game/assets/tube_front_${String(index).padStart(2, "0")}.png`;
+const tubeThumb = (index: number) => `/game/assets/tube_front_${String(index).padStart(2, "0")}.webp`;
 
 export const totalLevels = 30;
 

@@ -8,7 +8,13 @@
  * 
  */
 function initPreload() {
+    window.magicSortLoadMetrics = {
+        startedAt: window.performance ? window.performance.now() : 0,
+        criticalReadyMs: null,
+        gameplayReadyMs: null
+    };
     toggleLoader(true);
+    updateLoaderProgress(0, 'Opening Magic Sort...');
 
     checkMobileEvent();
 
@@ -27,7 +33,6 @@ function initPreload() {
         addScoreboardAssets();
     }
 
-    installSoundPlugin(loader);
     loader.addEventListener("complete", handleComplete);
     loader.addEventListener("fileload", fileComplete);
     loader.addEventListener("error", handleFileError);
@@ -60,7 +65,7 @@ function handleFileError(evt) {
  * 
  */
 function handleProgress() {
-    $('#mainLoader span').html(Math.round(loader.progress / 1 * 100) + '%');
+    updateLoaderProgress(Math.round(loader.progress * 100), 'Opening Magic Sort...');
 }
 
 /*!
@@ -69,15 +74,24 @@ function handleProgress() {
  * 
  */
 function handleComplete() {
+    if (window.magicSortLoadMetrics) {
+        window.magicSortLoadMetrics.criticalReadyMs = Math.round((window.performance ? window.performance.now() : 0) - window.magicSortLoadMetrics.startedAt);
+    }
     toggleLoader(false);
     initMain();
     armLazyAudioLoad();
+    startDeferredGameplayLoad();
     if (window.parent && window.parent !== window) {
         window.parent.postMessage({
             type: 'magic-sort-ready'
         }, window.location.origin);
     }
 };
+
+function updateLoaderProgress(percent, label) {
+    $('#mainLoaderProgress').text(percent + '%');
+    $('#mainLoaderLabel').text(label);
+}
 
 /*!
  * 

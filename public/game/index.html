@@ -9,9 +9,9 @@
     <meta name="keywords" content="magic sort, pastel puzzle, color sorting, tube puzzle, cozy game, browser puzzle">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <link rel="shortcut icon" href="assets/icon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/normalize.css?v=20260712-alchemy3">
-    <link rel="stylesheet" href="css/main.css?v=20260712-alchemy3">
-    <script src="js/vendor/modernizr-2.6.2.min.js?v=20260712-alchemy3"></script>
+    <link rel="stylesheet" href="css/normalize.css?v=20260714-stream1">
+    <link rel="stylesheet" href="css/main.css?v=20260714-stream1">
+    <script src="js/vendor/modernizr-2.6.2.min.js?v=20260714-stream1"></script>
     <script>
     if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
         var msViewportStyle = document.createElement("style");
@@ -21,7 +21,11 @@
     </script>
 </head>
 <body>
-    <div id="mainLoader"><div class="loader-orb"></div><span>0</span></div>
+    <div id="mainLoader">
+        <div class="loader-orb"></div>
+        <span id="mainLoaderProgress">0%</span>
+        <small id="mainLoaderLabel">Opening Magic Sort...</small>
+    </div>
     <div id="mainHolder">
         <div id="notSupportHolder">
             <div class="notSupport">Your browser isn't supported.<br>Please update your browser in order to run the game.</div>
@@ -126,27 +130,10 @@
                 </div>
             </div>
             <p id="htmlPuzzleDescription" class="visually-hidden" aria-live="polite">Choose Start, Daily Challenge, or Levels to begin.</p>
+            <div id="htmlAssetStatus" class="asset-status is-hidden" role="status" aria-live="polite"></div>
         </div>
     </div>
 
-    <script src="js/vendor/jquery.min.js?v=20260712-alchemy3"></script>
-    <script src="js/vendor/detectmobilebrowser.js?v=20260712-alchemy3"></script>
-    <script src="js/vendor/createjs.min.js?v=20260712-alchemy3"></script>
-    <script src="js/vendor/TweenMax.min.js?v=20260712-alchemy3"></script>
-    <script src="js/vendor/js.cookie.js?v=20260712-alchemy3"></script>
-    <script src="js/plugins.js?v=20260712-alchemy3"></script>
-    <script src="js/sound.js?v=20260712-alchemy3"></script>
-    <script src="js/lazy-assets.js?v=20260712-alchemy3"></script>
-    <script src="js/canvas.js?v=20260712-alchemy3"></script>
-    <script src="js/levels.js?v=20260712-alchemy3"></script>
-    <script src="js/liquid-accessibility.js?v=20260712-alchemy3"></script>
-    <script src="js/daily-challenge.js?v=20260712-alchemy3"></script>
-    <script src="js/player-progress.js?v=20260712-alchemy3"></script>
-    <script src="js/gameplay-assists.js?v=20260712-alchemy3"></script>
-    <script src="js/game.js?v=20260712-alchemy3"></script>
-    <script src="js/mobile.js?v=20260712-alchemy3"></script>
-    <script src="js/main.js?v=20260712-alchemy3"></script>
-    <script src="js/loader.js?v=20260712-alchemy3"></script>
-    <script src="js/init.js?v=20260712-alchemy3"></script>
+    <script src="js/game.bundle.min.js?v=20260714-stream1"></script>
 </body>
 </html>

@@ -21,6 +21,11 @@ function playSound(soundName, vol) {
             if (typeof activateLazyAudioLoad == 'function') {
                 activateLazyAudioLoad();
             }
+            if (typeof loadLazySoundEffects == 'function') {
+                loadLazySoundEffects(function() {
+                    playSound(soundName, vol);
+                });
+            }
             return;
         }
 
@@ -94,7 +99,7 @@ function playMusicLoop(soundName) {
             pendingMusicLoop = soundName;
 
             if (typeof lazyAudioActivated != 'undefined' && lazyAudioActivated && typeof loadLazyMusic == 'function') {
-                loadLazyMusic(resumePendingMusicLoop);
+                loadLazyMusic(soundName, resumePendingMusicLoop);
             } else if (typeof armLazyAudioLoad == 'function') {
                 armLazyAudioLoad();
             }
@@ -159,10 +164,6 @@ function resumePendingMusicLoop() {
     var soundName = pendingMusicLoop;
     pendingMusicLoop = null;
     playMusicLoop(soundName);
-}
-
-function onLazyMusicReady() {
-    resumePendingMusicLoop();
 }
 
 function toggleSoundInMute(con) {
