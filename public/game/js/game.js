@@ -1178,8 +1178,9 @@ function buildGameButton() {
         gameData.tubesArr.push(n);
     }
 
-    for (var n = 0; n < colors_arr.length; n++) {
-        gameData.colorsArr.push(n);
+    var contrastColorOrder = LiquidAccessibility.getContrastOrder();
+    for (var n = 0; n < contrastColorOrder.length; n++) {
+        gameData.colorsArr.push(contrastColorOrder[n]);
     }
 
     shuffle(gameData.tubesArr);
@@ -1314,7 +1315,7 @@ function updateHTMLInterface() {
     $('#htmlSettingsMenu').toggleClass('is-hidden', !showSettings);
 
     if (!showSettings) {
-        $('#htmlSettingsPanel').addClass('is-hidden');
+        setOptionMenuOpen(false);
     }
     if (!showGameHud) {
         clearGameplayRewardMessage();
@@ -1963,9 +1964,6 @@ function setupStage() {
     prepareStage();
 
     if (gameData.type == 'daily') {
-        gameData.colorsArr.sort(function(a, b) {
-            return a - b;
-        });
         DailyChallenge.beginStage();
     }
 
@@ -2045,7 +2043,7 @@ function fillAllTubes() {
 
     //store colors
     gameData.colorIndex = 0;
-    shuffleStageData(gameData.colorsArr);
+    gameData.colorsArr = LiquidAccessibility.getContrastOrder();
     for (var n = 0; n < tubeArr.length; n++) {
         var colorIndex = getTubeColor();
         for (var l = 0; l < levelSettings[gameData.levelNum].levels; l++) {
@@ -2111,7 +2109,6 @@ function getTubeColor() {
     gameData.colorIndex++;
     if (gameData.colorIndex > gameData.colorsArr.length - 1) {
         gameData.colorIndex = 0;
-        shuffleStageData(gameData.colorsArr);
     }
 
     return colourIndex;
@@ -3075,14 +3072,14 @@ function millisecondsToTimeGame(milli) {
  * 
  */
 
+function setOptionMenuOpen(isOpen) {
+    optionsContainer.visible = isOpen;
+    $('#htmlSettingsPanel').toggleClass('is-hidden', !isOpen);
+    $('#htmlGameAssists').toggleClass('is-menu-open', isOpen);
+}
+
 function toggleOption() {
-    if (optionsContainer.visible) {
-        optionsContainer.visible = false;
-        $('#htmlSettingsPanel').addClass('is-hidden');
-    } else {
-        optionsContainer.visible = true;
-        $('#htmlSettingsPanel').removeClass('is-hidden');
-    }
+    setOptionMenuOpen(!optionsContainer.visible);
 }
 
 

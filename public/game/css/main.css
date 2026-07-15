@@ -758,11 +758,18 @@ body {
     display: grid;
     justify-items: start;
     gap: 9px;
+    transition: opacity .16s ease, transform .16s ease, visibility .16s ease;
     pointer-events: none;
 }
 
 .game-assists.is-hidden {
     display: none;
+}
+
+.game-assists.is-menu-open {
+    visibility: hidden;
+    opacity: 0;
+    transform: translateY(-6px);
 }
 
 .game-assists__message {

@@ -4,54 +4,55 @@
     // Owns liquid color identity, alchemy markers, and puzzle descriptions.
     var storageKey = 'magic-sort:liquid-symbols';
     var palette = [{
-            fill: '#2563EB',
-            surface: '#60A5FA'
+            fill: '#1455D9',
+            surface: '#76ADFF'
         },
         {
-            fill: '#06B6D4',
-            surface: '#67E8F9'
+            fill: '#00A5C4',
+            surface: '#76E4F2'
         },
         {
-            fill: '#059669',
-            surface: '#34D399'
+            fill: '#00875F',
+            surface: '#5AD6A7'
         },
         {
-            fill: '#65A30D',
-            surface: '#A3E635'
+            fill: '#78A000',
+            surface: '#C7E65B'
         },
         {
-            fill: '#EAB308',
-            surface: '#FDE047'
+            fill: '#F2C100',
+            surface: '#FFE36B'
         },
         {
-            fill: '#F97316',
-            surface: '#FDBA74'
+            fill: '#F06A00',
+            surface: '#FFB15C'
         },
         {
-            fill: '#DC2626',
-            surface: '#F87171'
+            fill: '#D7263D',
+            surface: '#FF7A8B'
         },
         {
-            fill: '#DB2777',
-            surface: '#F472B6'
+            fill: '#D4148E',
+            surface: '#FF75C5'
         },
         {
-            fill: '#7C3AED',
-            surface: '#A78BFA'
+            fill: '#6D3BD1',
+            surface: '#B293FF'
         },
         {
-            fill: '#A16207',
-            surface: '#D97706'
+            fill: '#8B4B00',
+            surface: '#D9943B'
         },
         {
-            fill: '#0D9488',
-            surface: '#5EEAD4'
+            fill: '#007B78',
+            surface: '#57D5CE'
         },
         {
-            fill: '#475569',
-            surface: '#94A3B8'
+            fill: '#3F4858',
+            surface: '#A3ADBC'
         }
     ];
+    var contrastOrder = [0, 6, 4, 2, 8, 5, 10, 7, 11, 3, 1, 9];
     var symbolsEnabled = readSymbolPreference();
     var symbolNames = ['Sun', 'Moon', 'Droplet', 'Spark', 'Salt', 'Fire', 'Water', 'Air', 'Earth', 'Crystal', 'Spiral', 'Orbit'];
 
@@ -79,7 +80,7 @@
         sprite.sourceRect = new createjs.Rectangle(colorIndex * 40, 0, 40, 40);
         sprite.regX = 20;
         sprite.regY = 20;
-        sprite.scaleX = sprite.scaleY = .75;
+        sprite.scaleX = sprite.scaleY = .92;
         symbol.addChild(sprite);
         symbol.mouseEnabled = false;
         symbol.visible = symbolsEnabled;
@@ -93,7 +94,7 @@
 
         var visibleHeight = Math.abs(shape.fillH);
         symbol.y = shape.y + (shape.fillH / 2);
-        symbol.visible = symbolsEnabled && visibleHeight >= 24;
+        symbol.visible = symbolsEnabled && visibleHeight >= 20;
     }
 
     function describeTubes(tubes) {
@@ -123,6 +124,9 @@
         createSymbol: createSymbol,
         positionSymbol: positionSymbol,
         describeTubes: describeTubes,
+        getContrastOrder: function() {
+            return contrastOrder.slice();
+        },
         isEnabled: function() {
             return symbolsEnabled;
         },
