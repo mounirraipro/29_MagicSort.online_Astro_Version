@@ -9,8 +9,8 @@
     <meta name="keywords" content="magic sort, pastel puzzle, color sorting, tube puzzle, cozy game, browser puzzle">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <link rel="shortcut icon" href="assets/icon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/normalize.css?v=20260715-perf1">
-    <link rel="stylesheet" href="css/main.css?v=20260715-perf1">
+    <link rel="stylesheet" href="css/normalize.css?v=20260715-gameplay1">
+    <link rel="stylesheet" href="css/main.css?v=20260715-gameplay1">
     <script>
     if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
         var msViewportStyle = document.createElement("style");
@@ -107,28 +107,47 @@
                 </div>
             </div>
             <div id="htmlGameHud" class="game-hud is-hidden">
-                <div id="htmlMoveCounter" class="game-hud__counter" aria-live="polite">
+                <div class="game-hud__stage" aria-label="Current stage">
+                    <span class="game-hud__sigil" aria-hidden="true"></span>
+                    <span class="game-hud__stage-copy">
+                        <small id="htmlStageKind">Stage</small>
+                        <strong id="htmlStageValue">1</strong>
+                    </span>
+                </div>
+                <div id="htmlMoveCounter" class="game-hud__stat" aria-live="polite">
                     <span class="game-hud__label">Moves</span>
-                    <strong id="htmlMoveCountValue" class="game-hud__value">0</strong>
+                    <strong id="htmlMoveCountValue" class="game-hud__stat-value">0</strong>
                 </div>
-                <div class="game-hud__progress" aria-live="polite">
+                <div class="game-hud__stat" aria-live="polite">
                     <span class="game-hud__label">Sorted</span>
-                    <strong id="htmlSortedCountValue" class="game-hud__progress-value">0/0</strong>
+                    <strong id="htmlSortedCountValue" class="game-hud__stat-value">0/0</strong>
                 </div>
-                <button id="htmlUndoButton" class="game-hud__button" type="button" aria-label="Undo last move" disabled>
-                    <span class="game-hud__button-icon" aria-hidden="true"></span>
-                    <span class="game-hud__button-text">Undo</span>
-                </button>
+                <div id="htmlFlowCounter" class="game-hud__stat game-hud__stat--flow" aria-live="polite">
+                    <span class="game-hud__label">Flow</span>
+                    <strong id="htmlFlowValue" class="game-hud__stat-value">x0</strong>
+                </div>
+                <div id="htmlBestCounter" class="game-hud__stat game-hud__stat--best" aria-label="Personal best move count">
+                    <span class="game-hud__label">Best</span>
+                    <strong id="htmlBestMoveValue" class="game-hud__stat-value">--</strong>
+                </div>
+            </div>
+            <div id="htmlRewardToast" class="game-reward-toast is-hidden" role="status" aria-live="polite">
+                <span class="game-reward-toast__spark" aria-hidden="true"></span>
+                <strong id="htmlRewardText">Flow x3</strong>
             </div>
             <div id="htmlGameAssists" class="game-assists is-hidden">
                 <div id="htmlAssistMessage" class="game-assists__message is-hidden" role="status" aria-live="polite"></div>
                 <div class="game-assists__actions">
-                    <button id="htmlHintButton" class="game-assists__button" type="button">
-                        <span class="game-assists__icon game-assists__icon--hint" aria-hidden="true">?</span>
+                    <button id="htmlUndoButton" class="game-assists__button" type="button" aria-label="Undo last move" title="Undo last move" disabled>
+                        <svg class="game-assists__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 5 11l4 4"/><path d="M5 11h8a6 6 0 0 1 6 6"/></svg>
+                        <span>Undo</span>
+                    </button>
+                    <button id="htmlHintButton" class="game-assists__button" type="button" aria-label="Show a useful move" title="Show a useful move">
+                        <svg class="game-assists__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M8.3 14.5a7 7 0 1 1 7.4 0c-.9.7-1.7 1.5-1.7 2.5h-4c0-1-.8-1.8-1.7-2.5Z"/></svg>
                         <span>Hint</span>
                     </button>
-                    <button id="htmlRestartButton" class="game-assists__button" type="button">
-                        <span class="game-assists__icon game-assists__icon--restart" aria-hidden="true"></span>
+                    <button id="htmlRestartButton" class="game-assists__button" type="button" aria-label="Restart puzzle" title="Restart puzzle">
+                        <svg class="game-assists__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0 1 4"/><path d="M20 4v7h-7"/></svg>
                         <span>Restart</span>
                     </button>
                 </div>
@@ -140,6 +159,6 @@
         </div>
     </div>
 
-    <script src="js/game.bundle.min.js?v=20260715-perf1"></script>
+    <script src="js/game.bundle.min.js?v=20260715-gameplay1"></script>
 </body>
 </html>

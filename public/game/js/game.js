@@ -508,6 +508,7 @@ var gameplayPolishData = {
     complete: false,
     bestResult: null
 };
+var gameplayRewardToastTimer = null;
 var tweenData = {
     score: 0,
     tweenScore: 0
@@ -569,6 +570,10 @@ function resetGameplayPolish() {
     gameplayPolishData.complete = false;
     gameplayPolishData.bestResult = null;
     clearAssistMessage();
+    clearGameplayRewardMessage();
+    if (typeof GameplayRewards != 'undefined') {
+        GameplayRewards.reset(0);
+    }
     if (typeof GameplayAssists != 'undefined') {
         GameplayAssists.clearRestartConfirmation();
     }
@@ -617,6 +622,7 @@ function commitPendingMoveSnapshot() {
     gameplayPolishData.pendingMove = null;
     gameplayPolishData.moveCount++;
     updateCompletedTubeCount();
+    recordGameplayRewardMove();
     clearAssistMessage();
     updateGameplayPolishUI();
 }
@@ -672,6 +678,7 @@ function restoreGameplaySnapshot(snapshot) {
     gameplayPolishData.moveCount = snapshot.moveCount;
     gameplayPolishData.completedTubes = snapshot.completedTubes;
     gameplayPolishData.pendingMove = null;
+    breakGameplayFlow();
     gameData.action = true;
     updateGameplayPolishUI();
 }
@@ -799,8 +806,77 @@ function recordGameplayBest() {
         stars: gameplayPolishData.stars,
         moves: gameplayPolishData.moveCount,
         undos: gameplayPolishData.undoCount,
-        hints: gameplayPolishData.hintCount
+        hints: gameplayPolishData.hintCount,
+        bestCombo: getGameplayRewardState().bestCombo
     });
+}
+
+function getGameplayRewardState() {
+    if (typeof GameplayRewards == 'undefined') {
+        return { combo: 0, bestCombo: 0 };
+    }
+    return GameplayRewards.getState();
+}
+
+function recordGameplayRewardMove() {
+    if (typeof GameplayRewards == 'undefined') {
+        return;
+    }
+
+    var reward = GameplayRewards.recordMove(gameplayPolishData.completedTubes);
+    var flowCounter = $('#htmlFlowCounter');
+    flowCounter.removeClass('is-pulsing');
+    if (flowCounter.length > 0) {
+        flowCounter[0].offsetWidth;
+    }
+    flowCounter.addClass('is-pulsing');
+
+    if (reward.milestone) {
+        showGameplayRewardMessage(reward.message);
+    }
+}
+
+function breakGameplayFlow() {
+    if (typeof GameplayRewards != 'undefined') {
+        GameplayRewards.breakCombo(gameplayPolishData.completedTubes);
+    }
+    clearGameplayRewardMessage();
+}
+
+function showGameplayRewardMessage(message) {
+    window.clearTimeout(gameplayRewardToastTimer);
+    $('#htmlRewardText').text(message);
+    $('#htmlRewardToast').removeClass('is-hidden');
+    gameplayRewardToastTimer = window.setTimeout(clearGameplayRewardMessage, 1500);
+}
+
+function clearGameplayRewardMessage() {
+    window.clearTimeout(gameplayRewardToastTimer);
+    gameplayRewardToastTimer = null;
+    $('#htmlRewardToast').addClass('is-hidden');
+}
+
+function getCurrentGameplayBest() {
+    if (typeof PlayerProgress == 'undefined') {
+        return null;
+    }
+    if (gameData.type == 'level') {
+        return PlayerProgress.getLevelBest(gameData.levelNum + 1);
+    }
+    if (gameData.type == 'daily' && typeof DailyChallenge != 'undefined') {
+        return PlayerProgress.getDailyBest(DailyChallenge.getDescriptor().dateKey);
+    }
+    return null;
+}
+
+function getGameplayStageDisplay() {
+    if (gameData.type == 'daily') {
+        return { kind: 'Daily', value: 'Today' };
+    }
+    if (gameData.type == 'challenge') {
+        return { kind: 'Round', value: Math.max(1, gameData.challengeNum || 1) };
+    }
+    return { kind: 'Stage', value: gameData.levelNum + 1 };
 }
 
 function updateGameplayPolishUI() {
@@ -815,6 +891,17 @@ function updateGameplayPolishUI() {
         $('#htmlMoveCounter').text(textDisplay.moves.replace('[NUMBER]', gameplayPolishData.moveCount));
     }
     $('#htmlSortedCountValue').text(gameplayPolishData.completedTubes + '/' + getStageTargetTubeCount());
+    var rewardState = getGameplayRewardState();
+    $('#htmlFlowValue').text('x' + rewardState.combo);
+    $('#htmlFlowCounter').toggleClass('is-active', rewardState.combo > 0);
+
+    var stageDisplay = getGameplayStageDisplay();
+    $('#htmlStageKind').text(stageDisplay.kind);
+    $('#htmlStageValue').text(stageDisplay.value);
+
+    var currentBest = getCurrentGameplayBest();
+    $('#htmlBestMoveValue').text(currentBest ? currentBest.moves : '--');
+    $('#htmlBestCounter').attr('aria-label', currentBest ? 'Personal best ' + currentBest.moves + ' moves' : 'No personal best yet');
     $('#htmlUndoButton')
         .prop('disabled', !canUndo)
         .attr('aria-label', canUndo ? 'Undo last move' : 'No move to undo');
@@ -903,6 +990,8 @@ function requestGameplayHint() {
     }
 
     gameplayPolishData.hintCount++;
+    breakGameplayFlow();
+    updateGameplayPolishUI();
     showAssistMessage(hint.message);
     highlightHintMove(hint);
     playSound('soundButton');
@@ -1227,6 +1316,9 @@ function updateHTMLInterface() {
     if (!showSettings) {
         $('#htmlSettingsPanel').addClass('is-hidden');
     }
+    if (!showGameHud) {
+        clearGameplayRewardMessage();
+    }
 
     updateHTMLLevels();
     updateHTMLDailyChallenge();
@@ -1317,6 +1409,11 @@ function getResultMetaText() {
 
     if (gameplayPolishData.hintCount > 0) {
         meta += ' | Hints ' + gameplayPolishData.hintCount;
+    }
+
+    var bestCombo = getGameplayRewardState().bestCombo;
+    if (bestCombo > 1) {
+        meta += ' | Best Flow x' + bestCombo;
     }
 
     return meta;

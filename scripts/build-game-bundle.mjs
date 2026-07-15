@@ -21,6 +21,7 @@ const sourceFiles = [
   "daily-challenge.js",
   "player-progress.js",
   "gameplay-assists.js",
+  "gameplay-rewards.js",
   "game.js",
   "mobile.js",
   "main.js",

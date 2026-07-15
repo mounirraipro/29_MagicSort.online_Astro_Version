@@ -74,6 +74,7 @@
             moves: Math.max(0, Number(result.moves) || 0),
             undos: Math.max(0, Number(result.undos) || 0),
             hints: Math.max(0, Number(result.hints) || 0),
+            bestCombo: Math.max(0, Number(result.bestCombo) || 0),
             completedAt: new Date().toISOString()
         };
 
