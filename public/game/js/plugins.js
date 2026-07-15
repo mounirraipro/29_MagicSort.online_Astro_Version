@@ -33,32 +33,6 @@ function checkContentWidth(target) {
     return newWidth;
 }
 
-function getDeviceVer() {
-    var ua = navigator.userAgent;
-    var uaindex;
-
-    // determine OS
-    if (ua.match(/(iPad|iPhone|iPod touch)/)) {
-        userOS = 'iOS';
-        uaindex = ua.indexOf('OS ');
-    } else if (ua.match(/Android/)) {
-        userOS = 'Android';
-        uaindex = ua.indexOf('Android ');
-    } else {
-        userOS = 'unknown';
-    }
-
-    // determine version
-    if (userOS === 'iOS' && uaindex > -1) {
-        userOSver = ua.substr(uaindex + 3, 3).replace('_', '.');
-    } else if (userOS === 'Android' && uaindex > -1) {
-        userOSver = ua.substr(uaindex + 8, 3);
-    } else {
-        userOSver = 'unknown';
-    }
-    return Number(userOSver)
-}
-
 function shuffle(array) {
     var currentIndex = array.length,
         temporaryValue, randomIndex;
@@ -78,32 +52,9 @@ function shuffle(array) {
     return array;
 }
 
-function randomBoolean() {
-    return Math.random() < 0.5;
-}
-
 function getDistance(sx, sy, ex, ey) {
     var dis = Math.sqrt(Math.pow(sx - ex, 2) + Math.pow(sy - ey, 2));
     return dis;
-}
-
-function sortOnObject(array, object, rev) {
-    if (rev) {
-        array.sort(function(a, b) {
-            var a1 = a[object],
-                b1 = b[object];
-            if (a1 == b1) return 0;
-            return a1 < b1 ? 1 : -1;
-        });
-    } else {
-        array.sort(function(a, b) {
-            var a1 = a[object],
-                b1 = b[object];
-            if (a1 == b1) return 0;
-            return a1 > b1 ? 1 : -1;
-        });
-    }
-    return array;
 }
 
 function randomIntFromInterval(min, max) {
@@ -120,34 +71,6 @@ function addCommas(nStr) {
         x1 = x1.replace(rgx, '$1' + ',' + '$2');
     }
     return x1 + x2;
-}
-
-function swapArray(input, index_A, index_B) {
-    var temp = input[index_A];
-
-    input[index_A] = input[index_B];
-    input[index_B] = temp;
-}
-
-function getCenterPosition(startX, startY, endX, endY) {
-    var pos = {
-        x: 0,
-        y: 0
-    }
-    pos.x = (startX + endX) / 2;
-    pos.y = (startY + endY) / 2;
-    return pos;
-}
-
-function getCenterPositionByPercent(startX, startY, endX, endY, totalPercent, percent) {
-    percent = percent > totalPercent ? totalPercent : percent;
-    var pos = {
-        x: 0,
-        y: 0
-    }
-    pos.x = (startX + endX) / 2;
-    pos.y = (startY + endY) / 2;
-    return pos;
 }
 
 function getAnglePosition(x1, y1, radius, angle) {

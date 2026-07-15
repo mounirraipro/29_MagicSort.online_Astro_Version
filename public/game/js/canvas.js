@@ -20,17 +20,14 @@ function initGameCanvas(w, h) {
     stage = new createjs.Stage("gameCanvas");
 
     createjs.Touch.enable(stage);
-    stage.enableMouseOver(20);
-    stage.mouseMoveOutside = true;
-
-    createjs.Ticker.framerate = 60;
+    configureGameRendering(stage);
     createjs.Ticker.addEventListener("tick", tick);
 }
 
 var guide = false;
 var canvasContainer, mainContainer, gameContainer, resultContainer, confirmContainer;
 var guideline, bg, logo, buttonOk, result, shadowResult, buttonReplay, buttonSoundOn, buttonSoundOff;
-var bgP, logoP, themeBackdrop, themeBackgroundBitmap, themeShade, themeGlowLeft, themeGlowRight, bgDecor, heroPanel, buttonPanel, titleUnderline, startButtonCard, levelsButtonCard, startButtonLabel, levelsButtonLabel, startButtonSub, levelsButtonSub, cozyTitleTxt, resultCard, confirmCard;
+var bgP, logoP, themeBackgroundContainer, themeBackdrop, themeBackgroundBitmap, themeShade, themeGlowLeft, themeGlowRight, bgDecor, heroPanel, buttonPanel, titleUnderline, startButtonCard, levelsButtonCard, startButtonLabel, levelsButtonLabel, startButtonSub, levelsButtonSub, cozyTitleTxt, resultCard, confirmCard;
 
 $.tubes = {};
 $.level = {};
@@ -62,6 +59,10 @@ function buildGameCanvas() {
     logo = new createjs.Container();
     logoP = new createjs.Container();
 
+    themeBackgroundContainer = new createjs.Container();
+    themeBackgroundContainer.mouseEnabled = false;
+    themeBackgroundContainer.mouseChildren = false;
+    themeBackgroundContainer.tickEnabled = false;
     themeBackdrop = new createjs.Shape();
     themeBackgroundBitmap = new createjs.Bitmap(loader.getResult('magicTableBg'));
     themeShade = new createjs.Shape();
@@ -282,7 +283,8 @@ function buildGameCanvas() {
     gameContainer.addChild(editContainer, levelDisplayContainer, timerContainer, statusContainer);
     resultContainer.addChild(resultCard, itemResult, itemResultP, buttonContinue, resultTitleTxt, resultDescTxt);
 
-    canvasContainer.addChild(themeBackdrop, themeBackgroundBitmap, themeShade, themeGlowLeft, themeGlowRight, bgDecor, bg, bgP, mainContainer, levelContainer, waterContainer, selectContainer, gameContainer, resultContainer, confirmContainer, optionsContainer, buttonSettings, guideline);
+    themeBackgroundContainer.addChild(themeBackdrop, themeBackgroundBitmap, themeShade, themeGlowLeft, themeGlowRight, bgDecor);
+    canvasContainer.addChild(themeBackgroundContainer, bg, bgP, mainContainer, levelContainer, waterContainer, selectContainer, gameContainer, resultContainer, confirmContainer, optionsContainer, buttonSettings, guideline);
     stage.addChild(canvasContainer);
 
     changeViewport(viewport.isLandscape);
@@ -367,6 +369,17 @@ function drawCozyTheme() {
     confirmCard.x = cardX;
     confirmCard.y = confirmY;
     confirmCard.shadow = new createjs.Shadow("rgba(13,3,22,0.32)", 0, 10, 22);
+
+    cacheThemeBackground();
+}
+
+function cacheThemeBackground() {
+    if (!themeBackgroundContainer) {
+        return;
+    }
+
+    themeBackgroundContainer.uncache();
+    themeBackgroundContainer.cache(0, 0, canvasW, canvasH);
 }
 
 function coverThemeBackground() {
@@ -777,6 +790,9 @@ function removeGameCanvas() {
  * 
  */
 function tick(event) {
+    if (!shouldRenderGameFrame(event)) {
+        return;
+    }
     updateGame();
     stage.update(event);
 }

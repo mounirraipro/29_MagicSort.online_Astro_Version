@@ -14,7 +14,7 @@ function initPreload() {
         gameplayReadyMs: null
     };
     toggleLoader(true);
-    updateLoaderProgress(0, 'Opening Magic Sort...');
+    updateLoaderProgress(0);
 
     checkMobileEvent();
 
@@ -65,7 +65,7 @@ function handleFileError(evt) {
  * 
  */
 function handleProgress() {
-    updateLoaderProgress(Math.round(loader.progress * 100), 'Opening Magic Sort...');
+    updateLoaderProgress(Math.round(loader.progress * 100));
 }
 
 /*!
@@ -88,9 +88,13 @@ function handleComplete() {
     }
 };
 
-function updateLoaderProgress(percent, label) {
-    $('#mainLoaderProgress').text(percent + '%');
-    $('#mainLoaderLabel').text(label);
+function updateLoaderProgress(percent) {
+    var progress = Math.max(0, Math.min(100, percent));
+    $('#mainLoader')
+        .css('--loader-fill', (16 + (progress * .68)) + '%')
+        .css('--loader-angle', (progress * 3.6) + 'deg')
+        .attr('aria-valuenow', progress);
+    $('#mainLoaderProgress').text(progress + '%');
 }
 
 /*!

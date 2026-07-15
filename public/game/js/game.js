@@ -522,6 +522,10 @@ var timeData = {
     oldTimer: 0,
     accumulate: 0
 };
+var timerBarRenderState = {
+    width: -1,
+    backgroundReady: false
+};
 var selectData = {
     page: 0,
     total: 1,
@@ -2333,7 +2337,6 @@ function moveTube(pourIndex) {
         overwrite: true,
         onUpdate: function() {
             updateTubeData(thisLiquid);
-            updateTubeData(thisFillLiquid);
         },
         onComplete: function() {
             pourLiquid(pourIndex);
@@ -2390,8 +2393,6 @@ function pourLiquid(pourIndex) {
             thisSurface.y = thisShape.y + thisShape.fillH;
             LiquidAccessibility.positionSymbol(thisLiquid.data.colors[shapeIndex].symbol, thisShape);
             updateLiquid(pourIndex);
-            updateTubeData(thisLiquid);
-            updateTubeData(thisFillLiquid);
             updateFilling(pourIndex);
         },
         onComplete: pourLiquidComplete,
@@ -2445,7 +2446,6 @@ function pourLiquidComplete(pourIndex) {
         overwrite: true,
         onUpdate: function() {
             updateTubeData(thisLiquid);
-            updateTubeData(thisFillLiquid);
         },
         onComplete: function() {
             mixSameLiquid(thisFillLiquid.data.index);
@@ -2737,6 +2737,8 @@ function toggleGameTimer(con) {
 function toggleGameSessionTimer(con) {
     if (con) {
         timerShape.alpha = 1;
+        timerBarRenderState.width = -1;
+        timerBarRenderState.backgroundReady = false;
         timeData.oldTimer = -1;
         timeData.accumulate = 0;
         timeData.sessionDate = new Date();
@@ -2808,18 +2810,24 @@ function animateTimer() {
 }
 
 function updateTimerBar() {
-    timerShape.graphics.clear();
-    timerShape.graphics.beginFill(gameSettings.timer.color);
-
-    timerShapeBg.graphics.clear();
-    timerShapeBg.graphics.beginFill(gameSettings.timer.color);
-    timerShapeBg.alpha = .3;
-
     var totalW = timeData.sessionTimer / timeData.countdown * gameSettings.timer.width;
     totalW = totalW < 5 ? 5 : totalW;
+    totalW = Math.round(totalW);
+    if (timerBarRenderState.width == totalW && timerBarRenderState.backgroundReady) {
+        return;
+    }
+
     var radius = gameSettings.timer.radius;
+    timerShape.graphics.clear().beginFill(gameSettings.timer.color);
     timerShape.graphics.drawRoundRectComplex(0, 0, totalW, gameSettings.timer.height, radius, radius, radius, radius);
-    timerShapeBg.graphics.drawRoundRectComplex(0, 0, gameSettings.timer.width, gameSettings.timer.height, radius, radius, radius, radius);
+
+    if (!timerBarRenderState.backgroundReady) {
+        timerShapeBg.graphics.clear().beginFill(gameSettings.timer.color);
+        timerShapeBg.graphics.drawRoundRectComplex(0, 0, gameSettings.timer.width, gameSettings.timer.height, radius, radius, radius, radius);
+        timerShapeBg.alpha = .3;
+        timerBarRenderState.backgroundReady = true;
+    }
+    timerBarRenderState.width = totalW;
 }
 
 /*!

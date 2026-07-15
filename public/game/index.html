@@ -9,9 +9,8 @@
     <meta name="keywords" content="magic sort, pastel puzzle, color sorting, tube puzzle, cozy game, browser puzzle">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <link rel="shortcut icon" href="assets/icon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/normalize.css?v=20260714-stream1">
-    <link rel="stylesheet" href="css/main.css?v=20260714-stream1">
-    <script src="js/vendor/modernizr-2.6.2.min.js?v=20260714-stream1"></script>
+    <link rel="stylesheet" href="css/normalize.css?v=20260715-perf1">
+    <link rel="stylesheet" href="css/main.css?v=20260715-perf1">
     <script>
     if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
         var msViewportStyle = document.createElement("style");
@@ -21,10 +20,15 @@
     </script>
 </head>
 <body>
-    <div id="mainLoader">
-        <div class="loader-orb"></div>
-        <span id="mainLoaderProgress">0%</span>
-        <small id="mainLoaderLabel">Opening Magic Sort...</small>
+    <div id="mainLoader" role="progressbar" aria-label="Loading Magic Sort" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="loader-orb" aria-hidden="true">
+            <span class="loader-vial">
+                <span class="loader-vial__liquid"></span>
+                <span class="loader-vial__bubble loader-vial__bubble--one"></span>
+                <span class="loader-vial__bubble loader-vial__bubble--two"></span>
+            </span>
+        </div>
+        <span id="mainLoaderProgress" class="visually-hidden">0%</span>
     </div>
     <div id="mainHolder">
         <div id="notSupportHolder">
@@ -130,10 +134,12 @@
                 </div>
             </div>
             <p id="htmlPuzzleDescription" class="visually-hidden" aria-live="polite">Choose Start, Daily Challenge, or Levels to begin.</p>
-            <div id="htmlAssetStatus" class="asset-status is-hidden" role="status" aria-live="polite"></div>
+            <div id="htmlAssetStatus" class="asset-status is-hidden" role="status" aria-label="Preparing game pieces">
+                <span class="asset-status__ring" aria-hidden="true"></span>
+            </div>
         </div>
     </div>
 
-    <script src="js/game.bundle.min.js?v=20260714-stream1"></script>
+    <script src="js/game.bundle.min.js?v=20260715-perf1"></script>
 </body>
 </html>

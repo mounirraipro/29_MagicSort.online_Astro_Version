@@ -42,7 +42,7 @@ function ensureGameplayAssets(callback) {
 
     gameplayAssetLoad.callbacks.push(callback);
     gameplayAssetLoad.blocking = true;
-    updateGameplayAssetStatus(true, 'Preparing tubes...');
+    updateGameplayAssetStatus(true, 0);
     loadGameplayAssets();
 }
 
@@ -64,14 +64,14 @@ function handleGameplayAssetProgress(event) {
         return;
     }
 
-    updateGameplayAssetStatus(true, 'Preparing tubes... ' + Math.round(event.progress * 100) + '%');
+    updateGameplayAssetStatus(true, Math.round(event.progress * 100));
 }
 
 function handleGameplayAssetsComplete() {
     gameplayAssetLoad.loading = false;
     gameplayAssetLoad.loaded = true;
     gameplayAssetLoad.blocking = false;
-    updateGameplayAssetStatus(false, '');
+    updateGameplayAssetStatus(false, 100);
     if (window.magicSortLoadMetrics) {
         window.magicSortLoadMetrics.gameplayReadyMs = Math.round((window.performance ? window.performance.now() : 0) - window.magicSortLoadMetrics.startedAt);
     }
@@ -85,8 +85,9 @@ function handleGameplayAssetError(event) {
     console.error('Deferred gameplay asset failed to load:', event.item && event.item.src);
 }
 
-function updateGameplayAssetStatus(visible, message) {
+function updateGameplayAssetStatus(visible, progress) {
     $('#htmlAssetStatus')
         .toggleClass('is-hidden', !visible)
-        .text(message);
+        .css('--asset-angle', (progress * 3.6) + 'deg')
+        .attr('aria-label', visible ? 'Preparing game pieces' : 'Game pieces ready');
 }

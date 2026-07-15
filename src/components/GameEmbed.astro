@@ -12,10 +12,14 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}`;
 <div class="play-shell" data-game-embed>
   <div class="game-embed-stage">
     <iframe src={iframeSrc} title={title} loading="eager" allow="autoplay; fullscreen *" allowfullscreen></iframe>
-    <div class="game-embed-loading" data-game-loading role="status" aria-live="polite">
-      <span></span>
-      <strong>Loading Magic Sort</strong>
-      <small>Preparing the first screen...</small>
+    <div class="game-embed-loading" data-game-loading role="status" aria-label="Loading Magic Sort">
+      <div class="game-embed-loading__mark" aria-hidden="true">
+        <span class="game-embed-loading__vial">
+          <span class="game-embed-loading__liquid"></span>
+          <span class="game-embed-loading__bubble game-embed-loading__bubble--one"></span>
+          <span class="game-embed-loading__bubble game-embed-loading__bubble--two"></span>
+        </span>
+      </div>
     </div>
   </div>
   <div class="play-float-controls">

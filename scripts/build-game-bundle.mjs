@@ -14,6 +14,7 @@ const sourceFiles = [
   "asset-manifest.js",
   "audio-loader.js",
   "deferred-assets.js",
+  "render-performance.js",
   "canvas.js",
   "levels.js",
   "liquid-accessibility.js",

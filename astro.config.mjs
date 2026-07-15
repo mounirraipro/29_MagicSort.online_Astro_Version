@@ -1,5 +1,4 @@
 import { defineConfig } from "astro/config";
-import partytown from "@astrojs/partytown";
 import tailwindcss from "@tailwindcss/vite";
 import { siteConfig } from "./src/data/siteConfig";
 
@@ -27,11 +26,4 @@ export default defineConfig({
       exclude: ["aria-query", "axobject-query"],
     },
   },
-  integrations: [
-    partytown({
-      config: {
-        forward: ["dataLayer.push", "gtag"],
-      },
-    }),
-  ],
 });
