@@ -17,7 +17,7 @@
     position: absolute;
     inset: 0;
     z-index: 0;
-    background: #0b0710 url("../assets/magic-sort-workshop-desktop.webp?v=20260720-concept1") center / cover no-repeat;
+    background: #0b0710 url("../assets/magic-sort-workshop-desktop.webp?v=20260720-iphonefs1") center / cover no-repeat;
     pointer-events: none;
 }
 
@@ -344,6 +344,10 @@
     grid-row: auto;
     width: 100%;
     height: 66px;
+    background-image: var(--cabinet-image);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
     border-radius: 2px;
 }
 
@@ -403,7 +407,7 @@
 @media only screen and (max-width: 640px),
        only screen and (orientation: portrait) and (max-width: 900px) {
     .menu-scene {
-        background-image: url("../assets/magic-sort-workshop-mobile.webp?v=20260720-concept1");
+        background-image: url("../assets/magic-sort-workshop-mobile.webp?v=20260720-iphonefs1");
     }
 
     .menu-ui {
@@ -704,6 +708,45 @@
     .menu-ui__actions,
     .menu-ui__secondary {
         gap: 7px;
+    }
+}
+
+@media only screen and (orientation: landscape) and (max-height: 500px) {
+    .menu-ui {
+        padding: 8px 12px 10px;
+    }
+
+    .menu-ui__panel {
+        width: min(800px, calc(100vw - 28px));
+        padding: 8px 10px 10px;
+    }
+
+    .menu-ui__title {
+        top: 4px;
+        font-size: 42px;
+    }
+
+    .menu-ui__progress {
+        min-height: 38px;
+        gap: 8px;
+        margin-bottom: 7px;
+        padding-block: 3px;
+    }
+
+    .menu-ui__actions,
+    .menu-ui__secondary {
+        gap: 7px;
+    }
+
+    .menu-ui__button {
+        min-height: 46px;
+        padding: 6px 9px;
+        font-size: 22px;
+    }
+
+    .menu-ui__button--play {
+        min-height: 56px;
+        font-size: 34px;
     }
 }
 

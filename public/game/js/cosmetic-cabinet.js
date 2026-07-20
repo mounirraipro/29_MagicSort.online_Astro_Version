@@ -1,45 +1,14 @@
 (function(window) {
     'use strict';
 
-    var catalog = {
-        backgrounds: [{
-                id: 'classic',
-                title: 'Velvet Lab',
-                cost: 0,
-                src: 'assets/magic-sort-table-bg.webp'
-            },
-            {
-                id: 'emerald',
-                title: 'Emerald Conservatory',
-                cost: 350,
-                src: 'assets/theme-emerald-conservatory.webp'
-            },
-            {
-                id: 'celestial',
-                title: 'Celestial Observatory',
-                cost: 500,
-                src: 'assets/theme-celestial-observatory.webp'
-            }
-        ],
-        effects: [{ id: 'classic', title: 'Clean Pour', cost: 0 },
-            { id: 'prism', title: 'Prism Spark', cost: 250 },
-            { id: 'comet', title: 'Comet Trail', cost: 400 }
-        ]
-    };
     var imageCache = {};
 
     function findItem(type, id) {
-        var items = type === 'background' ? catalog.backgrounds : catalog.effects;
-        for (var index = 0; index < items.length; index++) {
-            if (items[index].id === id) {
-                return items[index];
-            }
-        }
-        return null;
+        return CosmeticCatalog.find(type, id);
     }
 
     function applyBackground(id) {
-        var item = findItem('background', id) || catalog.backgrounds[0];
+        var item = findItem('background', id) || CosmeticCatalog.getItems('background')[0];
         if (item.id === 'classic' && window.loader) {
             setThemeBackgroundImage(loader.getResult('magicTableBg'));
             return;
@@ -60,7 +29,7 @@
 
     function renderItems(type) {
         var profile = PlayerProfile.get();
-        var items = type === 'background' ? catalog.backgrounds : catalog.effects;
+        var items = CosmeticCatalog.getItems(type);
         var equipped = profile.equipped[type];
         var html = '';
         for (var index = 0; index < items.length; index++) {
@@ -143,6 +112,6 @@
         getEquippedEffect: function() {
             return PlayerProfile.get().equipped.effect;
         },
-        getCatalog: function() { return catalog; }
+        getCatalog: function() { return CosmeticCatalog.getAll(); }
     };
 })(window);

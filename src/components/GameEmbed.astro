@@ -26,7 +26,7 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}${challengeToken ? `&
   </div>
   <div class="play-float-controls">
     <button type="button" data-share-game aria-label="Challenge a friend">Challenge</button>
-    <button type="button" data-fullscreen-game aria-label="Fullscreen game">Fullscreen</button>
+    <button type="button" data-fullscreen-game aria-label="Enter fullscreen" aria-pressed="false">Fullscreen</button>
   </div>
   <p class="play-share-feedback" data-share-feedback aria-live="polite"></p>
 </div>
@@ -41,6 +41,68 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}${challengeToken ? `&
       const feedback = shell.querySelector("[data-share-feedback]");
       const isMobileShare = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
       let shareRequest = 0;
+      let pseudoFullscreen = false;
+      let savedScrollPosition = 0;
+      let shellPlaceholder = null;
+
+      const nativeFullscreenElement = () => document.fullscreenElement || document.webkitFullscreenElement;
+      const shouldUsePseudoFullscreen = () => isMobileShare || window.matchMedia("(max-width: 900px)").matches;
+
+      const updateFullscreenControl = () => {
+        const active = pseudoFullscreen || nativeFullscreenElement() === shell;
+        fullscreen?.setAttribute("aria-pressed", String(active));
+        fullscreen?.setAttribute("aria-label", active ? "Exit fullscreen" : "Enter fullscreen");
+        if (fullscreen) fullscreen.textContent = active ? "Exit" : "Fullscreen";
+      };
+
+      const updateMobileFullscreenViewport = () => {
+        const viewport = window.visualViewport;
+        const width = viewport?.width || window.innerWidth;
+        const height = viewport?.height || window.innerHeight;
+        const offsetLeft = viewport?.offsetLeft || 0;
+        const offsetTop = viewport?.offsetTop || 0;
+        shell.style.setProperty("--game-fullscreen-width", `${Math.round(width)}px`);
+        shell.style.setProperty("--game-fullscreen-height", `${Math.round(height)}px`);
+        shell.style.setProperty("--game-fullscreen-left", `${Math.round(offsetLeft)}px`);
+        shell.style.setProperty("--game-fullscreen-top", `${Math.round(offsetTop)}px`);
+      };
+
+      const enterPseudoFullscreen = () => {
+        savedScrollPosition = window.scrollY;
+        pseudoFullscreen = true;
+        shellPlaceholder = document.createComment("game-embed-placeholder");
+        shell.parentNode?.insertBefore(shellPlaceholder, shell);
+        document.body.appendChild(shell);
+        updateMobileFullscreenViewport();
+        shell.classList.add("is-pseudo-fullscreen");
+        document.documentElement.classList.add("game-pseudo-fullscreen");
+        updateFullscreenControl();
+      };
+
+      const exitPseudoFullscreen = () => {
+        if (!pseudoFullscreen) return;
+        pseudoFullscreen = false;
+        if (document.activeElement instanceof HTMLElement && shell.contains(document.activeElement)) {
+          document.activeElement.blur();
+        }
+        shell.classList.remove("is-pseudo-fullscreen");
+        document.documentElement.classList.remove("game-pseudo-fullscreen");
+        if (shellPlaceholder?.parentNode) {
+          shellPlaceholder.parentNode.insertBefore(shell, shellPlaceholder);
+          shellPlaceholder.remove();
+        }
+        shellPlaceholder = null;
+        shell.style.removeProperty("--game-fullscreen-width");
+        shell.style.removeProperty("--game-fullscreen-height");
+        shell.style.removeProperty("--game-fullscreen-left");
+        shell.style.removeProperty("--game-fullscreen-top");
+        window.scrollTo(0, savedScrollPosition);
+        window.requestAnimationFrame(() => window.scrollTo(0, savedScrollPosition));
+        updateFullscreenControl();
+      };
+
+      const requestNativeFullscreen = shell.requestFullscreen || shell.webkitRequestFullscreen;
+      const exitNativeFullscreen = document.exitFullscreen || document.webkitExitFullscreen;
 
       const setFeedback = (message) => {
         if (!feedback) return;
@@ -94,12 +156,41 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}${challengeToken ? `&
 
       window.addEventListener("message", markReady);
       fullscreen?.addEventListener("click", async () => {
-        if (document.fullscreenElement) {
-          await document.exitFullscreen?.();
+        if (pseudoFullscreen) {
+          exitPseudoFullscreen();
           return;
         }
-        await (iframe?.requestFullscreen?.() ?? shell.requestFullscreen?.());
+        if (nativeFullscreenElement()) {
+          await exitNativeFullscreen?.call(document);
+          return;
+        }
+        if (shouldUsePseudoFullscreen()) {
+          enterPseudoFullscreen();
+          return;
+        }
+        if (!requestNativeFullscreen) {
+          enterPseudoFullscreen();
+          return;
+        }
+        try {
+          await requestNativeFullscreen.call(shell, { navigationUI: "hide" });
+          updateFullscreenControl();
+        } catch {
+          enterPseudoFullscreen();
+        }
       });
+      document.addEventListener("fullscreenchange", updateFullscreenControl);
+      document.addEventListener("webkitfullscreenchange", updateFullscreenControl);
+      window.visualViewport?.addEventListener("resize", () => {
+        if (pseudoFullscreen) updateMobileFullscreenViewport();
+      });
+      window.visualViewport?.addEventListener("scroll", () => {
+        if (pseudoFullscreen) updateMobileFullscreenViewport();
+      });
+      window.addEventListener("orientationchange", () => {
+        if (pseudoFullscreen) window.setTimeout(updateMobileFullscreenViewport, 120);
+      });
+      window.addEventListener("pagehide", exitPseudoFullscreen);
       share?.addEventListener("click", async () => {
         const challenge = await requestChallenge();
         const url = new URL("/play/", location.origin);

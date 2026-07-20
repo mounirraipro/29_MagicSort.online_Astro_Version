@@ -24,6 +24,7 @@ const sourceFiles = [
   "mastery-objectives.js",
   "achievements.js",
   "player-profile.js",
+  "cosmetic-catalog.js",
   "cosmetic-cabinet.js",
   "completion-effects.js",
   "gameplay-assists.js",

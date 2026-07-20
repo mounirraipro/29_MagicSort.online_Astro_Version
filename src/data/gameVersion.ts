@@ -1,1 +1,1 @@
-export const GAME_ASSET_VERSION = "20260720-concept2";
+export const GAME_ASSET_VERSION = "20260720-iphonefs1";
