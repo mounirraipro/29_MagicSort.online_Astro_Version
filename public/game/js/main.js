@@ -44,7 +44,15 @@ function initMain() {
         goPage('game');
     } else {
         retrieveLevelData();
-        goPage('main');
+        var incomingChallenge = FriendChallenge.loadFromLocation(levelSettings.length);
+        if (incomingChallenge) {
+            DailyChallenge.deactivate();
+            gameData.type = 'friend';
+            gameData.levelNum = incomingChallenge.levelIndex;
+            goPage('game');
+        } else {
+            goPage('main');
+        }
     }
 
     checkMobileOrientation();

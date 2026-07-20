@@ -6,7 +6,9 @@ type Props = {
 };
 
 const { title = "Play Magic Sort online" } = Astro.props;
-const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}`;
+const challengeParam = Astro.url.searchParams.get("challenge");
+const challengeToken = challengeParam && /^[A-Za-z0-9_-]{1,500}$/.test(challengeParam) ? challengeParam : "";
+const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}${challengeToken ? `&challenge=${challengeToken}` : ""}`;
 ---
 
 <div class="play-shell" data-game-embed>
@@ -23,7 +25,7 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}`;
     </div>
   </div>
   <div class="play-float-controls">
-    <button type="button" data-share-game aria-label="Share game">Share game</button>
+    <button type="button" data-share-game aria-label="Challenge a friend">Challenge</button>
     <button type="button" data-fullscreen-game aria-label="Fullscreen game">Fullscreen</button>
   </div>
   <p class="play-share-feedback" data-share-feedback aria-live="polite"></p>
@@ -38,6 +40,7 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}`;
       const share = shell.querySelector("[data-share-game]");
       const feedback = shell.querySelector("[data-share-feedback]");
       const isMobileShare = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      let shareRequest = 0;
 
       const setFeedback = (message) => {
         if (!feedback) return;
@@ -52,6 +55,43 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}`;
         shell.setAttribute("data-game-ready", "true");
       };
 
+      const requestChallenge = () => new Promise((resolve) => {
+        const requestId = `share-${Date.now()}-${++shareRequest}`;
+        const timer = window.setTimeout(() => {
+          window.removeEventListener("message", receive);
+          resolve(null);
+        }, 900);
+        const receive = (event) => {
+          if (event.source !== iframe?.contentWindow || event.data?.type !== "magic-sort-share-data" || event.data.requestId !== requestId) return;
+          window.clearTimeout(timer);
+          window.removeEventListener("message", receive);
+          resolve(event.data.data ?? null);
+        };
+        window.addEventListener("message", receive);
+        iframe?.contentWindow?.postMessage({ type: "magic-sort-share-request", requestId }, location.origin);
+      });
+
+      const copyText = async (value) => {
+        try {
+          await Promise.race([
+            navigator.clipboard.writeText(value),
+            new Promise((_, reject) => window.setTimeout(() => reject(new Error("clipboard timeout")), 800)),
+          ]);
+          return true;
+        } catch {
+          const input = document.createElement("textarea");
+          input.value = value;
+          input.setAttribute("readonly", "");
+          input.style.position = "fixed";
+          input.style.opacity = "0";
+          document.body.appendChild(input);
+          input.select();
+          const copied = document.execCommand("copy");
+          input.remove();
+          return copied;
+        }
+      };
+
       window.addEventListener("message", markReady);
       fullscreen?.addEventListener("click", async () => {
         if (document.fullscreenElement) {
@@ -61,17 +101,23 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}`;
         await (iframe?.requestFullscreen?.() ?? shell.requestFullscreen?.());
       });
       share?.addEventListener("click", async () => {
-        const url = new URL("/play/", location.origin).href;
-        const data = { title: "Magic Sort", text: "Can you beat my Magic Sort score?", url };
+        const challenge = await requestChallenge();
+        const url = new URL("/play/", location.origin);
+        if (challenge?.token) url.searchParams.set("challenge", challenge.token);
+        const target = challenge?.target;
+        const text = target
+          ? `I cleared Magic Sort stage ${challenge.level} in ${target.moves} moves. Can you beat it?`
+          : "Try this Magic Sort puzzle and see if you can beat it.";
+        const data = { title: "Magic Sort Challenge", text, url: url.href };
         try {
           if (isMobileShare && navigator.share) {
             await navigator.share(data);
             return;
           }
-          await navigator.clipboard.writeText(url);
-          setFeedback("Link copied. Challenge a friend to beat your score.");
+          const copied = await copyText(url.href);
+          setFeedback(copied ? (challenge?.token ? "Challenge link copied." : "Game link copied.") : "Copy this link: " + url.href);
         } catch {
-          setFeedback("Copy this link: " + url);
+          setFeedback("Copy this link: " + url.href);
         }
       });
     });

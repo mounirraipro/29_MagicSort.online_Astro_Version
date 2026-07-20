@@ -397,6 +397,18 @@ function coverThemeBackground() {
     themeBackgroundBitmap.y = (canvasH - (imageH * scale)) / 2;
 }
 
+function setThemeBackgroundImage(image) {
+    if (!image || !themeBackgroundBitmap) {
+        return;
+    }
+    themeBackgroundContainer.uncache();
+    themeBackgroundBitmap.image = image;
+    drawCozyTheme();
+    if (stage) {
+        stage.update();
+    }
+}
+
 function addDecorativeBubble(x, y, radius, color) {
     var bubble = new createjs.Shape();
     bubble.graphics.beginFill(color).drawCircle(0, 0, radius);

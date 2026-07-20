@@ -506,7 +506,9 @@ var gameplayPolishData = {
     stars: 3,
     completedTubes: 0,
     complete: false,
-    bestResult: null
+    bestResult: null,
+    objectives: [],
+    completionReward: null
 };
 var gameplayRewardToastTimer = null;
 var tweenData = {
@@ -569,6 +571,8 @@ function resetGameplayPolish() {
     gameplayPolishData.completedTubes = 0;
     gameplayPolishData.complete = false;
     gameplayPolishData.bestResult = null;
+    gameplayPolishData.objectives = [];
+    gameplayPolishData.completionReward = null;
     clearAssistMessage();
     clearGameplayRewardMessage();
     if (typeof GameplayRewards != 'undefined') {
@@ -746,9 +750,7 @@ function updateCompletedTubeCount() {
 
 function calculateStageStars() {
     var stageSettings = levelSettings[gameData.levelNum];
-    var targetTubes = getStageTargetTubeCount();
-    var colorLayers = Math.max(1, stageSettings.levels);
-    var parMoves = Math.max(4, targetTubes * Math.max(2, colorLayers - 1));
+    var parMoves = MasteryObjectives.getParMoves(stageSettings);
     var adjustedMoves = gameplayPolishData.moveCount + (gameplayPolishData.undoCount * 2) + (gameplayPolishData.hintCount * 2);
 
     if (adjustedMoves <= Math.ceil(parMoves * 1.2)) {
@@ -763,7 +765,7 @@ function calculateStageStars() {
 function getStarText(stars) {
     var text = '';
     for (var n = 0; n < 3; n++) {
-        text += n < stars ? '★' : '☆';
+        text += String.fromCharCode(n < stars ? 9733 : 9734);
     }
     return text;
 }
@@ -786,22 +788,56 @@ function completeGameplayPolish() {
     gameplayPolishData.pendingMove = null;
     updateCompletedTubeCount();
     gameplayPolishData.stars = calculateStageStars();
+    gameplayPolishData.objectives = getCurrentMasteryObjectives();
     gameplayPolishData.bestResult = recordGameplayBest();
+    gameplayPolishData.completionReward = recordGameplayProgression();
+    if (gameplayPolishData.completionReward && gameplayPolishData.completionReward.essenceEarned > 0) {
+        showGameplayRewardMessage('+' + gameplayPolishData.completionReward.essenceEarned + ' Essence');
+    }
+    CompletionEffects.playCelebration(gameplayPolishData.stars);
     updateGameplayPolishUI();
 }
 
+function getCurrentMasteryObjectives() {
+    return MasteryObjectives.evaluate(levelSettings[gameData.levelNum], {
+        moves: gameplayPolishData.moveCount,
+        undos: gameplayPolishData.undoCount,
+        hints: gameplayPolishData.hintCount,
+        bestCombo: getGameplayRewardState().bestCombo
+    });
+}
+
+function recordGameplayProgression() {
+    if (gameData.type != 'level' && gameData.type != 'daily' && gameData.type != 'challenge') {
+        return null;
+    }
+    var profileMode = gameData.type == 'daily' ? 'daily' : 'level';
+    var identifier = profileMode == 'daily' ? DailyChallenge.getDescriptor().dateKey : gameData.levelNum + 1;
+    return PlayerProfile.recordCompletion({
+        mode: profileMode,
+        identifier: identifier,
+        stars: gameplayPolishData.stars,
+        moves: gameplayPolishData.moveCount,
+        undos: gameplayPolishData.undoCount,
+        hints: gameplayPolishData.hintCount,
+        bestCombo: getGameplayRewardState().bestCombo,
+        objectives: gameplayPolishData.objectives
+    });
+}
+
 function recordGameplayBest() {
-    if (typeof PlayerProgress == 'undefined' || (gameData.type != 'level' && gameData.type != 'daily')) {
+    if (typeof PlayerProgress == 'undefined' || (gameData.type != 'level' && gameData.type != 'daily' && gameData.type != 'challenge')) {
         return null;
     }
 
     var identifier = gameData.levelNum + 1;
+    var progressMode = gameData.type == 'challenge' ? 'level' : gameData.type;
     if (gameData.type == 'daily') {
         identifier = DailyChallenge.getDescriptor().dateKey;
     }
 
     return PlayerProgress.recordBest({
-        mode: gameData.type,
+        mode: progressMode,
         identifier: identifier,
         stars: gameplayPolishData.stars,
         moves: gameplayPolishData.moveCount,
@@ -834,6 +870,9 @@ function recordGameplayRewardMove() {
     if (reward.milestone) {
         showGameplayRewardMessage(reward.message);
     }
+    if (reward.sealedTubes > 0) {
+        CompletionEffects.playTubeSeal();
+    }
 }
 
 function breakGameplayFlow() {
@@ -863,6 +902,9 @@ function getCurrentGameplayBest() {
     if (gameData.type == 'level') {
         return PlayerProgress.getLevelBest(gameData.levelNum + 1);
     }
+    if (gameData.type == 'challenge') {
+        return PlayerProgress.getLevelBest(gameData.levelNum + 1);
+    }
     if (gameData.type == 'daily' && typeof DailyChallenge != 'undefined') {
         return PlayerProgress.getDailyBest(DailyChallenge.getDescriptor().dateKey);
     }
@@ -876,7 +918,27 @@ function getGameplayStageDisplay() {
     if (gameData.type == 'challenge') {
         return { kind: 'Round', value: Math.max(1, gameData.challengeNum || 1) };
     }
+    if (gameData.type == 'friend') {
+        return { kind: 'Friend', value: gameData.levelNum + 1 };
+    }
     return { kind: 'Stage', value: gameData.levelNum + 1 };
+}
+
+function renderMasteryObjectives() {
+    if ($('#htmlMasteryObjectives').length == 0) {
+        return;
+    }
+    var objectives = gameplayPolishData.complete ? gameplayPolishData.objectives : getCurrentMasteryObjectives();
+    var html = '';
+    for (var index = 0; index < objectives.length; index++) {
+        var objective = objectives[index];
+        var complete = gameplayPolishData.complete && objective.complete;
+        var onTrack = !gameplayPolishData.complete && objective.complete;
+        html += '<li class="game-mastery__item' + (complete ? ' is-complete' : '') + (onTrack ? ' is-on-track' : '') + '">';
+        html += '<span class="game-mastery__seal game-mastery__seal--' + objective.id + '" aria-hidden="true"></span>';
+        html += '<span><strong>' + objective.title + '</strong><small>' + objective.progress + '</small></span></li>';
+    }
+    $('#htmlMasteryObjectives').html(html);
 }
 
 function updateGameplayPolishUI() {
@@ -900,14 +962,18 @@ function updateGameplayPolishUI() {
     $('#htmlStageValue').text(stageDisplay.value);
 
     var currentBest = getCurrentGameplayBest();
-    $('#htmlBestMoveValue').text(currentBest ? currentBest.moves : '--');
-    $('#htmlBestCounter').attr('aria-label', currentBest ? 'Personal best ' + currentBest.moves + ' moves' : 'No personal best yet');
+    var friendTarget = gameData.type == 'friend' ? FriendChallenge.getDescriptor().target : null;
+    $('#htmlBestCounter .game-hud__label').text(friendTarget ? 'Target' : 'Best');
+    $('#htmlBestMoveValue').text(friendTarget ? friendTarget.moves : (currentBest ? currentBest.moves : '--'));
+    $('#htmlBestCounter').attr('aria-label', friendTarget ? 'Friend target ' + friendTarget.moves + ' moves' : (currentBest ? 'Personal best ' + currentBest.moves + ' moves' : 'No personal best yet'));
+    $('#htmlEssenceValue').text(PlayerProfile.getEssence());
     $('#htmlUndoButton')
         .prop('disabled', !canUndo)
         .attr('aria-label', canUndo ? 'Undo last move' : 'No move to undo');
     $('#htmlHintButton').prop('disabled', !canUseGameplayAssist());
     $('#htmlRestartButton').prop('disabled', !canUseGameplayAssist());
     $('#htmlSymbolsButton').prop('disabled', isPourInProgress());
+    renderMasteryObjectives();
     updatePuzzleAccessibilityDescription();
 }
 
@@ -1023,6 +1089,7 @@ function startDailyChallenge() {
         return;
     }
 
+    FriendChallenge.deactivate();
     var daily = DailyChallenge.activate(levelSettings.length);
     gameData.type = 'daily';
     gameData.levelNum = daily.levelIndex;
@@ -1064,6 +1131,7 @@ function buildGameButton() {
     buttonStart.cursor = "pointer";
     buttonStart.addEventListener("click", function(evt) {
         DailyChallenge.deactivate();
+        FriendChallenge.deactivate();
         gameData.type = "challenge";
         playSound('soundButton');
         goPage('select');
@@ -1072,6 +1140,7 @@ function buildGameButton() {
     buttonLevels.cursor = "pointer";
     buttonLevels.addEventListener("click", function(evt) {
         DailyChallenge.deactivate();
+        FriendChallenge.deactivate();
         gameData.type = "level";
         playSound('soundButton');
         goPage('level');
@@ -1196,6 +1265,7 @@ function initHTMLInterface() {
 
     $('#htmlStartButton').on('click', function() {
         DailyChallenge.deactivate();
+        FriendChallenge.deactivate();
         gameData.type = 'challenge';
         playSound('soundButton');
         goPage('select');
@@ -1203,6 +1273,7 @@ function initHTMLInterface() {
 
     $('#htmlLevelsButton').on('click', function() {
         DailyChallenge.deactivate();
+        FriendChallenge.deactivate();
         gameData.type = 'level';
         playSound('soundButton');
         goPage('level');
@@ -1210,6 +1281,16 @@ function initHTMLInterface() {
 
     $('#htmlDailyButton').on('click', function() {
         startDailyChallenge();
+    });
+
+    $('#htmlCabinetButton').on('click', function() {
+        playSound('soundButton');
+        goPage('shop');
+    });
+
+    $('#htmlMainSettingsButton').on('click', function() {
+        playSound('soundButton');
+        toggleOption();
     });
 
     $('#htmlLevelPrev').on('click', function() {
@@ -1225,6 +1306,16 @@ function initHTMLInterface() {
     $('#htmlBackFromLevels').on('click', function() {
         playSound('soundButton');
         goPage('main');
+    });
+
+    $('#htmlBackFromCabinet').on('click', function() {
+        playSound('soundButton');
+        goPage('main');
+    });
+
+    $('#htmlBackFromTube').on('click', function() {
+        playSound('soundButton');
+        goPage(gameData.type == 'level' ? 'level' : 'main');
     });
 
     $('#htmlTubePrev').on('click', function() {
@@ -1296,21 +1387,52 @@ function initHTMLInterface() {
     $('#htmlRestartButton').on('click', function() {
         requestStageRestart();
     });
+
+    CosmeticCabinet.init();
+    window.addEventListener('message', function(event) {
+        if (event.source !== window.parent || event.data == null || event.data.type !== 'magic-sort-share-request') {
+            return;
+        }
+        var shareData = null;
+        if (FriendChallenge.isActive()) {
+            shareData = FriendChallenge.createShareData({
+                complete: gameplayPolishData.complete,
+                moves: gameplayPolishData.moveCount,
+                score: Math.floor(playerData.score),
+                stars: gameplayPolishData.stars
+            });
+        }
+        window.parent.postMessage({
+            type: 'magic-sort-share-data',
+            requestId: event.data.requestId,
+            data: shareData
+        }, event.origin);
+    });
 }
 
 function updateHTMLInterface() {
     var showMainMenu = curPage === 'main' && !$.editor.enable;
     var showLevelMenu = curPage === 'level' && !$.editor.enable;
     var showTubeMenu = curPage === 'select' && !$.editor.enable;
+    var showShopMenu = curPage === 'shop' && !$.editor.enable;
     var showResultMenu = curPage === 'result' && !$.editor.enable;
     var showGameHud = curPage === 'game' && !$.editor.enable;
-    var showSettings = !$.editor.enable && (curPage === 'game' || curPage === 'select' || curPage === 'level');
+    var showSettings = !$.editor.enable && (curPage === 'main' || curPage === 'shop' || curPage === 'game' || curPage === 'select' || curPage === 'level');
+
+    $('#uiLayer')
+        .toggleClass('is-main-hub', showMainMenu)
+        .toggleClass('is-shop-page', showShopMenu)
+        .toggleClass('is-vial-page', showTubeMenu)
+        .toggleClass('is-game-page', showGameHud);
 
     $('#htmlMainMenu').toggleClass('is-hidden', !showMainMenu);
+    $('#htmlMenuScene').toggleClass('is-hidden', !(showMainMenu || showShopMenu));
     $('#htmlLevelMenu').toggleClass('is-hidden', !showLevelMenu);
     $('#htmlTubeMenu').toggleClass('is-hidden', !showTubeMenu);
+    $('#htmlShopMenu').toggleClass('is-hidden', !showShopMenu);
     $('#htmlResultMenu').toggleClass('is-hidden', !showResultMenu);
     $('#htmlGameHud').toggleClass('is-hidden', !showGameHud);
+    $('#htmlGameMastery').toggleClass('is-hidden', !showGameHud);
     $('#htmlGameAssists').toggleClass('is-hidden', !showGameHud);
     $('#htmlSettingsMenu').toggleClass('is-hidden', !showSettings);
 
@@ -1376,7 +1498,13 @@ function updateHTMLDailyChallenge() {
 }
 
 function updateHTMLTubeMenu() {
-    $('#htmlTubePlay').text(gameData.type == 'daily' ? 'Play Daily' : 'Play ' + (gameData.levelNum + 1));
+    var playLabel = gameData.type == 'daily' ? 'Play Daily' : 'Play ' + (gameData.levelNum + 1);
+    if (gameData.type == 'friend') {
+        playLabel = 'Play Friend Challenge';
+    }
+    $('#htmlTubePlay').text(playLabel);
+    $('#htmlTubeStyleLabel').text('Vial ' + (gameData.tubesArrIndex + 1) + ' of ' + tubes_arr.length);
+    CosmeticCabinet.render();
 }
 
 function updateHTMLResult() {
@@ -1385,6 +1513,8 @@ function updateHTMLResult() {
         resultTitle = textDisplay.resultLevelTitle.replace('[NUMBER]', gameData.challengeNum);
     } else if (gameData.type == 'daily') {
         resultTitle = 'Daily Challenge Complete';
+    } else if (gameData.type == 'friend') {
+        resultTitle = 'Friend Challenge Complete';
     }
     $('#htmlResultTitle').text(resultTitle);
     $('#htmlResultStars').text(getStarText(gameplayPolishData.complete ? gameplayPolishData.stars : 0));
@@ -1395,12 +1525,36 @@ function updateHTMLResult() {
     $('#htmlResultBest')
         .toggleClass('is-hidden', !bestResult || !bestResult.best)
         .text(bestResult && bestResult.best ? (bestResult.isNewBest ? 'New best: ' : 'Best: ') + bestResult.best.moves + ' moves' : '');
+    renderResultProgression();
+}
+
+function renderResultProgression() {
+    var objectives = gameplayPolishData.objectives || [];
+    var seals = '';
+    for (var index = 0; index < objectives.length; index++) {
+        var objective = objectives[index];
+        seals += '<span class="result-seal' + (objective.complete ? ' is-earned' : '') + '" title="' + objective.description + '">';
+        seals += '<span class="game-mastery__seal game-mastery__seal--' + objective.id + '" aria-hidden="true"></span>';
+        seals += '<small>' + objective.title + '</small></span>';
+    }
+    $('#htmlResultSeals').html(seals);
+
+    var reward = gameplayPolishData.completionReward;
+    $('#htmlResultEssence')
+        .toggleClass('is-hidden', !reward || reward.essenceEarned <= 0)
+        .text(reward && reward.essenceEarned > 0 ? '+' + reward.essenceEarned + ' Essence' : '');
+    var achievement = reward && reward.newAchievements.length ? reward.newAchievements[0] : null;
+    $('#htmlResultAchievement')
+        .toggleClass('is-hidden', !achievement)
+        .text(achievement ? 'Achievement: ' + achievement.title : '');
 }
 
 function getResultMetaText() {
     var mode = gameData.type == 'level' ? 'Stage ' + gameData.challengeNum : 'Challenge ' + gameData.challengeNum;
     if (gameData.type == 'daily') {
         mode = DailyChallenge.getDescriptor().dateLabel;
+    } else if (gameData.type == 'friend') {
+        mode = 'Friend Stage ' + (gameData.levelNum + 1);
     }
     var meta = mode + ' | Moves ' + gameplayPolishData.moveCount;
 
@@ -1480,8 +1634,8 @@ function selectTube() {
     fillLiquid(0);
     updateTubeData(gameData.tubes[0]);
 
-    gameData.tubes[0].scaleX = gameData.tubes[0].scaleY = .8;
-    gameData.offsetY = (tubes_arr[gameData.tubeNum].fillH / 2) * .8;
+    gameData.tubes[0].scaleX = gameData.tubes[0].scaleY = .72;
+    gameData.offsetY = -(tubes_arr[gameData.tubeNum].fillH * .16);
     updateHTMLTubeMenu();
 }
 
@@ -1621,6 +1775,10 @@ function goPage(page) {
         return;
     }
 
+    if (curPage && page !== curPage && typeof optionsContainer != 'undefined') {
+        setOptionMenuOpen(false);
+    }
+
     curPage = page;
 
     mainContainer.visible = false;
@@ -1629,7 +1787,7 @@ function goPage(page) {
     gameContainer.visible = false;
     waterContainer.visible = false;
     resultContainer.visible = false;
-    if (page != 'main') {
+    if (page != 'main' && page != 'shop') {
         stopMusicLoop('musicMain');
     }
     if (page != 'game') {
@@ -1639,6 +1797,11 @@ function goPage(page) {
     var targetContainer = null;
     switch (page) {
         case 'main':
+            targetContainer = mainContainer;
+            playMusicLoop("musicMain");
+            break;
+
+        case 'shop':
             targetContainer = mainContainer;
             playMusicLoop("musicMain");
             break;
@@ -1718,11 +1881,17 @@ function startGame() {
 
     if (gameData.type == "challenge") {
         gameData.levelNum = 0;
+        FriendChallenge.activateRandom(gameData.levelNum);
     } else if (gameData.type == 'daily') {
+        FriendChallenge.deactivate();
         gameData.levelNum = DailyChallenge.getDescriptor().levelIndex;
         gameData.colorsArr.sort(function(a, b) {
             return a - b;
         });
+    } else if (gameData.type == 'friend') {
+        gameData.levelNum = FriendChallenge.getDescriptor().levelIndex;
+    } else {
+        FriendChallenge.activateRandom(gameData.levelNum);
     }
     gameData.challengeNum = gameData.levelNum + 1;
 
@@ -1774,7 +1943,7 @@ function resizeGameUI() {
 
     if (viewport.isLandscape) {
         timerShape.x = timerShapeBg.x = (canvasW / 2) - (gameSettings.timer.width / 2);
-        timerShape.y = timerShapeBg.y = canvasH / 100 * 85;
+        timerShape.y = timerShapeBg.y = canvasH / 100 * 80;
 
         statusContainer.x = canvasW / 2;
         statusContainer.y = timerShape.y - 20;
@@ -1788,7 +1957,7 @@ function resizeGameUI() {
         buttonBack.y = canvasH / 100 * 29;
     } else {
         timerShape.x = timerShapeBg.x = (canvasW / 2) - (gameSettings.timer.width / 2);
-        timerShape.y = timerShapeBg.y = canvasH / 100 * 92;
+        timerShape.y = timerShapeBg.y = canvasH / 100 * 84;
 
         statusContainer.x = canvasW / 2;
         statusContainer.y = timerShape.y - 20;
@@ -1965,6 +2134,8 @@ function setupStage() {
 
     if (gameData.type == 'daily') {
         DailyChallenge.beginStage();
+    } else if (FriendChallenge.isActive()) {
+        FriendChallenge.beginStage();
     }
 
     /*createTube(-50, 50);
@@ -2090,16 +2261,23 @@ function fillAllTubes() {
     if (checkLiquidComplete(false)) {
         if (gameData.type == 'daily') {
             DailyChallenge.retryGeneration();
+        } else if (FriendChallenge.isActive()) {
+            FriendChallenge.retryGeneration();
         }
         setupStage();
     } else if (gameData.type == 'daily') {
         DailyChallenge.confirmGeneration();
+    } else if (FriendChallenge.isActive()) {
+        FriendChallenge.confirmGeneration();
     };
 }
 
 function shuffleStageData(array) {
     if (gameData.type == 'daily' && typeof DailyChallenge != 'undefined' && DailyChallenge.isActive()) {
         return DailyChallenge.shuffle(array);
+    }
+    if (typeof FriendChallenge != 'undefined' && FriendChallenge.isActive()) {
+        return FriendChallenge.shuffle(array);
     }
     return shuffle(array);
 }
@@ -2955,11 +3133,11 @@ function calculateScore() {
 
                     playSound('soundClear');
                     showGameStatus("clear");
-                    var tweenSpeed = gameData.type == "level" ? 0 : 2;
+                    var tweenSpeed = (gameData.type == "level" || gameData.type == 'friend') ? 0 : 2;
                     TweenMax.to(timerContainer, tweenSpeed, {
                         overwrite: true,
                         onComplete: function() {
-                            if (gameData.type != 'daily') {
+                            if (gameData.type != 'daily' && gameData.type != 'friend') {
                                 gameData.revealLevel = false;
                                 gameData.levelNum++;
                                 if (gameData.levelNum >= gameData.levelCompleted && gameData.levelNum < levelSettings.length) {
@@ -2971,7 +3149,7 @@ function calculateScore() {
                                 saveLevelData();
                             }
 
-                            if (gameData.type == "level" || gameData.type == 'daily') {
+                            if (gameData.type == "level" || gameData.type == 'daily' || gameData.type == 'friend') {
                                 endGame();
                             } else {
                                 gameData.levelNum--;
@@ -2989,6 +3167,7 @@ function proceedNextStage() {
     gameData.challengeNum++;
     gameData.levelNum++;
     gameData.levelNum = gameData.levelNum > levelSettings.length - 1 ? levelSettings.length - 1 : gameData.levelNum;
+    FriendChallenge.activateRandom(gameData.levelNum);
 
     setupStage();
 }
