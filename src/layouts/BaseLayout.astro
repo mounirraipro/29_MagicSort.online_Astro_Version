@@ -44,7 +44,7 @@ const jsonLd = [...buildJsonLd(pageSeo, canonicalUrl), ...structuredData];
 const islandLinks = siteRoutes.filter((route) => ["/play", "/games", "/blog", "/how-to-play"].includes(route.path));
 const menuLinks = siteRoutes.filter((route) => ["/play", "/games", "/how-to-play", "/strategy", "/blog", "/parents", "/faq", "/contact"].includes(route.path));
 const legalLinks = siteRoutes.filter((route) => route.group === "legal");
-const supportLinks = siteRoutes.filter((route) => ["/faq", "/contact", "/about", "/accessibility"].includes(route.path));
+const supportLinks = siteRoutes.filter((route) => ["/faq", "/contact", "/about", "/editorial-policy", "/accessibility"].includes(route.path));
 const isActive = (path: string) => (path === "/" ? pathname === "/" : pathname.startsWith(path));
 const footerLinkClass = "text-[0.92rem] font-medium text-muted no-underline transition-colors hover:text-game-purple-dark";
 const routeHref = (path: string) => withTrailingSlash(path);
@@ -160,8 +160,8 @@ const routeHref = (path: string) => withTrailingSlash(path);
           </div>
         </nav>
 
-        <nav aria-label="Community links">
-          <p class="mb-3 text-[0.72rem] font-black uppercase tracking-[0.1em] text-ink">Community</p>
+        <nav aria-label="Guide links">
+          <p class="mb-3 text-[0.72rem] font-black uppercase tracking-[0.1em] text-ink">Guides</p>
           <div class="grid gap-2.5">
             <a class={footerLinkClass} href="/blog/">Blog</a>
             <a class={footerLinkClass} href="/parents/">Parents</a>
@@ -183,18 +183,20 @@ const routeHref = (path: string) => withTrailingSlash(path);
           </div>
         </nav>
 
-        <form class="border-l border-line pl-8 max-lg:border-l-0 max-lg:pl-0 max-sm:col-span-2" action="/contact/" method="get">
-          <p class="mb-3 text-[0.72rem] font-black uppercase tracking-[0.1em] text-ink">Stay Updated</p>
-          <p class="mb-3 text-[0.84rem] leading-5 text-muted">Get news and updates about new games and features.</p>
-          <div class="grid h-10 grid-cols-[minmax(0,1fr)_40px] overflow-hidden rounded-[7px] border border-line-strong bg-white">
-            <input class="min-w-0 border-0 px-3 text-[0.84rem] text-muted outline-none" type="email" name="email" placeholder="Enter your email" aria-label="Email address" />
-            <button class="border-0 bg-game-purple text-lg font-black text-white" type="submit" aria-label="Submit email">+</button>
-          </div>
-        </form>
+        <div class="border-l border-line pl-8 max-lg:border-l-0 max-lg:pl-0 max-sm:col-span-2">
+          <p class="mb-3 text-[0.72rem] font-black uppercase tracking-[0.1em] text-ink">Publisher</p>
+          <p class="mb-2 text-[0.88rem] font-black leading-5 text-ink">A Playtad browser game.</p>
+          <p class="mb-3 text-[0.82rem] leading-5 text-muted">Questions, corrections, and business inquiries:</p>
+          <a class="text-[0.84rem] font-extrabold text-game-purple-dark no-underline hover:underline" href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>
+        </div>
+      </div>
+
+      <div class="mx-auto w-[min(1120px,calc(100%-48px))] border-t border-line py-4 text-xs leading-5 text-muted max-sm:w-[calc(100%-28px)]">
+        <strong class="text-ink">Published by {siteConfig.publisherName}.</strong> {siteConfig.nonAffiliationNotice}
       </div>
 
       <div class="mx-auto flex w-[min(1120px,calc(100%-48px))] justify-between gap-5 border-t border-line py-4 text-xs text-quiet max-sm:w-[calc(100%-28px)] max-sm:flex-col">
-        <span>&copy; 2026 {siteConfig.name}. All rights reserved.</span>
+        <span>&copy; 2026 {siteConfig.publisherName}. {siteConfig.name}. All rights reserved.</span>
         <span class="flex gap-6">
           <a class="transition hover:text-game-purple-dark" href="/accessibility/">Accessibility</a>
           <a class="transition hover:text-game-purple-dark" href="/sitemap/">Sitemap</a>

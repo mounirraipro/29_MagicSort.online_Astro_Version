@@ -24,6 +24,8 @@ const contentPagePaths: Record<PageKey, string> = {
   contact: "/contact",
   "cookie-policy": "/cookie-policy",
   disclaimer: "/disclaimer",
+  dmca: "/dmca",
+  "editorial-policy": "/editorial-policy",
   faq: "/faq",
   "how-to-play": "/how-to-play",
   parents: "/parents",
@@ -123,6 +125,16 @@ const pageOverrides: Partial<Record<string, Partial<SeoPage>>> = {
     priority: 0.4,
     changeFrequency: "yearly",
   },
+  "/editorial-policy": {
+    schemaType: "WebPage",
+    priority: 0.55,
+    changeFrequency: "yearly",
+  },
+  "/dmca": {
+    schemaType: "WebPage",
+    priority: 0.4,
+    changeFrequency: "yearly",
+  },
 };
 
 const contentByPath = new Map(contentSeo.map((page) => [page.path, page]));
@@ -219,6 +231,8 @@ export const buildJsonLd = (page: SeoPage, canonicalUrl: string) => {
       "@id": publisherId,
       name: siteConfig.publisherName,
       url: siteConfig.siteUrl,
+      description: siteConfig.publisherDescription,
+      email: siteConfig.contactEmail,
       sameAs: siteConfig.sameAs,
     },
     {

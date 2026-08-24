@@ -5,6 +5,7 @@ import { externalGames } from "@/data/externalGames";
 import { siteConfig } from "@/data/siteConfig";
 import { brandAccentClass } from "@/data/accentClasses";
 import GameEmbed from "@/components/GameEmbed.astro";
+import PublisherNote from "@/components/PublisherNote.astro";
 
 const recentPosts = articles.slice(0, 3);
 const totalLevels = 30;
@@ -131,6 +132,8 @@ const homeStructuredData = [
       </div>
     </div>
   </section>
+
+  <PublisherNote />
 
   <section class="home-section home-search-intent">
     <div class="home-section-head split-head">

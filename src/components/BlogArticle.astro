@@ -37,9 +37,9 @@ const articleStructuredData = [
     datePublished: article.datePublished,
     dateModified: article.dateModified,
     author: {
-      "@type": "Person",
-      name: "Lahcen Aharouane",
-      jobTitle: "Browser Puzzle Designer",
+      "@type": "Organization",
+      name: siteConfig.editorialTeamName,
+      url: `${siteConfig.siteUrl}/editorial-policy/`,
     },
     publisher: {
       "@type": "Organization",
@@ -69,7 +69,7 @@ const articleStructuredData = [
       <h1>{articleHeading}</h1>
       <p>{article.description}</p>
       <div class="author-byline">
-        <strong>By Lahcen Aharouane</strong>
+        <strong>By {siteConfig.editorialTeamName}</strong>
         <span>Updated {modified}</span>
       </div>
     </header>
@@ -122,12 +122,12 @@ const articleStructuredData = [
         </section>
 
         <section class="author-bio-box">
-          <div class="author-bio-avatar">LA</div>
+          <div class="author-bio-avatar">PT</div>
           <div class="author-bio-content">
-            <p class="author-bio-name">Lahcen Aharouane</p>
-            <p class="author-bio-title">Browser Puzzle Designer</p>
+            <p class="author-bio-name">{siteConfig.editorialTeamName}</p>
+            <p class="author-bio-title">Game Guides & Puzzle Review</p>
             <p class="author-bio-text">
-              Lahcen Aharouane designs browser-based puzzle experiences and writes about color sorting strategy, family play, calm focus, and practical browser game quality.
+              Playtad's editorial team tests the current browser build, verifies controls and gameplay details, and updates guides when the game changes. Read our <a href="/editorial-policy/">editorial policy</a> or send a correction through the <a href="/contact/">contact page</a>.
             </p>
           </div>
         </section>
@@ -157,6 +157,7 @@ const articleStructuredData = [
             <div><dt>Updated</dt><dd>{modified}</dd></div>
           </dl>
           <a class="article-side-link" href="/play/">Play Magic Sort</a>
+          <a class="article-side-link" href="/editorial-policy/">Editorial policy</a>
         </div>
       </aside>
     </div>

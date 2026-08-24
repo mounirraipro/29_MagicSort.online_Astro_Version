@@ -3,6 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import { externalGames } from "@/data/externalGames";
 import { brandAccentClass } from "@/data/accentClasses";
 import GameEmbed from "@/components/GameEmbed.astro";
+import PublisherNote from "@/components/PublisherNote.astro";
 
 const playSteps = [
   ["1", "Pick", "Select the tube or bottle with the top color you want to move."],
@@ -94,6 +95,8 @@ const relatedGamesRight = relatedGames.slice(4, 8);
       </div>
     </div>
   </section>
+
+  <PublisherNote compact />
 
   <section class="play-info-section">
     <div class="play-info-head">

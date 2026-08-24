@@ -3,6 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import { externalGames, type ExternalGame } from "@/data/externalGames";
 import { brandAccentClass } from "@/data/accentClasses";
 import { Buffer } from "node:buffer";
+import PublisherNote from "@/components/PublisherNote.astro";
 
 type Props = {
   game: ExternalGame;
@@ -96,6 +97,12 @@ const guideItems = [
         ))}
       </div>
     </div>
+
+    <PublisherNote
+      compact
+      label="Guide reviewed by"
+      description="The Playtad Editorial Team prepared this guide. The embedded game is supplied by Playgama and remains subject to its operator's terms and policies."
+    />
 
     <section class="game-guide-section" aria-labelledby={`${game.slug}-guide`}>
       <aside class="game-guide-aside" aria-label={`${game.title} guide navigation`}>

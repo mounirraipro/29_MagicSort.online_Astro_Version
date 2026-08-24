@@ -1,0 +1,29 @@
+---
+import { siteConfig } from "@/data/siteConfig";
+
+type Props = {
+  compact?: boolean;
+  label?: string;
+  description?: string;
+};
+
+const {
+  compact = false,
+  label = "Produced and reviewed by",
+  description = siteConfig.publisherDescription,
+} = Astro.props;
+---
+
+<aside class:list={["publisher-note", { "publisher-note-compact": compact }]} aria-label="Magic Sort publisher information">
+  <span class="publisher-note-mark" aria-hidden="true">PT</span>
+  <div class="publisher-note-copy">
+    <p>{label}</p>
+    <strong>{siteConfig.editorialTeamName}</strong>
+    <span>{description}</span>
+  </div>
+  <nav aria-label="Publisher links">
+    <a href="/about/">About Playtad</a>
+    <a href="/editorial-policy/">Editorial policy</a>
+    <a href="/contact/">Contact</a>
+  </nav>
+</aside>

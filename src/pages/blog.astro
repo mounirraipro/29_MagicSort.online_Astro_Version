@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { articles } from "@/data/articles";
+import PublisherNote from "@/components/PublisherNote.astro";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" });
 ---
@@ -31,13 +32,15 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", { month: "short", day: "n
       </div>
     </header>
 
+    <PublisherNote compact />
+
     <section class="blog-posts-section" id="article-list" aria-labelledby="blog-list-title">
       <header class="blog-posts-head">
         <div>
           <p>Our Blog</p>
           <h2 id="blog-list-title">View All Magic Sort Posts</h2>
         </div>
-        <p>Browse simple Magic Sort articles about rules, controls, empty-bottle strategy, browser play, and short puzzle breaks.</p>
+        <p>Browse Playtad-reviewed articles about rules, controls, empty-bottle strategy, browser play, and short puzzle breaks.</p>
       </header>
 
       <div class="blog-post-grid">

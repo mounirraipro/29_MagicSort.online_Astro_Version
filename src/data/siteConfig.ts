@@ -5,14 +5,19 @@ export const siteConfig = {
     "Play Magic Sort game online free. Sort liquid colors between bottles, use Undo, and solve 30 browser levels with no download or account.",
   gameGenre: "bottle sorting puzzle game",
   audience: "puzzle players, families, students, adults, and casual brain-game fans",
-  contactEmail: "contact@magicsort.online",
+  contactEmail: "contact@playtad.com",
   siteUrl: "https://magicsort.online",
   locale: "en_US",
   language: "en",
   themeColor: "#7c3aed",
   defaultOgImage: "/apple-touch-icon.png",
   socialHandle: "",
-  publisherName: "Magic Sort",
+  publisherName: "Playtad",
+  editorialTeamName: "Playtad Editorial Team",
+  publisherDescription:
+    "Playtad produces browser-first games and practical player guides with an emphasis on accessible play, clear controls, and reliable support.",
+  nonAffiliationNotice:
+    "This browser edition of Magic Sort is a Playtad product. It is not affiliated with, endorsed by, or the same product as similarly named mobile games listed on Google Play or the Apple App Store.",
   sameAs: [] as string[],
   emitMetaKeywords: true,
   topicKeywords: [
@@ -36,7 +41,7 @@ export const siteConfig = {
     "free online puzzle game",
     "browser puzzle game",
   ],
-  legalLastUpdated: "June 16, 2026",
+  legalLastUpdated: "August 24, 2026",
 };
 
 export type SiteConfig = typeof siteConfig;

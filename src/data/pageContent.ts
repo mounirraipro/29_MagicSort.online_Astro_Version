@@ -20,24 +20,28 @@ export type ContentPage = {
 
 const gameName = siteConfig.name;
 const contact = siteConfig.contactEmail;
-const updated = "June 16, 2026";
+const updated = siteConfig.legalLastUpdated;
 
 export const pageContent = {
   about: {
     title: "About Magic Sort",
     seoTitle: `About ${gameName} - Free Online Bottle Sorting Game`,
-    description: `Learn what ${gameName} is, how the site supports calm puzzle play, and why the game is built for quick browser sessions.`,
+    description: `Learn how Playtad produces ${gameName}, reviews its player guides, and supports a clear browser-first puzzle experience.`,
     keywords: ["about Magic Sort", "bottle sorting game site", "browser puzzle game", "Magic Sort mission"],
     schemaType: "AboutPage",
-    intro: "A clear, free, browser-first color sorting puzzle.",
+    intro: "A browser-first color sorting puzzle produced and published by Playtad.",
     sections: [
       {
         heading: "What Magic Sort Is",
         body: "Magic Sort is a free browser puzzle focused on bottle-by-bottle liquid sorting. Each level gives you mixed color layers, limited empty space, and a simple goal: pour until every filled bottle holds one clean color.",
       },
       {
+        heading: "Produced By Playtad",
+        body: `${siteConfig.publisherDescription} Magic Sort, its browser game files, and its original player guides are produced and maintained by Playtad.`,
+      },
+      {
         heading: "Why The Site Exists",
-        body: "Browser game sites are often noisy or too thin to be useful. Magic Sort aims for a cleaner balance: a playable game, practical help pages, useful strategy articles, and trust pages that explain how the site works.",
+        body: "Browser game sites are often noisy or too thin to be useful. Magic Sort aims for a cleaner balance: a playable game, practical help pages, focused strategy articles, and trust pages that explain who publishes the site and how its content is reviewed.",
       },
       {
         heading: "Playability First",
@@ -51,6 +55,14 @@ export const pageContent = {
       {
         heading: "Who Magic Sort Is For",
         body: "Magic Sort is for players who like short sessions of focused problem-solving. Some use it as a work break, some play with children, and some simply enjoy the tidy logic of sorting colors into place.",
+      },
+      {
+        heading: "Editorial Standards",
+        body: "The Playtad Editorial Team checks gameplay claims against the current browser build, writes for a specific player question, and reviews published guides when features change. Corrections are welcomed and handled through our Contact page.",
+      },
+      {
+        heading: "Independent Browser Edition",
+        body: siteConfig.nonAffiliationNotice,
       },
       {
         heading: "Contact The Team",
@@ -125,7 +137,7 @@ export const pageContent = {
     description: `Contact the ${gameName} team for gameplay help, bug reports, accessibility feedback, privacy questions, or partnerships.`,
     keywords: ["contact Magic Sort", "Magic Sort support", "bottle sort game contact"],
     schemaType: "ContactPage",
-    intro: "Have a question, suggestion, or policy concern? Send it here.",
+    intro: `Contact Playtad about ${gameName}, its guides, policies, or browser game operation.`,
     sections: [
       {
         heading: "Send A Message",
@@ -133,7 +145,7 @@ export const pageContent = {
       },
       {
         heading: "Contact Details",
-        items: [`Email: ${contact}`, "Response time: usually within 48 hours.", "Availability: players worldwide."],
+        items: [`Publisher: Playtad`, `Email: ${contact}`, "Response time: usually within 48 hours.", "Availability: players worldwide."],
       },
       {
         heading: "What To Include",
@@ -145,8 +157,52 @@ export const pageContent = {
         ],
       },
       {
+        heading: "Editorial Corrections",
+        body: "For a correction, include the article URL, the statement you believe is inaccurate, and any supporting detail. The Playtad Editorial Team will compare the report with the current game build and update the page when needed.",
+      },
+      {
         heading: "Advertising And Partnerships",
         body: "For advertising, publishing, or partnership questions, include your organization, website, proposal summary, and the placement or page you are asking about.",
+      },
+    ],
+  },
+  "editorial-policy": {
+    title: "Editorial Policy",
+    seoTitle: `Magic Sort Editorial Policy | Playtad`,
+    description: `Learn how the Playtad Editorial Team tests Magic Sort, writes player guides, reviews updates, and handles corrections.`,
+    keywords: ["Magic Sort editorial policy", "Playtad editorial team", "game guide standards", "content corrections"],
+    schemaType: "WebPage",
+    updated,
+    intro: "How Playtad creates, checks, updates, and corrects Magic Sort guides.",
+    sections: [
+      {
+        heading: "Who Creates The Content",
+        body: "Magic Sort articles and help pages are prepared by the Playtad Editorial Team. Playtad also produces the browser game, which gives the team direct access to the current controls, features, levels, and technical behavior described in these guides.",
+      },
+      {
+        heading: "Hands-On Review",
+        items: [
+          "Gameplay instructions are checked against the current browser build.",
+          "Controls are reviewed on mouse and touch layouts where the topic requires it.",
+          "Strategy claims are written as practical guidance, not guaranteed outcomes.",
+          "Safety, privacy, and accessibility statements are compared with the site's current behavior and policies.",
+        ],
+      },
+      {
+        heading: "How We Write",
+        body: "Each guide starts with a real player question or gameplay problem. We favor direct answers, specific examples, and links to the game or a deeper supporting guide. We do not add filler simply to reach a target word count, and we avoid presenting opinion as fact.",
+      },
+      {
+        heading: "Updates And Review Dates",
+        body: "Articles show their publication and update dates. The team reviews affected pages when controls, game features, policies, or browser support change. Older advice may remain published when it is still accurate and useful.",
+      },
+      {
+        heading: "Corrections",
+        body: `Readers can report an error at ${contact}. Include the page URL and the detail that needs review. We compare correction requests with the current build or relevant source, make warranted changes, and update the page date when the revision is material.`,
+      },
+      {
+        heading: "Commercial Independence",
+        body: "Advertising may support free access to the website, but advertisers do not approve our gameplay advice or policy content. External games and links are labeled by context, and their operators remain responsible for their own services.",
       },
     ],
   },
@@ -198,6 +254,10 @@ export const pageContent = {
         body: "Magic Sort is a browser-based entertainment and informational website. The game, guides, and blog are provided for general use and reference.",
       },
       {
+        heading: "Publisher And Non-Affiliation",
+        body: siteConfig.nonAffiliationNotice,
+      },
+      {
         heading: "No Professional Advice",
         body: "Articles about attention, habits, family use, or screen time are informational only. They are not medical, psychological, educational, or legal advice.",
       },
@@ -212,6 +272,44 @@ export const pageContent = {
       {
         heading: "Questions",
         body: `Questions about this disclaimer can be sent to ${contact}.`,
+      },
+    ],
+  },
+  dmca: {
+    title: "Copyright & DMCA Policy",
+    seoTitle: `Copyright and DMCA Policy | ${gameName}`,
+    description: `Review the Magic Sort copyright policy and learn how to send Playtad a complete copyright or DMCA notice.`,
+    keywords: ["Magic Sort DMCA", "Magic Sort copyright", "Playtad copyright contact"],
+    schemaType: "WebPage",
+    updated,
+    intro: "Playtad respects intellectual property rights and reviews complete copyright notices promptly.",
+    sections: [
+      {
+        heading: "Copyright Ownership",
+        body: "Unless a page states otherwise, the Magic Sort browser game, site design, original text, and original visual assets are published by Playtad and protected by applicable intellectual property laws. Third-party games, trademarks, and linked materials remain the property of their respective owners.",
+      },
+      {
+        heading: "Send A Copyright Notice",
+        items: [
+          `Send the notice to ${contact}.`,
+          "Identify the copyrighted work you believe has been infringed.",
+          "Provide the exact Magic Sort URL and enough detail to locate the material.",
+          "Include your full name, contact information, and a good-faith statement.",
+          "State that the information is accurate and that you are the rights owner or authorized to act for the owner.",
+          "Include a physical or electronic signature.",
+        ],
+      },
+      {
+        heading: "Our Review Process",
+        body: "Playtad reviews complete notices, may request missing information, and removes or restricts material when legally required. We may share the notice with the person responsible for the disputed material or with service providers involved in the review.",
+      },
+      {
+        heading: "Counter Notices",
+        body: "If your material was removed because of a mistake or misidentification, you may send a counter notice containing the information required by applicable law. Consider obtaining legal advice before submitting a formal notice or counter notice.",
+      },
+      {
+        heading: "Trademark Note",
+        body: siteConfig.nonAffiliationNotice,
       },
     ],
   },
@@ -473,8 +571,12 @@ export const pageContent = {
     description: `Read the ${gameName} Privacy Policy and learn how data, ads, contact messages, and browser storage are handled.`,
     keywords: ["Magic Sort privacy policy", "data protection", "browser game privacy", "ad privacy"],
     updated,
-    intro: "At Magic Sort, we aim to be clear about how data is handled when you use the site.",
+    intro: "Playtad aims to be clear about how data is handled when you use Magic Sort.",
     sections: [
+      {
+        heading: "Data Controller Contact",
+        body: `Playtad publishes Magic Sort. Privacy questions and data requests can be sent to ${contact}.`,
+      },
       {
         heading: "Information You Provide",
         body: "When you contact us, you may voluntarily provide your name, email address, and message content. We only collect this information when you choose to submit it.",
@@ -513,7 +615,7 @@ export const pageContent = {
     description: `Read the ${gameName} Terms of Service and understand the rules for using the free browser puzzle site.`,
     keywords: ["Magic Sort terms of service", "terms and conditions", "browser game terms"],
     updated,
-    intro: `Welcome to ${gameName}. By accessing or using the website and game, you agree to these Terms of Service.`,
+    intro: `Playtad publishes ${gameName}. By accessing or using the website and game, you agree to these Terms of Service.`,
     sections: [
       {
         heading: "Acceptance Of Terms",
@@ -521,7 +623,11 @@ export const pageContent = {
       },
       {
         heading: "Description Of Service",
-        body: "Magic Sort provides a free browser-based bottle sorting puzzle game, supporting guide pages, blog articles, and related browser game links.",
+        body: "Playtad provides Magic Sort as a free browser-based bottle sorting puzzle game with supporting guide pages, blog articles, and clearly identified related browser game links.",
+      },
+      {
+        heading: "Product Identity",
+        body: siteConfig.nonAffiliationNotice,
       },
       {
         heading: "Acceptable Use",
