@@ -1,4 +1,5 @@
 import { siteConfig } from "@/data/siteConfig";
+import { gameFacts } from "@/data/gameFacts";
 
 export type ContentSection = {
   heading: string;
@@ -229,7 +230,7 @@ export const pageContent = {
       },
       {
         heading: "Analytics",
-        body: "We do not currently claim that Magic Sort runs Google Analytics on the site. If analytics tooling is added later, this page and the Privacy Policy will be updated.",
+        body: "Magic Sort uses Google Tag Manager to deliver consent-aware Google Analytics measurement where enabled. Analytics helps Playtad understand page use, game loading, level starts, and level completions. We do not send puzzle layouts, challenge tokens, or account identifiers because core play does not require an account.",
       },
       {
         heading: "Managing Cookies",
@@ -335,7 +336,7 @@ export const pageContent = {
       },
       {
         heading: "How do you play?",
-        body: "Tap or click one bottle, then choose a destination bottle. You can pour into an empty bottle or onto the same top color when the destination has enough room.",
+        body: gameFacts.controls,
       },
       {
         heading: "How many levels are included?",
@@ -365,11 +366,11 @@ export const pageContent = {
       },
       {
         heading: "Step 1: Pick A Bottle",
-        body: "Select a bottle with a color on top. Before pouring, check whether the destination bottle is empty or already has the same top color.",
+        body: "Select a bottle with a visible color group on top. Before pouring, check whether the destination has enough empty capacity for that full group.",
       },
       {
         heading: "Step 2: Pour By The Rules",
-        body: "A pour is valid when the destination is empty or its top layer matches the color you are pouring, and there is enough room for the liquid.",
+        body: gameFacts.validPour,
       },
       {
         heading: "Step 3: Protect Empty Space",
@@ -401,7 +402,7 @@ export const pageContent = {
     sections: [
       {
         heading: "Why can't I pour in Magic Sort?",
-        body: "A pour only works when the target bottle has room and is either empty or already shows the same color on top. Check both the target's top layer and its remaining space before choosing a different move.",
+        body: "A pour only works when the target bottle has room for the source tube's full top color group. If the pour fails, choose a roomier target; unlike stricter water-sort variants, Magic Sort does not require the destination color to match.",
       },
       {
         heading: "How does Undo work?",
@@ -549,7 +550,7 @@ export const pageContent = {
       },
       {
         heading: "Valid Pours",
-        body: "A pour is valid when the destination is empty or has the same top color, and when the destination has enough room to receive the moving layer.",
+        body: gameFacts.validPour,
       },
       {
         heading: "Layer Order",

@@ -4,6 +4,17 @@ import { articles } from "@/data/articles";
 import PublisherNote from "@/components/PublisherNote.astro";
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" });
+const topicDefinitions = [
+  { id: "troubleshooting", title: "Troubleshooting", categories: ["Troubleshooting"] },
+  { id: "rules", title: "Rules & Progress", categories: ["Game Guide", "How To Play", "Game Mechanics"] },
+  { id: "strategy", title: "Strategy", categories: ["Strategy"] },
+  { id: "accessibility", title: "Accessibility & Mobile", categories: ["Accessibility"] },
+  { id: "player-guides", title: "Player Guides", categories: ["Family", "Focus", "Science", "Reviews"] },
+];
+const articleTopics = topicDefinitions.map((topic) => ({
+  ...topic,
+  articles: articles.filter((article) => topic.categories.includes(article.category)),
+}));
 ---
 
 <BaseLayout
@@ -12,14 +23,14 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", { month: "short", day: "n
   seo={{
     path: "/blog",
     title: "Magic Sort Blog",
-    seoTitle: "Magic Sort Blog - Guides, Strategy, and Online Play Tips",
-    description: "Read Magic Sort guides, strategy tips, controls help, and free online color sorting puzzle advice for better browser play.",
+    seoTitle: "Magic Sort Help, Tips, and Strategy Guides",
+    description: "Find tested Magic Sort help for loading problems, rules, controls, stuck levels, strategy, progress, accessibility, and free browser play.",
     keywords: ["Magic Sort blog", "Magic Sort guides", "Magic Sort strategy", "Magic Sort tips", "play Magic Sort online"],
     schemaType: "Blog",
     updated: "2026-06-23",
   }}
 >
-  <main class="blog-showcase-page">
+  <div class="blog-showcase-page">
     <header class="blog-showcase-hero" aria-labelledby="blog-directory-title">
       <nav class="blog-showcase-crumbs" aria-label="Breadcrumb">
         <a href="/">Home</a>
@@ -38,22 +49,33 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", { month: "short", day: "n
       <header class="blog-posts-head">
         <div>
           <p>Our Blog</p>
-          <h2 id="blog-list-title">View All Magic Sort Posts</h2>
+          <h2 id="blog-list-title">Find the guide you need</h2>
         </div>
         <p>Browse Playtad-reviewed articles about rules, controls, empty-bottle strategy, browser play, and short puzzle breaks.</p>
       </header>
 
-      <div class="blog-post-grid">
-        {articles.map((post) => (
-          <a class="blog-post-tile" href={`/blog/${post.slug}/`}>
-            <div class="blog-post-meta">
-              <time datetime={post.datePublished}>{dateFormatter.format(new Date(post.datePublished))}</time>
-              <span>{post.category}</span>
+      <nav class="blog-topic-nav" aria-label="Guide topics">
+        {articleTopics.map((topic) => <a href={`#${topic.id}`}>{topic.title}<span>{topic.articles.length}</span></a>)}
+      </nav>
+
+      <div class="blog-topic-list">
+        {articleTopics.map((topic) => (
+          <section class="blog-topic-section" id={topic.id} aria-labelledby={`${topic.id}-title`}>
+            <header><h3 id={`${topic.id}-title`}>{topic.title}</h3><a href="#article-list">Back to topics</a></header>
+            <div class="blog-post-grid">
+              {topic.articles.map((post) => (
+                <a class="blog-post-tile" href={`/blog/${post.slug}/`}>
+                  <div class="blog-post-meta">
+                    <time datetime={post.datePublished}>{dateFormatter.format(new Date(post.datePublished))}</time>
+                    <span>{post.category}</span>
+                  </div>
+                  <h3>{post.title}</h3>
+                  <p>{post.description}</p>
+                  <small>{post.readTime}<span>Read article</span></small>
+                </a>
+              ))}
             </div>
-            <h3>{post.title}</h3>
-            <p>{post.description}</p>
-            <small>{post.readTime}<span>Read article</span></small>
-          </a>
+          </section>
         ))}
       </div>
 
@@ -65,5 +87,5 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", { month: "short", day: "n
         <a href="/play/">Play Magic Sort</a>
       </aside>
     </section>
-  </main>
+  </div>
 </BaseLayout>

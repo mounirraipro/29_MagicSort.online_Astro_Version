@@ -55,7 +55,7 @@ const routeHref = (path: string) => withTrailingSlash(path);
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <GoogleTags placement="head" usePartytown={false} />
+    <GoogleTags />
     <title>{pageTitle}</title>
     <meta name="description" content={pageSeo.description} />
     <meta name="robots" content={robots} />
@@ -83,7 +83,6 @@ const routeHref = (path: string) => withTrailingSlash(path);
     {jsonLd.map((schema) => <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />)}
   </head>
   <body class="min-h-screen bg-white text-copy antialiased">
-    <GoogleTags placement="body" />
     <a
       class="fixed left-3 top-3 z-[100] -translate-y-24 rounded-lg bg-ink px-4 py-2.5 text-sm font-extrabold text-white no-underline transition focus:translate-y-0"
       href="#main-content"

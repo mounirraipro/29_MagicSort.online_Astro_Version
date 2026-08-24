@@ -6,9 +6,10 @@ import { siteConfig } from "@/data/siteConfig";
 import { brandAccentClass } from "@/data/accentClasses";
 import GameEmbed from "@/components/GameEmbed.astro";
 import PublisherNote from "@/components/PublisherNote.astro";
+import { gameFacts } from "@/data/gameFacts";
 
 const recentPosts = articles.slice(0, 3);
-const totalLevels = 30;
+const totalLevels = gameFacts.levelCount;
 const homeBentoGames = [
   {
     href: "/play/",
@@ -31,7 +32,7 @@ const homeBentoLeft = homeBentoGames.slice(0, 4);
 const homeBentoRight = homeBentoGames.slice(4, 8);
 const faqItems = [
   ["What is Magic Sort?", "Magic Sort is a free online bottle sorting puzzle where you pour layered colors between tubes until every filled bottle contains one clean color."],
-  ["How do you play Magic Sort online?", "Choose a bottle, then pour into an empty bottle or onto the same top color when there is enough room. Keep planning until all colors are organized."],
+  ["How do you play Magic Sort online?", `${gameFacts.controls} ${gameFacts.goal}`],
   ["Is Magic Sort free?", "Yes. You can play Magic Sort free in the browser with no download, no account, and no app install required."],
   ["Does Magic Sort work on mobile?", "Yes. Magic Sort supports touch and mouse play, so it works on phones, tablets, laptops, and desktop browsers."],
   ["What are the Magic Sort controls?", "Click or tap one tube or bottle to select it, then click or tap a second tube to pour when the move is allowed. The same logic works with mouse and touch controls."],
@@ -63,7 +64,7 @@ const homeStructuredData = [
     publisher: {
       "@type": "Organization",
       name: siteConfig.publisherName,
-      url: siteConfig.siteUrl,
+      url: siteConfig.publisherUrl,
     },
   },
   {
@@ -176,7 +177,7 @@ const homeStructuredData = [
     <div class="seo-copy-grid">
       <article class="seo-copy-card seo-copy-wide">
         <h3>Magic Sort gameplay overview</h3>
-        <p>Each Magic Sort level starts with tubes or bottles full of mixed liquid layers and a small amount of empty space. You can pour the top color into an empty bottle or onto the same color when there is room. Those simple rules create a planning puzzle where one rushed move can block the next several pours.</p>
+        <p>Each Magic Sort level starts with tubes or bottles full of mixed liquid layers and a small amount of empty space. {gameFacts.validPour} That simple capacity rule creates a planning puzzle where one rushed move can block the next several pours.</p>
       </article>
       <article class="seo-copy-card">
         <h3>How to play Magic Sort</h3>
@@ -198,7 +199,7 @@ const homeStructuredData = [
     <div class="seo-copy-grid">
       <article class="seo-copy-card">
         <h3>Mouse controls</h3>
-        <p>On desktop, click a bottle or tube to select the top liquid color. Click a second tube to pour if it is empty or if the top color matches and there is enough room.</p>
+        <p>On desktop, {gameFacts.controls}</p>
       </article>
       <article class="seo-copy-card">
         <h3>Touch controls</h3>
@@ -255,7 +256,7 @@ const homeStructuredData = [
         <p class="eyebrow">Puzzle context</p>
         <h3>Built on classic sorting logic.</h3>
         <p>
-          Keep <a class="site-identity-link" href="/"><strong>www.magicsort.online</strong></a> as your quick route back to free browser bottle sorting, then explore the puzzle and game-design ideas behind the genre.
+          Keep <a class="site-identity-link" href="/"><strong>magicsort.online</strong></a> as your quick route back to free browser bottle sorting, then explore the puzzle and game-design ideas behind the genre.
         </p>
       </div>
       <div class="authority-links" aria-label="External puzzle references">
@@ -288,7 +289,7 @@ const homeStructuredData = [
     </div>
     <div class="process-strip">
       <article><span>01</span><h3>Pick</h3><p>Select a bottle with the color you want to move.</p></article>
-      <article><span>02</span><h3>Match</h3><p>Pour into an empty bottle or onto the same top color.</p></article>
+      <article><span>02</span><h3>Pour</h3><p>Choose any destination tube with enough room for the visible top group.</p></article>
       <article><span>03</span><h3>Protect</h3><p>Keep enough empty space for future colors to move.</p></article>
       <article><span>04</span><h3>Clear</h3><p>Finish every bottle as a single-color stack.</p></article>
     </div>

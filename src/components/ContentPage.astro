@@ -3,6 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import ContactEmail from "@/components/ContactEmail.astro";
 import { pageContent, type ContentSection, type ContentPage as PageContent, type PageKey } from "@/data/pageContent";
 import { siteConfig } from "@/data/siteConfig";
+import { gameFacts } from "@/data/gameFacts";
 
 type Props = {
   pageKey: PageKey;
@@ -80,6 +81,27 @@ const splitContactEmail = (value: string) =>
     <div class="content-page-shell">
       <div class="page-content">
         {page.updated && <p>{page.intro}</p>}
+        {pageKey === "how-to-play" && (
+          <section class="content-answer" aria-labelledby="how-to-play-answer">
+            <p class="eyebrow">Quick answer</p>
+            <h2 id="how-to-play-answer">Pick a tube, then choose a tube with enough space.</h2>
+            <p>{gameFacts.validPour} {gameFacts.goal}</p>
+            <div class="control-reference" aria-label="Magic Sort controls">
+              <div>
+                <strong>Mouse or trackpad</strong>
+                <span>Click the source tube, then click the destination.</span>
+              </div>
+              <div>
+                <strong>Phone or tablet</strong>
+                <span>Tap the source tube, then tap the destination.</span>
+              </div>
+              <div>
+                <strong>Mistake</strong>
+                <span>Use Undo after a completed pour, or Restart for a fresh board.</span>
+              </div>
+            </div>
+          </section>
+        )}
           {
             page.sections.map((section: ContentSection, index: number) => (
               <section id={slugify(section.heading)}>
@@ -99,6 +121,18 @@ const splitContactEmail = (value: string) =>
               </section>
             ))
           }
+        {(pageKey === "how-to-play" || pageKey === "magic-sort-help") && (
+          <nav class="content-recovery-links" aria-label="More Magic Sort help">
+            <a href="/blog/magic-sort-not-loading/">
+              <strong>Magic Sort not loading?</strong>
+              <span>Work through the fastest browser and connection fixes.</span>
+            </a>
+            <a href="/blog/is-magic-sort-free/">
+              <strong>Is Magic Sort free?</strong>
+              <span>See what is included and how browser play works.</span>
+            </a>
+          </nav>
+        )}
       </div>
 
       <aside class="content-page-aside" aria-label="Page links">

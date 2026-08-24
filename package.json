@@ -8,10 +8,12 @@
   },
   "scripts": {
     "build:game": "node scripts/build-game-bundle.mjs",
+    "test:telemetry": "node scripts/test-game-telemetry.mjs",
+    "validate:content": "node scripts/validate-question-articles.mjs",
     "predev": "npm run build:game",
     "dev": "astro dev",
     "prebuild": "npm run build:game",
-    "build": "astro check && astro build && node scripts/cleanup-dist-seo.mjs",
+    "build": "npm run test:telemetry && npm run validate:content && astro check && astro build && node scripts/cleanup-dist-seo.mjs && node scripts/audit-built-seo.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "check": "astro check"

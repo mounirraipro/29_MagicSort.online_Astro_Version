@@ -8,8 +8,12 @@ import { magicSortColorblindSymbolsAccessibility } from "./magic-sort-colorblind
 import { howMagicSortLevelsAreGenerated } from "./how-magic-sort-levels-are-generated";
 import { isMagicSortGoodForYourBrain } from "./is-magic-sort-good-for-your-brain";
 import { doesMagicSortSaveProgress } from "./does-magic-sort-save-progress";
+import { magicSortNotLoading } from "./magic-sort-not-loading";
+import { isMagicSortFree } from "./is-magic-sort-free";
 
 export const questionArticles = [
+  magicSortNotLoading,
+  isMagicSortFree,
   whyWontMagicSortLetMePour,
   magicSortStuckLevelRecovery,
   areMagicSortLevelsAlwaysSolvable,

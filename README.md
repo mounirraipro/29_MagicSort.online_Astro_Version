@@ -21,7 +21,6 @@ Set production values in `.env`. `SITE_URL` must be the final public origin so A
 
 ```bash
 SITE_URL=https://magicsort.online
-PUBLIC_GA_MEASUREMENT_ID=G-XXXXXXXXXX
 PUBLIC_GTM_ID=GTM-TBJVHRC5
 ```
 

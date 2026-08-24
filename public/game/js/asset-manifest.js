@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 // VISUAL ASSET MANIFESTS
 ////////////////////////////////////////////////////////////
-var GAME_ASSET_VERSION = '20260720-iphonefs1';
+var GAME_ASSET_VERSION = '20260824-seo1';
 
 function versionGameAsset(path) {
     return path + (path.indexOf('?') == -1 ? '?' : '&') + 'v=' + GAME_ASSET_VERSION;

@@ -57,6 +57,7 @@ function fileComplete(evt) {
  */
 function handleFileError(evt) {
     console.log("error ", evt);
+    MagicSortTelemetry.error('critical_asset', evt.item && evt.item.src);
 }
 
 /*!
@@ -86,6 +87,9 @@ function handleComplete() {
             type: 'magic-sort-ready'
         }, window.location.origin);
     }
+    MagicSortTelemetry.gameLoaded({
+        critical_ready_ms: window.magicSortLoadMetrics ? window.magicSortLoadMetrics.criticalReadyMs : 0
+    });
 };
 
 function updateLoaderProgress(percent) {

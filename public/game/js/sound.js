@@ -93,6 +93,11 @@ function stopSoundLoop(soundName) {
 
 function playMusicLoop(soundName) {
     if (soundOn) {
+        if (typeof areGameplayAssetsReady == 'function' && !areGameplayAssetsReady()) {
+            pendingMusicLoop = soundName;
+            return;
+        }
+
         // Music is intentionally loaded after the playable assets, so remember the
         // requested loop until CreateJS has registered the lazy-loaded sound file.
         if (typeof isLazySoundReady == 'function' && !isLazySoundReady(soundName)) {

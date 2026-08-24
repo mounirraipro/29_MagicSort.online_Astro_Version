@@ -1,6 +1,6 @@
 import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
-import { siteConfig } from "./src/data/siteConfig";
+import { siteConfig } from "./src/data/siteConfig.ts";
 
 const resolveSite = () => {
   const configuredSite = process.env.SITE_URL?.trim() || siteConfig.siteUrl;

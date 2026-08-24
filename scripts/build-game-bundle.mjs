@@ -11,6 +11,7 @@ const sourceFiles = [
   "vendor/js.cookie.js",
   "plugins.js",
   "sound.js",
+  "game-telemetry.js",
   "asset-manifest.js",
   "audio-loader.js",
   "deferred-assets.js",

@@ -16,6 +16,11 @@ export type SeoPage = {
 };
 
 const baseKeywords = siteConfig.topicKeywords;
+const toIsoDate = (value?: string) => {
+  if (!value) return undefined;
+  const timestamp = Date.parse(value);
+  return Number.isNaN(timestamp) ? undefined : new Date(timestamp).toISOString().slice(0, 10);
+};
 
 const contentPagePaths: Record<PageKey, string> = {
   about: "/about",
@@ -44,7 +49,7 @@ const contentSeo = (Object.entries(pageContent) as [PageKey, ContentPage][]).map
   seoTitle: page.seoTitle,
   keywords: page.keywords,
   schemaType: page.schemaType,
-  updated: page.updated,
+  updated: toIsoDate(page.updated),
 }));
 
 const routeFallbackSeo = (route: SiteRoute): SeoPage => ({
@@ -74,8 +79,8 @@ const pageOverrides: Partial<Record<string, Partial<SeoPage>>> = {
     changeFrequency: "weekly",
   },
   "/games": {
-    seoTitle: `Magic Sort Games - Free Online Puzzle Games`,
-    description: `Play Magic Sort and related free online puzzle games, including color sorting, logic, number, word, and block games in your browser.`,
+    seoTitle: `Free Puzzle Games Like Magic Sort - Play Online`,
+    description: `Play Magic Sort and a curated set of free browser puzzle games for color matching, logic, numbers, words, and spatial planning.`,
     keywords: ["Magic Sort games", "Magic Sort online games", "free puzzle games", "color sorting games", "browser puzzle games"],
     priority: 0.78,
     changeFrequency: "weekly",
@@ -90,8 +95,8 @@ const pageOverrides: Partial<Record<string, Partial<SeoPage>>> = {
     changeFrequency: "monthly",
   },
   "/blog": {
-    seoTitle: `Magic Sort Blog - Guides, Strategy, and Online Play Tips`,
-    description: `Read Magic Sort guides, strategy tips, controls help, and free online color sorting puzzle advice for better browser play.`,
+    seoTitle: `Magic Sort Help, Tips, and Strategy Guides`,
+    description: `Find tested Magic Sort help for loading problems, rules, controls, stuck levels, strategy, progress, accessibility, and free browser play.`,
     keywords: ["Magic Sort blog", "Magic Sort guides", "Magic Sort strategy", "Magic Sort tips", "play Magic Sort online"],
     schemaType: "Blog",
     priority: 0.75,
@@ -230,7 +235,7 @@ export const buildJsonLd = (page: SeoPage, canonicalUrl: string) => {
       "@type": "Organization",
       "@id": publisherId,
       name: siteConfig.publisherName,
-      url: siteConfig.siteUrl,
+      url: siteConfig.publisherUrl,
       description: siteConfig.publisherDescription,
       email: siteConfig.contactEmail,
       sameAs: siteConfig.sameAs,
@@ -251,7 +256,7 @@ export const buildJsonLd = (page: SeoPage, canonicalUrl: string) => {
       publisher: {
         "@id": publisherId,
       },
-      dateModified: page.updated ?? siteConfig.legalLastUpdated,
+      ...(page.updated ? { dateModified: page.updated } : {}),
     },
     {
       "@context": "https://schema.org",

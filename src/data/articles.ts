@@ -27,7 +27,7 @@ export const articles = [
     readTime: "7 min read",
     html: `
       <h2>What You Are Trying to Do</h2>
-      <p>Magic Sort is a color sorting puzzle where mixed liquid bottles need to become clean single-color bottles. You pour from one bottle into another when the top color matches or when the target bottle is empty.</p>
+      <p>Magic Sort is a color sorting puzzle where mixed liquid bottles need to become clean single-color bottles. A pour works when the destination has enough capacity for the visible top color group; unlike stricter water-sort variants, the destination color does not have to match.</p>
       <p>The rule set is simple, but the best moves are not always the fastest moves. A good Magic Sort level asks you to protect space, uncover hidden colors, and finish one color at a time.</p>
       <h2>The Three Beginner Rules</h2>
       <ol>
@@ -55,7 +55,7 @@ export const articles = [
       <p>A weak opening spends empty bottles quickly. A strong opening creates one clean stack, opens one blocked color, and keeps enough space to fix the next problem.</p>
       <h2>Good First Pours</h2>
       <ul>
-        <li>pour a top color onto the same top color when it reveals a new useful layer,</li>
+        <li>combine matching top colors when doing so reveals a useful layer,</li>
         <li>move a single color into an empty bottle only when it frees a stronger stack,</li>
         <li>combine bottles that already share two or more layers of the same color,</li>
         <li>avoid splitting a clean stack unless it unlocks a blocked bottle.</li>

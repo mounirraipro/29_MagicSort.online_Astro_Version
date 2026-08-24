@@ -15,11 +15,20 @@
 	redir @www https://{re.host.1}{uri} 308
 
 	# Serve one public URL for the core routes reported with slash and non-slash variants.
-	@missingTrailingSlash path /play /games /how-to-play /strategy /difficulty-guide /game-mechanics /blog /parents /faq /about /contact /accessibility /privacy-policy /cookie-policy /terms /disclaimer /sitemap /magic-sort-help
+	@missingTrailingSlash path /play /games /how-to-play /strategy /difficulty-guide /game-mechanics /blog /parents /faq /about /editorial-policy /contact /accessibility /privacy-policy /cookie-policy /terms /disclaimer /dmca /sitemap /magic-sort-help
 	redir @missingTrailingSlash {http.request.uri.path}/ 308
 
 	@missingNestedTrailingSlash path_regexp missingNestedTrailingSlash ^/(blog|games)/([^/.]+)$
 	redir @missingNestedTrailingSlash /{re.missingNestedTrailingSlash.1}/{re.missingNestedTrailingSlash.2}/ 308
+
+	@gameDocument path /game/ /game/index.html
+	header @gameDocument {
+		Cache-Control "no-cache, must-revalidate"
+		X-Robots-Tag "noindex, nofollow"
+	}
+
+	@versionedGameAssets path /game/assets/* /game/css/* /game/js/*
+	header @versionedGameAssets Cache-Control "public, max-age=31536000, immutable"
 
 	header {
 		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"

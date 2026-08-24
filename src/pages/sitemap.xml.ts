@@ -37,22 +37,23 @@ const escapeXml = (value: string) =>
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&apos;");
 
-const toSitemapXml = (entry: SitemapEntry, origin: string, fallbackLastmod: string) => {
+const toSitemapXml = (entry: SitemapEntry, origin: string) => {
   const loc = new URL(withTrailingSlash(entry.path), origin).href;
 
-  return [
+  const lines = [
     "  <url>",
     `    <loc>${escapeXml(loc)}</loc>`,
-    `    <lastmod>${entry.lastmod ?? fallbackLastmod}</lastmod>`,
-    `    <changefreq>${entry.changeFrequency ?? "monthly"}</changefreq>`,
-    `    <priority>${(entry.priority ?? 0.5).toFixed(2)}</priority>`,
-    "  </url>",
-  ].join("\n");
+  ];
+
+  if (entry.lastmod) lines.push(`    <lastmod>${entry.lastmod}</lastmod>`);
+  lines.push(`    <changefreq>${entry.changeFrequency ?? "monthly"}</changefreq>`);
+  lines.push(`    <priority>${(entry.priority ?? 0.5).toFixed(2)}</priority>`);
+  lines.push("  </url>");
+  return lines.join("\n");
 };
 
 export const GET: APIRoute = ({ site }) => {
   const origin = site?.origin ?? siteConfig.siteUrl;
-  const today = new Date().toISOString().slice(0, 10);
   const entriesByPath = new Map<string, SitemapEntry>();
 
   [...seoPages.filter((page) => !page.noIndex), ...gamePages, ...articlePages].forEach((entry) => {
@@ -69,7 +70,7 @@ export const GET: APIRoute = ({ site }) => {
 
   const urls = Array.from(entriesByPath.values())
     .sort((a, b) => a.path.localeCompare(b.path))
-    .map((entry) => toSitemapXml(entry, origin, today))
+    .map((entry) => toSitemapXml(entry, origin))
     .join("\n");
 
   return new Response(

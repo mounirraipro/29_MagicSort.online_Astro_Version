@@ -4,10 +4,11 @@ import { externalGames } from "@/data/externalGames";
 import { brandAccentClass } from "@/data/accentClasses";
 import GameEmbed from "@/components/GameEmbed.astro";
 import PublisherNote from "@/components/PublisherNote.astro";
+import { gameFacts } from "@/data/gameFacts";
 
 const playSteps = [
   ["1", "Pick", "Select the tube or bottle with the top color you want to move."],
-  ["2", "Pour", "Move it into an empty tube or onto the same top color."],
+  ["2", "Pour", "Choose a destination tube with enough room for the visible top group."],
   ["3", "Clear", "Finish each filled bottle or tube as one clean color."],
 ];
 
@@ -19,7 +20,7 @@ const tips = [
 
 const playFaqItems = [
   ["Is Magic Sort free to play?", "Yes. Magic Sort is free to play online in your browser with no account, no app install, and no required download."],
-  ["How do Magic Sort controls work?", "Click or tap one tube to choose the source, then click or tap a target tube. You can pour into empty space or onto a matching top color when there is room."],
+  ["How do Magic Sort controls work?", gameFacts.controls],
   ["Can I play Magic Sort on mobile?", "Yes. Magic Sort supports touch controls on phones and tablets, plus mouse and trackpad controls on desktop browsers."],
   ["Do I need to download Magic Sort?", "No. The game runs in the browser. You can use the play page to start sorting liquid colors right away."],
   ["What should I do when I get stuck?", "Keep one helper tube open, avoid filling every spare space, and restart early if the board is fully blocked."],
@@ -98,6 +99,21 @@ const relatedGamesRight = relatedGames.slice(4, 8);
 
   <PublisherNote compact />
 
+  <nav class="play-support-strip" aria-label="Magic Sort support guides">
+    <a href="/blog/magic-sort-not-loading/">
+      <strong>Game not loading?</strong>
+      <span>Try the quick fixes</span>
+    </a>
+    <a href="/blog/is-magic-sort-free/">
+      <strong>Free browser play</strong>
+      <span>No account or download</span>
+    </a>
+    <a href="/how-to-play/">
+      <strong>New to Magic Sort?</strong>
+      <span>Read the rules and controls</span>
+    </a>
+  </nav>
+
   <section class="play-info-section">
     <div class="play-info-head">
       <p class="eyebrow">Play online</p>
@@ -145,7 +161,7 @@ const relatedGamesRight = relatedGames.slice(4, 8);
       </article>
       <article class="seo-copy-card">
         <h3>How to play Magic Sort</h3>
-        <p>Click or tap a source tube, then choose a target tube. You can pour into an empty bottle or onto the same top color if the target has enough room. Keep one helper tube open whenever possible.</p>
+        <p>{gameFacts.validPour} Keep one helper tube open whenever possible.</p>
       </article>
       <article class="seo-copy-card">
         <h3>Magic Sort tips</h3>
@@ -163,7 +179,7 @@ const relatedGamesRight = relatedGames.slice(4, 8);
     <div class="seo-copy-grid">
       <article class="seo-copy-card">
         <h3>Mouse and trackpad controls</h3>
-        <p>Click a bottle to select the top liquid layer, then click a target bottle. The pour only works when the target is empty or when its top color matches the liquid you selected.</p>
+        <p>{gameFacts.controls}</p>
       </article>
       <article class="seo-copy-card">
         <h3>Touch controls on mobile</h3>

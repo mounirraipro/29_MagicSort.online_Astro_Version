@@ -46,7 +46,7 @@ for (const file of articleFiles) {
   console.log(`${file}: ${words} words | ${title.length} title chars | ${description.length} description chars`);
 }
 
-if (articleFiles.length !== 10) failures.push(`expected 10 article files, found ${articleFiles.length}`);
+if (articleFiles.length !== 12) failures.push(`expected 12 article files, found ${articleFiles.length}`);
 
 if (failures.length) {
   console.error("\nValidation failed:");

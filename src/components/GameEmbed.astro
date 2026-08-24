@@ -22,6 +22,9 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}${challengeToken ? `&
           <span class="game-embed-loading__bubble game-embed-loading__bubble--two"></span>
         </span>
       </div>
+      <button class="game-embed-retry" type="button" data-game-retry aria-label="Retry loading Magic Sort">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6.1 8.5A7 7 0 0 1 18.7 7M17.9 15.5A7 7 0 0 1 5.3 17" /></svg>
+      </button>
     </div>
   </div>
   <div class="play-float-controls">
@@ -31,21 +34,48 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}${challengeToken ? `&
   <p class="play-share-feedback" data-share-feedback aria-live="polite"></p>
 </div>
 
-<script is:inline>
+<script>
+  import { isMagicSortGameMessage, pushGameAnalyticsEvent } from "@/scripts/gameAnalytics";
+
+  type ChallengeData = {
+    token?: string;
+    level?: number;
+    target?: {
+      moves?: number;
+    };
+  };
+
+  type WebkitFullscreenDocument = Document & {
+    webkitExitFullscreen?: () => Promise<void> | void;
+    webkitFullscreenElement?: Element | null;
+  };
+
+  type WebkitFullscreenElement = HTMLElement & {
+    webkitRequestFullscreen?: () => Promise<void> | void;
+  };
+
   (() => {
-    document.querySelectorAll("[data-game-embed]:not([data-game-ready])").forEach((shell) => {
+    document.querySelectorAll<HTMLElement>("[data-game-embed]:not([data-game-ready])").forEach((shell) => {
       shell.setAttribute("data-game-ready", "false");
-      const iframe = shell.querySelector("iframe");
-      const fullscreen = shell.querySelector("[data-fullscreen-game]");
-      const share = shell.querySelector("[data-share-game]");
-      const feedback = shell.querySelector("[data-share-feedback]");
+      const iframe = shell.querySelector<HTMLIFrameElement>("iframe");
+      const fullscreen = shell.querySelector<HTMLButtonElement>("[data-fullscreen-game]");
+      const share = shell.querySelector<HTMLButtonElement>("[data-share-game]");
+      const feedback = shell.querySelector<HTMLElement>("[data-share-feedback]");
+      const retry = shell.querySelector<HTMLButtonElement>("[data-game-retry]");
+      if (!iframe) return;
+
+      const fullscreenDocument = document as WebkitFullscreenDocument;
+      const fullscreenShell = shell as WebkitFullscreenElement;
       const isMobileShare = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
       let shareRequest = 0;
       let pseudoFullscreen = false;
       let savedScrollPosition = 0;
-      let shellPlaceholder = null;
+      let shellPlaceholder: Comment | null = null;
+      let hiddenAt = 0;
+      let readyTimer = 0;
+      let feedbackTimer = 0;
 
-      const nativeFullscreenElement = () => document.fullscreenElement || document.webkitFullscreenElement;
+      const nativeFullscreenElement = () => document.fullscreenElement || fullscreenDocument.webkitFullscreenElement;
       const shouldUsePseudoFullscreen = () => isMobileShare || window.matchMedia("(max-width: 900px)").matches;
 
       const updateFullscreenControl = () => {
@@ -101,29 +131,43 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}${challengeToken ? `&
         updateFullscreenControl();
       };
 
-      const requestNativeFullscreen = shell.requestFullscreen || shell.webkitRequestFullscreen;
-      const exitNativeFullscreen = document.exitFullscreen || document.webkitExitFullscreen;
+      const requestNativeFullscreen = () => {
+        if (shell.requestFullscreen) return shell.requestFullscreen({ navigationUI: "hide" });
+        return fullscreenShell.webkitRequestFullscreen?.();
+      };
+      const exitNativeFullscreen = () => {
+        if (document.exitFullscreen) return document.exitFullscreen();
+        return fullscreenDocument.webkitExitFullscreen?.();
+      };
 
-      const setFeedback = (message) => {
+      const setFeedback = (message: string) => {
         if (!feedback) return;
         feedback.textContent = message;
         feedback.classList.add("is-visible");
-        window.clearTimeout(setFeedback.timer);
-        setFeedback.timer = window.setTimeout(() => feedback.classList.remove("is-visible"), 3200);
+        window.clearTimeout(feedbackTimer);
+        feedbackTimer = window.setTimeout(() => feedback.classList.remove("is-visible"), 3200);
       };
 
-      const markReady = (event) => {
-        if (event.source !== iframe?.contentWindow || event.data?.type !== "magic-sort-ready") return;
-        shell.setAttribute("data-game-ready", "true");
+      const markReady = (event: MessageEvent) => {
+        if (event.source !== iframe?.contentWindow || event.origin !== location.origin) return;
+        if (event.data?.type === "magic-sort-ready") {
+          window.clearTimeout(readyTimer);
+          shell.setAttribute("data-game-ready", "true");
+          shell.removeAttribute("data-game-timeout");
+          return;
+        }
+        if (isMagicSortGameMessage(event.data)) {
+          pushGameAnalyticsEvent(event.data.name, event.data.params);
+        }
       };
 
-      const requestChallenge = () => new Promise((resolve) => {
+      const requestChallenge = () => new Promise<ChallengeData | null>((resolve) => {
         const requestId = `share-${Date.now()}-${++shareRequest}`;
         const timer = window.setTimeout(() => {
           window.removeEventListener("message", receive);
           resolve(null);
         }, 900);
-        const receive = (event) => {
+        const receive = (event: MessageEvent) => {
           if (event.source !== iframe?.contentWindow || event.data?.type !== "magic-sort-share-data" || event.data.requestId !== requestId) return;
           window.clearTimeout(timer);
           window.removeEventListener("message", receive);
@@ -133,7 +177,7 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}${challengeToken ? `&
         iframe?.contentWindow?.postMessage({ type: "magic-sort-share-request", requestId }, location.origin);
       });
 
-      const copyText = async (value) => {
+      const copyText = async (value: string) => {
         try {
           await Promise.race([
             navigator.clipboard.writeText(value),
@@ -155,25 +199,42 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}${challengeToken ? `&
       };
 
       window.addEventListener("message", markReady);
+      const armReadyTimeout = () => {
+        window.clearTimeout(readyTimer);
+        readyTimer = window.setTimeout(() => {
+          if (shell.getAttribute("data-game-ready") === "true") return;
+          shell.setAttribute("data-game-timeout", "true");
+          pushGameAnalyticsEvent("game_error", { error_area: "ready_timeout" });
+        }, 12000);
+      };
+      armReadyTimeout();
+      retry?.addEventListener("click", () => {
+        const nextUrl = new URL(iframe.src, location.href);
+        nextUrl.searchParams.set("retry", String(Date.now()));
+        shell.setAttribute("data-game-ready", "false");
+        shell.removeAttribute("data-game-timeout");
+        iframe.src = nextUrl.href;
+        armReadyTimeout();
+      });
       fullscreen?.addEventListener("click", async () => {
         if (pseudoFullscreen) {
           exitPseudoFullscreen();
           return;
         }
         if (nativeFullscreenElement()) {
-          await exitNativeFullscreen?.call(document);
+          await exitNativeFullscreen();
           return;
         }
         if (shouldUsePseudoFullscreen()) {
           enterPseudoFullscreen();
           return;
         }
-        if (!requestNativeFullscreen) {
+        if (!shell.requestFullscreen && !fullscreenShell.webkitRequestFullscreen) {
           enterPseudoFullscreen();
           return;
         }
         try {
-          await requestNativeFullscreen.call(shell, { navigationUI: "hide" });
+          await requestNativeFullscreen();
           updateFullscreenControl();
         } catch {
           enterPseudoFullscreen();
@@ -190,14 +251,28 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}${challengeToken ? `&
       window.addEventListener("orientationchange", () => {
         if (pseudoFullscreen) window.setTimeout(updateMobileFullscreenViewport, 120);
       });
-      window.addEventListener("pagehide", exitPseudoFullscreen);
+      window.addEventListener("pagehide", () => {
+        window.clearTimeout(readyTimer);
+        window.clearTimeout(feedbackTimer);
+        exitPseudoFullscreen();
+      });
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          hiddenAt = Date.now();
+          return;
+        }
+        if (hiddenAt && shell.getAttribute("data-game-ready") === "true" && Date.now() - hiddenAt >= 5000) {
+          pushGameAnalyticsEvent("return_to_game", { away_ms: Date.now() - hiddenAt });
+        }
+        hiddenAt = 0;
+      });
       share?.addEventListener("click", async () => {
         const challenge = await requestChallenge();
         const url = new URL("/play/", location.origin);
         if (challenge?.token) url.searchParams.set("challenge", challenge.token);
         const target = challenge?.target;
         const text = target
-          ? `I cleared Magic Sort stage ${challenge.level} in ${target.moves} moves. Can you beat it?`
+          ? `I cleared Magic Sort stage ${challenge?.level ?? 1} in ${target.moves ?? 0} moves. Can you beat it?`
           : "Try this Magic Sort puzzle and see if you can beat it.";
         const data = { title: "Magic Sort Challenge", text, url: url.href };
         try {

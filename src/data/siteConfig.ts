@@ -10,16 +10,17 @@ export const siteConfig = {
   locale: "en_US",
   language: "en",
   themeColor: "#7c3aed",
-  defaultOgImage: "/apple-touch-icon.png",
+  defaultOgImage: "/game/assets/magic-sort-workshop-desktop.webp",
   socialHandle: "",
   publisherName: "Playtad",
+  publisherUrl: "https://www.playtad.com/",
   editorialTeamName: "Playtad Editorial Team",
   publisherDescription:
     "Playtad produces browser-first games and practical player guides with an emphasis on accessible play, clear controls, and reliable support.",
   nonAffiliationNotice:
     "This browser edition of Magic Sort is a Playtad product. It is not affiliated with, endorsed by, or the same product as similarly named mobile games listed on Google Play or the Apple App Store.",
   sameAs: [] as string[],
-  emitMetaKeywords: true,
+  emitMetaKeywords: false,
   topicKeywords: [
     "Magic Sort",
     "Magic Sort game",
@@ -42,6 +43,7 @@ export const siteConfig = {
     "browser puzzle game",
   ],
   legalLastUpdated: "August 24, 2026",
+  legalLastUpdatedIso: "2026-08-24",
 };
 
 export type SiteConfig = typeof siteConfig;

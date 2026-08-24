@@ -44,15 +44,18 @@ function getSoundEffectManifest() {
         { src: 'assets/sounds/sound_pour1.ogg', id: 'soundPour1' },
         { src: 'assets/sounds/sound_pour2.ogg', id: 'soundPour2' },
         { src: 'assets/sounds/sound_pour3.ogg', id: 'soundPour3' },
-        { src: 'assets/sounds/sound_match.ogg', id: 'soundMatch' }];
+        { src: 'assets/sounds/sound_match.ogg', id: 'soundMatch' }].map(function(asset) {
+        asset.src = versionGameAsset(asset.src);
+        return asset;
+    });
 }
 
 function getMusicAsset(soundName) {
     if (soundName == 'musicMain') {
-        return { src: 'assets/sounds/music_main.ogg', id: 'musicMain' };
+        return { src: versionGameAsset('assets/sounds/music_main.ogg'), id: 'musicMain' };
     }
     if (soundName == 'musicGame') {
-        return { src: 'assets/sounds/music_game.ogg', id: 'musicGame' };
+        return { src: versionGameAsset('assets/sounds/music_game.ogg'), id: 'musicGame' };
     }
     return null;
 }
@@ -163,4 +166,5 @@ function flushAudioCallbacks(audioState) {
 
 function handleLazyAudioError(event) {
     console.error('Deferred audio failed to load:', event.item && event.item.src);
+    MagicSortTelemetry.error('audio_asset', event.item && event.item.src);
 }

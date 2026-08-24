@@ -795,6 +795,15 @@ function completeGameplayPolish() {
         showGameplayRewardMessage('+' + gameplayPolishData.completionReward.essenceEarned + ' Essence');
     }
     CompletionEffects.playCelebration(gameplayPolishData.stars);
+    MagicSortTelemetry.completeLevel({
+        level_name: String(gameData.levelNum + 1),
+        level_number: gameData.levelNum + 1,
+        game_mode: gameData.type,
+        moves: gameplayPolishData.moveCount,
+        stars: gameplayPolishData.stars,
+        undo_count: gameplayPolishData.undoCount,
+        hint_count: gameplayPolishData.hintCount
+    });
     updateGameplayPolishUI();
 }
 
@@ -2180,6 +2189,11 @@ function setupStage() {
                 timerContainer.visible = true;
                 toggleGameTimer(true);
                 toggleGameSessionTimer(true);
+                MagicSortTelemetry.startLevel({
+                    level_name: String(gameData.levelNum + 1),
+                    level_number: gameData.levelNum + 1,
+                    game_mode: gameData.type
+                });
             }
         });
     } else {
@@ -3054,6 +3068,16 @@ function updateTimer() {
         //stop
         timeData.sessionTimer = 0;
         playSound('soundTimerEnd');
+        MagicSortTelemetry.failLevel({
+            level_name: String(gameData.levelNum + 1),
+            level_number: gameData.levelNum + 1,
+            game_mode: gameData.type,
+            moves: gameplayPolishData.moveCount,
+            stars: 0,
+            undo_count: gameplayPolishData.undoCount,
+            hint_count: gameplayPolishData.hintCount,
+            failure_reason: 'times_up'
+        });
         showGameStatus("timesup");
         endGame();
     } else {
@@ -3125,6 +3149,12 @@ function calculateScore() {
             var calTimer = timeData.countdown - timeData.sessionTimer;
             var totalScore = Math.floor((calTimer - timeData.accumulate) * scorePercentage);
             playerData.score += totalScore;
+            MagicSortTelemetry.postScore({
+                level_name: String(gameData.levelNum + 1),
+                level_number: gameData.levelNum + 1,
+                game_mode: gameData.type,
+                score: Math.floor(playerData.score)
+            });
 
             TweenMax.to(timerContainer, 1, {
                 overwrite: true,

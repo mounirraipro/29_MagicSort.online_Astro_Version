@@ -46,7 +46,8 @@ const articleStructuredData = [
       name: siteConfig.publisherName,
       url: siteConfig.siteUrl,
     },
-    mainEntityOfPage: `${siteConfig.siteUrl}${path}`,
+    mainEntityOfPage: `${siteConfig.siteUrl}${path}/`,
+    image: new URL(siteConfig.defaultOgImage, siteConfig.siteUrl).href,
     keywords: article.keywords.join(", "),
   },
 ];
@@ -75,7 +76,7 @@ const articleStructuredData = [
     </header>
 
     <div class="blog-article-shell">
-      <main class="blog-article-main">
+      <div class="blog-article-main">
         <h2 class="sr-only">{articleHeading} guide sections</h2>
         <section class="article-plain-summary" aria-label="Quick summary">
           <p>
@@ -146,7 +147,7 @@ const articleStructuredData = [
             </div>
           </nav>
         )}
-      </main>
+      </div>
 
       <aside class="blog-article-aside" aria-label="Article tools">
         <div class="article-side-card">
@@ -199,6 +200,8 @@ const articleStructuredData = [
             box.dataset.selected = String(value);
             paint(value);
             if (hint) hint.textContent = `Thanks for rating this article ${value} out of 5.`;
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({ event: "article_feedback", article_path: window.location.pathname, rating: value });
           });
         });
       });

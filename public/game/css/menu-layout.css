@@ -17,7 +17,7 @@
     position: absolute;
     inset: 0;
     z-index: 0;
-    background: #0b0710 url("../assets/magic-sort-workshop-desktop.webp?v=20260720-iphonefs1") center / cover no-repeat;
+    background: #0b0710 url("../assets/magic-sort-workshop-desktop.webp?v=20260824-seo1") center / cover no-repeat;
     pointer-events: none;
 }
 
@@ -407,7 +407,7 @@
 @media only screen and (max-width: 640px),
        only screen and (orientation: portrait) and (max-width: 900px) {
     .menu-scene {
-        background-image: url("../assets/magic-sort-workshop-mobile.webp?v=20260720-iphonefs1");
+        background-image: url("../assets/magic-sort-workshop-mobile.webp?v=20260824-seo1");
     }
 
     .menu-ui {

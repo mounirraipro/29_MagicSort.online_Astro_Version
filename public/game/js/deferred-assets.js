@@ -75,14 +75,21 @@ function handleGameplayAssetsComplete() {
     if (window.magicSortLoadMetrics) {
         window.magicSortLoadMetrics.gameplayReadyMs = Math.round((window.performance ? window.performance.now() : 0) - window.magicSortLoadMetrics.startedAt);
     }
+    MagicSortTelemetry.gameplayAssetsReady({
+        gameplay_ready_ms: window.magicSortLoadMetrics ? window.magicSortLoadMetrics.gameplayReadyMs : 0
+    });
 
     while (gameplayAssetLoad.callbacks.length) {
         gameplayAssetLoad.callbacks.shift()();
+    }
+    if (typeof resumePendingMusicLoop == 'function') {
+        resumePendingMusicLoop();
     }
 }
 
 function handleGameplayAssetError(event) {
     console.error('Deferred gameplay asset failed to load:', event.item && event.item.src);
+    MagicSortTelemetry.error('gameplay_asset', event.item && event.item.src);
 }
 
 function updateGameplayAssetStatus(visible, progress) {
