@@ -6,7 +6,8 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
-RUN npm run build
+ARG PUBLIC_ADSTERRA_ENABLED=true
+RUN PUBLIC_ADSTERRA_ENABLED="$PUBLIC_ADSTERRA_ENABLED" npm run build
 
 FROM caddy:2-alpine
 

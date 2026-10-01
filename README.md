@@ -31,12 +31,13 @@ Page copy and page-level SEO live in `src/data/pageContent.ts`. Route-level SEO,
 ## Optional Adsterra units (Magic Sort only)
 
 The four supplied units and individual switches live in src/data/adsterra.ts.
-The build-time master switch PUBLIC_ADSTERRA_ENABLED=true defaults to off.
-Rebuild to apply changes. Google Tag Manager and game analytics are preserved.
+The build-time master switch PUBLIC_ADSTERRA_ENABLED defaults to true. Set it to
+false and rebuild to disable all units. Existing build-environment overrides
+still apply. Google Tag Manager and game analytics are preserved.
 The build no longer downloads a managed seller feed. public/ads.txt retains the
 original independent Google seller entry; add only provider-verified seller records.
 
-Activation remains a separate publisher decision; the release switch stays off.
+The publisher has enabled the release switch; deployment is a separate action.
 Adult and gambling exclusions for magicsort.online and all four supplied units,
 including Smartlink, remain unconfirmed. Request confirmation from Adsterra;
 Block Blast filters do not establish filtering here. No tag flag or local test
@@ -76,8 +77,12 @@ visitors; auto-load eligible placements, preserve refusals and independent CMP
 requirements, provide an accessible opt-out and accurate disclosures. Unit IDs,
 provider mappings and filtering confirmations are always specific to each site.
 
-To publish after the activation decision: set the master switch in the build environment,
-run npm run build, review dist, and use the existing publishing workflow.
+To publish: remove any old PUBLIC_ADSTERRA_ENABLED=false build override (or set
+it to true), run npm run build, review dist, and use the existing publishing
+workflow. Runtime-only variables cannot change this static output. Docker accepts
+--build-arg PUBLIC_ADSTERRA_ENABLED=true (the default); use false to disable.
+The Dockerfile passes that argument into the build, because .env files are excluded
+from the Docker context. Nixpacks uses its build environment or the default true.
 For local mocked QA, start the dev server with the switch true and intercept all
 external requests before navigating. Check unset/allowed/denied/withdrawn preferences and Global Privacy Control,
 desktop/mobile sizes, gameplay, repeated navigation and a master-off build.
