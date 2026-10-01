@@ -5,6 +5,7 @@ import { externalGames } from "@/data/externalGames";
 import { siteConfig } from "@/data/siteConfig";
 import { brandAccentClass } from "@/data/accentClasses";
 import GameEmbed from "@/components/GameEmbed.astro";
+import AdsterraBanner from "@/components/AdsterraBanner.astro";
 import PublisherNote from "@/components/PublisherNote.astro";
 import { gameFacts } from "@/data/gameFacts";
 
@@ -133,6 +134,9 @@ const homeStructuredData = [
       </div>
     </div>
   </section>
+
+
+  <AdsterraBanner unit="leaderboard" />
 
   <PublisherNote />
 

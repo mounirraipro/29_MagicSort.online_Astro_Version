@@ -571,7 +571,7 @@ export const pageContent = {
     seoTitle: `${gameName} Privacy Policy - Data, Ads, and Contact`,
     description: `Read the ${gameName} Privacy Policy and learn how data, ads, contact messages, and browser storage are handled.`,
     keywords: ["Magic Sort privacy policy", "data protection", "browser game privacy", "ad privacy"],
-    updated,
+    updated: "October 1, 2026",
     intro: "Playtad aims to be clear about how data is handled when you use Magic Sort.",
     sections: [
       {
@@ -598,7 +598,7 @@ export const pageContent = {
       },
       {
         heading: "Third-Party Services",
-        body: "Magic Sort may display advertisements from third-party providers, including Google AdSense where enabled. Related games may also load from third-party iframe providers.",
+        body: "When enabled, Magic Sort uses Adsterra for advertisements and sponsored links. The Adsterra disclosure below describes the integration and available preferences. Google Tag Manager provides the analytics delivery path. Related games may also load from third-party iframe providers.",
       },
       {
         heading: "Children's Privacy",

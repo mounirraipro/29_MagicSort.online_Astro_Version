@@ -2,4 +2,12 @@
 import ContentPage from "@/components/ContentPage.astro";
 ---
 
-<ContentPage pageKey="privacy-policy" />
+<ContentPage pageKey="privacy-policy">
+  <section id="adsterra-privacy">
+    <h2>Optional Adsterra advertising</h2>
+    <p>When enabled by the publisher, Adsterra supplies desktop banners and Social Bar ads on selected guide pages. Eligible ads load automatically unless you have opted out, subject to your saved preference and Global Privacy Control. You can hide Adsterra ads using the “Adsterra ad preferences” checkbox near the footer. The scripts do not load inside the game; Google analytics settings are separate.</p>
+    <p>Adsterra and its advertising partners may use cookies and similar technologies and process IP addresses, device/browser information and browsing or ad interactions for ad delivery, measurement and personalization. See <a href="https://adsterra.com/privacy-policy/">Adsterra’s privacy policy</a> for its data practices.</p>
+    <p>We store your Adsterra preference in localStorage under <code>magic-sort-adsterra-consent-v1</code> until you change it or clear site storage. Existing explicit refusals remain respected. Changing the checkbox reloads the page to apply the preference and stop loaded scripts when you opt out. This does not erase information already received by third parties. Browser settings can remove existing cookies and storage.</p>
+    <p>Links labeled “Sponsored offer” open third-party advertising destinations only when you choose to follow them. Their operators’ privacy practices apply after you leave this site. These links are separate from game controls and are not controlled by the embedded-ad preference.</p>
+  </section>
+</ContentPage>

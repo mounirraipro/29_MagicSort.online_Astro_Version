@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import ContactEmail from "@/components/ContactEmail.astro";
+import AdsterraBanner from "@/components/AdsterraBanner.astro";
 import { pageContent, type ContentSection, type ContentPage as PageContent, type PageKey } from "@/data/pageContent";
 import { siteConfig } from "@/data/siteConfig";
 import { gameFacts } from "@/data/gameFacts";
@@ -11,6 +12,7 @@ type Props = {
 
 const { pageKey } = Astro.props;
 const page = pageContent[pageKey] as PageContent;
+const showContentAd = ["how-to-play", "strategy", "difficulty-guide", "game-mechanics"].includes(pageKey);
 const slugify = (value: string) =>
   value
     .toLowerCase()
@@ -102,8 +104,8 @@ const splitContactEmail = (value: string) =>
             </div>
           </section>
         )}
-          {
-            page.sections.map((section: ContentSection, index: number) => (
+        {
+          page.sections.map((section: ContentSection, index: number) => (
               <section id={slugify(section.heading)}>
                 {index === 0 ? <h2>{section.heading}</h2> : <h3>{section.heading}</h3>}
                 {section.body && (
@@ -119,8 +121,9 @@ const splitContactEmail = (value: string) =>
                   </ul>
                 )}
               </section>
-            ))
-          }
+          ))
+        }
+        <slot />
         {(pageKey === "how-to-play" || pageKey === "magic-sort-help") && (
           <nav class="content-recovery-links" aria-label="More Magic Sort help">
             <a href="/blog/magic-sort-not-loading/">
@@ -154,6 +157,7 @@ const splitContactEmail = (value: string) =>
             Visit our <a href="/faq/">FAQ</a> or <a href="/contact/">contact</a> support.
           </p>
         </div>
+        {showContentAd && <AdsterraBanner unit="skyscraper" />}
       </aside>
     </div>
   </article>

@@ -1,6 +1,7 @@
 ---
 import "@/styles/global.css";
 import GoogleTags from "@/components/GoogleTags.astro";
+import AdsterraControls from "@/components/AdsterraControls.astro";
 import { siteConfig } from "@/data/siteConfig";
 import { siteRoutes } from "@/data/siteRoutes";
 import { buildJsonLd, buildPageTitle, getCanonicalUrl, getSeoForPath, withTrailingSlash, type SeoPage } from "@/data/seo";
@@ -138,6 +139,7 @@ const routeHref = (path: string) => withTrailingSlash(path);
       <slot />
     </main>
 
+    <AdsterraControls />
     <footer class="border-t border-line-strong bg-gradient-to-b from-[#f8fbff] to-white">
       <div class="mx-auto grid w-[min(1120px,calc(100%-48px))] grid-cols-[minmax(240px,1.3fr)_repeat(4,minmax(120px,0.72fr))_minmax(220px,1fr)] gap-8 py-8 max-lg:grid-cols-3 max-sm:w-[calc(100%-28px)] max-sm:grid-cols-2">
         <div class="max-sm:col-span-2">
