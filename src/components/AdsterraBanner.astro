@@ -1,15 +1,15 @@
 ---
 import { adsterra } from "@/data/adsterra";
-type Props = { unit: "leaderboard" | "skyscraper" | "skyscraperSecondary"; placement?: "default" | "game-side" };
+type Props = { unit: "leaderboard" | "skyscraper"; placement?: "default" | "game-side" };
 const { unit, placement = "default" } = Astro.props;
 const config = adsterra[unit];
 const minViewport = placement === "game-side" ? 1501 : unit === "leaderboard" ? 1024 : 1200;
 ---
 
 {adsterra.enabled && config.enabled && config.key && (
-  <aside class:list={["adsterra-banner", unit === "leaderboard" ? "adsterra-leaderboard" : "adsterra-skyscraper"]} aria-label="Advertisement" data-adsterra-banner data-placement={placement} data-key={config.key} data-width={config.width} data-height={config.height} data-min-viewport={minViewport} hidden>
+  <aside class:list={["adsterra-banner", unit === "leaderboard" ? "adsterra-leaderboard" : "adsterra-skyscraper"]} aria-label="Advertisement" data-adsterra-banner data-frame-src={`/adsterra/${config.key}.html`} data-placement={placement} data-key={config.key} data-width={config.width} data-height={config.height} data-min-viewport={minViewport} hidden>
     <span>Advertisement</span>
-    <div class="adsterra-slot" style={`width:${config.width}px;height:${config.height}px`}></div>
+    <div class="adsterra-slot" data-adsterra-creative style={`width:${config.width}px;height:${config.height}px`}></div>
   </aside>
 )}
 
@@ -18,6 +18,7 @@ const minViewport = placement === "game-side" ? 1501 : unit === "leaderboard" ? 
   .adsterra-banner[hidden] { display: none; }
   .adsterra-banner > span { display: block; margin-bottom: .5rem; color: #64748b; font: .75rem/1.5 system-ui; }
   .adsterra-slot { margin-inline: auto; }
+  .adsterra-slot :global(iframe) { display: block; border: 0; }
   .adsterra-leaderboard { width: min(1120px, calc(100% - 48px)); }
   @media (max-width: 1023px) { .adsterra-leaderboard { display: none; } }
   @media (max-width: 1199px) { .adsterra-skyscraper { display: none; } }

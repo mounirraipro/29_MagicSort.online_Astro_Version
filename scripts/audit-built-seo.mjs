@@ -21,6 +21,11 @@ for (const file of htmlFiles) {
   const html = await readFile(file, "utf8");
   const relative = path.relative(distRoot, file).replaceAll("\\", "/");
 
+  if (/^adsterra\/[a-f0-9]{32}\.html$/.test(relative)) {
+    if (!html.includes('content="noindex,nofollow,noarchive"')) failures.push(`${relative}: ad document must be noindex`);
+    continue;
+  }
+
   if (relative === "game/index.html") {
     if (!/<meta\s+name=["']robots["']\s+content=["']noindex,nofollow["']/i.test(html)) {
       failures.push(`${relative}: raw game document must be noindex,nofollow`);
@@ -47,6 +52,7 @@ for (const file of htmlFiles) {
 
 const sitemap = await readFile(path.join(distRoot, "sitemap.xml"), "utf8");
 if (sitemap.includes("/game/")) failures.push("sitemap.xml: raw game files must not be listed");
+if (sitemap.includes("/adsterra/")) failures.push("sitemap.xml: ad documents must not be listed");
 if (sitemap.includes("www.magicsort.online")) failures.push("sitemap.xml: found a www URL");
 
 const articlePages = htmlFiles.filter((file) => path.relative(distRoot, file).replaceAll("\\", "/").startsWith("blog/") && path.basename(path.dirname(file)) !== "blog");

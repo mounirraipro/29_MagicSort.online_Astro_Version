@@ -5,7 +5,7 @@ const editorial = adsterraSocialPaths.includes(path) || path.startsWith("/blog/"
 ---
 
 {adsterra.enabled && (
-  <section class="adsterra-preferences" aria-label="Adsterra advertising preferences" id="adsterra-preferences">
+  <section class="adsterra-preferences" aria-label="Adsterra advertising preferences" id="adsterra-preferences" data-adsterra-preferences data-social-bar={editorial}>
     {adsterra.smartlink.enabled && (
       <p><a href={adsterra.smartlink.href} target="_blank" rel="sponsored nofollow noopener noreferrer">Sponsored offer — external advertisement (opens a new tab)</a></p>
     )}
@@ -17,79 +17,9 @@ const editorial = adsterraSocialPaths.includes(path) || path.startsWith("/blog/"
       <p>Changing this setting reloads the page and may interrupt an unfinished puzzle. Google analytics settings are unchanged.</p>
     </details>
   </section>
-  <script is:inline define:vars={{ adsterra, editorial }}>
-    (() => {
-      if (window.magicSortAdsterraInitialized) return;
-      window.magicSortAdsterraInitialized = true;
-      const optedOut = () => {
-        try {
-          const raw = localStorage.getItem(adsterra.consentKey);
-          if (raw === null) return false;
-          const value = JSON.parse(raw);
-          // Preserve every explicit refusal, including older expired refusals.
-          return value?.allowed !== true;
-        } catch { return true; }
-      };
-      const initiallyOptedOut = optedOut();
-      const status = document.querySelector("[data-adsterra-status]");
-      const toggle = document.querySelector("[data-adsterra-opt-out]");
-      toggle.checked = initiallyOptedOut;
-      status.textContent = initiallyOptedOut ? "Adsterra ads are off on this browser." : "Adsterra ads can load automatically unless you opt out or Global Privacy Control is enabled.";
-      toggle.addEventListener("change", () => {
-          try {
-            localStorage.setItem(adsterra.consentKey, JSON.stringify({ allowed: !toggle.checked }));
-            location.reload();
-          } catch { status.textContent = "Your browser could not save this setting. Use your browser's site settings to block advertising."; }
-      });
-      // Reload removes already-running third-party code when consent is revoked,
-      // including in another tab or after restoring a page from the back-forward cache.
-      addEventListener("storage", event => {
-        if ((event.key === adsterra.consentKey || event.key === null) && optedOut() !== initiallyOptedOut) location.reload();
-      });
-      addEventListener("pageshow", event => { if (event.persisted) location.reload(); });
-
-      let started = false;
-      const eligible = () => !optedOut() && navigator.globalPrivacyControl !== true;
-      const load = async () => {
-        if (started || !eligible()) return;
-        started = true;
-        status.textContent = "Adsterra ads can load automatically. You can hide them using this setting.";
-        for (const placement of document.querySelectorAll("[data-adsterra-banner]")) {
-          if (!eligible()) return;
-          const { key, width, height, minViewport } = placement.dataset;
-          if (!matchMedia(`(min-width: ${minViewport}px)`).matches) continue;
-          const id = `adsterra-${key}`;
-          if (document.getElementById(id)) continue;
-          placement.hidden = false;
-          // Check actual visibility as well as viewport width before contacting the provider.
-          if (!placement.getClientRects().length || placement.clientWidth < Number(width)) { placement.hidden = true; continue; }
-          // Invoke the provider directly; serialize tags sharing window.atOptions.
-          window.atOptions = { key, format: "iframe", height: Number(height), width: Number(width), params: {} };
-          await new Promise(resolve => {
-            const script = document.createElement("script");
-            script.id = id;
-            script.src = `https://www.highrevenueformat.com/${key}/invoke.js`;
-            script.async = false;
-            script.onload = resolve;
-            script.onerror = () => { placement.hidden = true; resolve(); };
-            placement.querySelector(".adsterra-slot").appendChild(script);
-          });
-        }
-        if (!eligible() || !editorial || !adsterra.socialBar.enabled || document.querySelector("[data-game-embed], .embedded-game-frame")) return;
-        if (!document.getElementById("adsterra-social-bar")) {
-          const script = document.createElement("script");
-          script.id = "adsterra-social-bar";
-          script.src = adsterra.socialBar.src;
-          script.async = true;
-          document.body.appendChild(script);
-        }
-      };
-      if (document.readyState === "loading") {
-        addEventListener("DOMContentLoaded", () => void load(), { once: true });
-      } else void load();
-      // Stop already-loaded code if a privacy signal changes during this visit.
-      setInterval(() => { if (started && !eligible()) location.reload(); }, 1000);
-    })();
+  <script>
+    import { initializeAdsterra } from "@/scripts/adsterra";
+    initializeAdsterra();
   </script>
 )}
 

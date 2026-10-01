@@ -46,16 +46,14 @@ implement a category-filter confirmation gate.
 
 Each public page has one 728x90 banner above its content at widths of at least
 1024px, and one clearly sponsored Smartlink near the footer. The same banner key
-is never invoked twice on a page. Above 1500px, the homepage's existing 160x600
+has at most one live provider context per page. Above 1500px, the homepage's existing 160x600
 banner occupies the left game rail without changing the original grid or game
 dimensions. At 1200–1500px it stays beside the first explanatory sections below
-the game. The right game rail is prepared through `skyscraperSecondary`, disabled
-with an empty key until a second Magic Sort 160x600 code is supplied. Do not reuse
-the left key: [Adsterra requires separate codes for same-size banners](https://adsterra.com/blog/how-banner-ads-make-money/).
+the game. The right rail remains compact game recommendations; no right ad is configured.
 Recommendation cards remain the fallback for inactive rails. All ContentPage policy/help pages
 and blog articles use their existing sidebars for that unit, at 1200px and wider.
 No new ad column reduces the game width. Smaller screens never request these
-desktop banners; shrinking hides them, and widening requires a reload.
+desktop banners; resizing destroys ineligible contexts and preserves cooldowns.
 
 Social Bar runs on blog articles and these reading/directory routes: /how-to-play/,
 /strategy/, /difficulty-guide/, /game-mechanics/, /magic-sort-help/, /blog/,
@@ -66,7 +64,7 @@ standalone /game/ document, XML sitemap and robots.txt do not carry site ads.
 
 For more mobile inventory, request new Magic Sort-specific 320x50 and/or 300x250
 units. Do not reuse other sites' keys, repeat the same unit to simulate extra
-inventory, scale desktop banners, force redirects, or add automatic refresh.
+inventory, scale desktop banners, or force redirects.
 
 Visitors have no custom authorize-ad gate. Unset and previously allowed visitors
 load eligible placements automatically; a footer checkbox lets them hide Adsterra
@@ -74,7 +72,8 @@ ads. The existing magic-sort-adsterra-consent-v1 key is retained, and explicit
 refusals (including older expired refusals) are never automatically discarded.
 New preferences have no automatic expiry. Storage failure or corrupt preferences
 fail closed. Changing the setting reloads the page and may interrupt a puzzle;
-revocation in another tab also reloads. Sponsored links are separate manual links.
+revocation in another tab destroys banner contexts (and reloads if Social Bar was loaded).
+Sponsored links are separate manual links.
 
 Adsterra does not wait for a third-party CMP API. Unset/allowed preferences load
 automatically when the publisher switch is enabled and Global Privacy Control is
@@ -83,10 +82,17 @@ independent CMP was found in the local source; Google Tag Manager is unchanged.
 Remote tag-container settings are outside this code cleanup. This setup is not a
 claim of jurisdiction-wide consent compliance or non-tracking advertising.
 
-Banners invoke provider iframe-format scripts directly in the host document,
-serializing shared atOptions. No custom wrapper iframe or invented category flags
-are used. Mocked loader/layout QA cannot verify actual provider rendering, ad fill
-or content, including compatibility with deferred direct script insertion.
+Banner refresh uses isolated same-origin /adsterra/<Magic Sort key>.html documents,
+with the original provider iframe-format invocation inside each. Each cycle draws
+an independent uniform integer interval of 37,000–50,000ms. Timing counts only
+when at least 50% visible in an active, focused page. Hidden time and long timer
+gaps never catch up. sessionStorage preserves the selected interval/cooldown
+across resize, navigation and BFCache; unavailable/corrupt storage fails closed.
+Opt-out, GPC and data-adsterra-disabled destroy banner contexts. Disposal removes
+observers, timers and frame contexts. Failures do not create retry bursts.
+The user reports Ema approved 37–50-second refresh. Separate provider permission
+for these custom wrapper iframes has NOT been evidenced; confirm that before
+publishing. Mocked QA does not verify real fill, creative safety or provider approval.
 
 Reusable preference for future projects: no custom authorization button for unset
 visitors; auto-load eligible placements, preserve refusals and independent CMP
