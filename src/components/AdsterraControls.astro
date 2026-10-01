@@ -1,13 +1,12 @@
 ---
-import { adsterra, adsterraGuidePaths } from "@/data/adsterra";
+import { adsterra, adsterraSocialPaths } from "@/data/adsterra";
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
-const editorial = adsterraGuidePaths.includes(path);
-const showSmartlink = editorial || path === "/" || path === "/play";
+const editorial = adsterraSocialPaths.includes(path) || path.startsWith("/blog/");
 ---
 
 {adsterra.enabled && (
   <section class="adsterra-preferences" aria-label="Adsterra advertising preferences" id="adsterra-preferences">
-    {showSmartlink && adsterra.smartlink.enabled && (
+    {adsterra.smartlink.enabled && (
       <p><a href={adsterra.smartlink.href} target="_blank" rel="sponsored nofollow noopener noreferrer">Sponsored offer — external advertisement (opens a new tab)</a></p>
     )}
     <details>
@@ -59,10 +58,11 @@ const showSmartlink = editorial || path === "/" || path === "/play";
           if (!eligible()) return;
           const { key, width, height, minViewport } = placement.dataset;
           if (!matchMedia(`(min-width: ${minViewport}px)`).matches) continue;
-          placement.hidden = false;
-          if (placement.clientWidth < Number(width)) { placement.hidden = true; continue; }
           const id = `adsterra-${key}`;
           if (document.getElementById(id)) continue;
+          placement.hidden = false;
+          // Check actual visibility as well as viewport width before contacting the provider.
+          if (!placement.getClientRects().length || placement.clientWidth < Number(width)) { placement.hidden = true; continue; }
           // Invoke the provider directly; serialize tags sharing window.atOptions.
           window.atOptions = { key, format: "iframe", height: Number(height), width: Number(width), params: {} };
           await new Promise(resolve => {

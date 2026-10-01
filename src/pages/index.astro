@@ -136,10 +136,11 @@ const homeStructuredData = [
   </section>
 
 
-  <AdsterraBanner unit="leaderboard" />
 
   <PublisherNote />
 
+  <div class="home-ad-content">
+    <div class="home-ad-copy">
   <section class="home-section home-search-intent">
     <div class="home-section-head split-head">
       <div>
@@ -193,6 +194,10 @@ const homeStructuredData = [
       </article>
     </div>
   </section>
+
+    </div>
+    <AdsterraBanner unit="skyscraper" />
+  </div>
 
   <section class="home-section seo-copy-section" aria-labelledby="magic-sort-controls">
     <div class="section-head">
@@ -369,3 +374,14 @@ const homeStructuredData = [
     })();
   </script>
 </BaseLayout>
+
+<style>
+  .home-ad-content { width: min(1120px, calc(100% - 48px)); margin-inline: auto; }
+  .home-ad-copy { min-width: 0; }
+  .home-ad-copy :global(.home-section) { width: 100%; }
+  @media (min-width: 1200px) {
+    .home-ad-content:has([data-adsterra-banner]:not([hidden])) { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 32px; align-items: start; }
+    .home-ad-copy :global(.process-strip) { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px) { .home-ad-content { width: calc(100% - 28px); } }
+</style>

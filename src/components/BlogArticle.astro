@@ -1,4 +1,5 @@
 ---
+import AdsterraBanner from "@/components/AdsterraBanner.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { articles, type Article } from "@/data/articles";
 import { siteConfig } from "@/data/siteConfig";
@@ -160,6 +161,7 @@ const articleStructuredData = [
           <a class="article-side-link" href="/play/">Play Magic Sort</a>
           <a class="article-side-link" href="/editorial-policy/">Editorial policy</a>
         </div>
+        <AdsterraBanner unit="skyscraper" />
       </aside>
     </div>
   </article>

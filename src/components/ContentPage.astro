@@ -12,7 +12,6 @@ type Props = {
 
 const { pageKey } = Astro.props;
 const page = pageContent[pageKey] as PageContent;
-const showContentAd = ["how-to-play", "strategy", "difficulty-guide", "game-mechanics"].includes(pageKey);
 const slugify = (value: string) =>
   value
     .toLowerCase()
@@ -157,7 +156,7 @@ const splitContactEmail = (value: string) =>
             Visit our <a href="/faq/">FAQ</a> or <a href="/contact/">contact</a> support.
           </p>
         </div>
-        {showContentAd && <AdsterraBanner unit="skyscraper" />}
+        <AdsterraBanner unit="skyscraper" />
       </aside>
     </div>
   </article>

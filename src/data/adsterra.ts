@@ -8,5 +8,5 @@ export const adsterra = {
   smartlink: { enabled: true, href: "https://www.profitableratecpmnetwork.com/f0q0uuezms?key=947896461fbb21d91fe019e0f3b5f212" },
 };
 
-// Explicit editorial allowlist: never load Social Bar on a page containing a game.
-export const adsterraGuidePaths = ["/how-to-play", "/strategy", "/difficulty-guide", "/game-mechanics"];
+// Social Bar is limited to reading/directory pages, never games or legal/support pages.
+export const adsterraSocialPaths = ["/how-to-play", "/strategy", "/difficulty-guide", "/game-mechanics", "/magic-sort-help", "/blog", "/games", "/faq", "/about", "/editorial-policy", "/sitemap"];

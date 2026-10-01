@@ -1,6 +1,7 @@
 ---
 import "@/styles/global.css";
 import GoogleTags from "@/components/GoogleTags.astro";
+import AdsterraBanner from "@/components/AdsterraBanner.astro";
 import AdsterraControls from "@/components/AdsterraControls.astro";
 import { siteConfig } from "@/data/siteConfig";
 import { siteRoutes } from "@/data/siteRoutes";
@@ -136,6 +137,7 @@ const routeHref = (path: string) => withTrailingSlash(path);
     </header>
 
     <main id="main-content" class="min-h-[72vh]">
+      <AdsterraBanner unit="leaderboard" />
       <slot />
     </main>
 

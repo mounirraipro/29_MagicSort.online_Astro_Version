@@ -44,13 +44,24 @@ Block Blast filters do not establish filtering here. No tag flag or local test
 proves creative safety. This integration does not change account settings or
 implement a category-filter confirmation gate.
 
-The 728x90 banner is below gameplay on / and /play/ at widths of at least 1024px
-and only when its container fits. The 160x600 banner is in guide sidebars at
-1200px and wider. Smaller screens never request these banners; shrinking an
-already-loaded desktop page hides them. Widening requires a reload. Social Bar
-runs only on /how-to-play/, /strategy/, /difficulty-guide/ and /game-mechanics/,
-never on game routes. Sponsored Smartlink text is near the footer on those guides
-and the two Magic Sort pages. No game controls redirect.
+Each public page has one 728x90 banner above its content at widths of at least
+1024px, and one clearly sponsored Smartlink near the footer. The same banner key
+is never invoked twice on a page. The homepage also has one 160x600 banner beside
+the first explanatory sections below the game; all ContentPage policy/help pages
+and blog articles use their existing sidebars for that unit, at 1200px and wider.
+No new ad column reduces the game width. Smaller screens never request these
+desktop banners; shrinking hides them, and widening requires a reload.
+
+Social Bar runs on blog articles and these reading/directory routes: /how-to-play/,
+/strategy/, /difficulty-guide/, /game-mechanics/, /magic-sort-help/, /blog/,
+/games/, /faq/, /about/, /editorial-policy/ and /sitemap/. It stays off the homepage,
+/play/, embedded game pages, policy pages, contact, accessibility and parents.
+All those pages still have a desktop leaderboard and the sponsored link. The
+standalone /game/ document, XML sitemap and robots.txt do not carry site ads.
+
+For more mobile inventory, request new Magic Sort-specific 320x50 and/or 300x250
+units. Do not reuse other sites' keys, repeat the same unit to simulate extra
+inventory, scale desktop banners, force redirects, or add automatic refresh.
 
 Visitors have no custom authorize-ad gate. Unset and previously allowed visitors
 load eligible placements automatically; a footer checkbox lets them hide Adsterra
