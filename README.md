@@ -46,8 +46,13 @@ implement a category-filter confirmation gate.
 
 Each public page has one 728x90 banner above its content at widths of at least
 1024px, and one clearly sponsored Smartlink near the footer. The same banner key
-is never invoked twice on a page. The homepage also has one 160x600 banner beside
-the first explanatory sections below the game; all ContentPage policy/help pages
+is never invoked twice on a page. Above 1500px, the homepage's existing 160x600
+banner occupies the left game rail without changing the original grid or game
+dimensions. At 1200–1500px it stays beside the first explanatory sections below
+the game. The right game rail is prepared through `skyscraperSecondary`, disabled
+with an empty key until a second Magic Sort 160x600 code is supplied. Do not reuse
+the left key: [Adsterra requires separate codes for same-size banners](https://adsterra.com/blog/how-banner-ads-make-money/).
+Recommendation cards remain the fallback for inactive rails. All ContentPage policy/help pages
 and blog articles use their existing sidebars for that unit, at 1200px and wider.
 No new ad column reduces the game width. Smaller screens never request these
 desktop banners; shrinking hides them, and widening requires a reload.

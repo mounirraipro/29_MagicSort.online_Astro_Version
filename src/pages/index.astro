@@ -86,6 +86,8 @@ const homeStructuredData = [
 <BaseLayout title={siteConfig.name} description={siteConfig.description} structuredData={homeStructuredData}>
   <section class="hero-play">
     <div class="home-game-lobby">
+      <div class="home-game-rail">
+      <AdsterraBanner unit="skyscraper" placement="game-side" />
       <div class="game-bento-grid game-bento-grid-side" aria-label="Games you can play">
         {homeBentoLeft.map((game, index) => (
           <a class:list={["game-bento-card", game.accentClass, { "game-bento-card-featured": index === 0 }]} href={game.href}>
@@ -97,7 +99,10 @@ const homeStructuredData = [
           </a>
         ))}
       </div>
+      </div>
       <GameEmbed title="Play Magic Sort" />
+      <div class="home-game-rail">
+      <AdsterraBanner unit="skyscraperSecondary" placement="game-side" />
       <div class="game-bento-grid game-bento-grid-side" aria-label="More games">
         {homeBentoRight.map((game, index) => (
           <a class:list={["game-bento-card", game.accentClass, { "game-bento-card-featured": index === 0 }]} href={game.href}>
@@ -108,6 +113,7 @@ const homeStructuredData = [
             </div>
           </a>
         ))}
+      </div>
       </div>
     </div>
     <div class="hero-copy">
@@ -376,6 +382,11 @@ const homeStructuredData = [
 </BaseLayout>
 
 <style>
+  /* Keep the original lobby columns and game sizing. Ads use only existing rails. */
+  .home-game-rail { min-width: 0; }
+  .home-game-rail :global(.adsterra-banner) { margin: 0 auto; }
+  :global(.home-game-rail:has(.adsterra-banner:not([hidden])) > .game-bento-grid-side) { display: none; }
+  @media (max-width: 1500px) { .home-game-rail { display: none; } }
   .home-ad-content { width: min(1120px, calc(100% - 48px)); margin-inline: auto; }
   .home-ad-copy { min-width: 0; }
   .home-ad-copy :global(.home-section) { width: 100%; }

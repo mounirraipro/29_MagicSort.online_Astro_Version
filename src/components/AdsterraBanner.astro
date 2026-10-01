@@ -1,13 +1,13 @@
 ---
 import { adsterra } from "@/data/adsterra";
-type Props = { unit: "leaderboard" | "skyscraper" };
-const { unit } = Astro.props;
+type Props = { unit: "leaderboard" | "skyscraper" | "skyscraperSecondary"; placement?: "default" | "game-side" };
+const { unit, placement = "default" } = Astro.props;
 const config = adsterra[unit];
-const minViewport = unit === "leaderboard" ? 1024 : 1200;
+const minViewport = placement === "game-side" ? 1501 : unit === "leaderboard" ? 1024 : 1200;
 ---
 
-{adsterra.enabled && config.enabled && (
-  <aside class:list={["adsterra-banner", `adsterra-${unit}`]} aria-label="Advertisement" data-adsterra-banner data-key={config.key} data-width={config.width} data-height={config.height} data-min-viewport={minViewport} hidden>
+{adsterra.enabled && config.enabled && config.key && (
+  <aside class:list={["adsterra-banner", unit === "leaderboard" ? "adsterra-leaderboard" : "adsterra-skyscraper"]} aria-label="Advertisement" data-adsterra-banner data-placement={placement} data-key={config.key} data-width={config.width} data-height={config.height} data-min-viewport={minViewport} hidden>
     <span>Advertisement</span>
     <div class="adsterra-slot" style={`width:${config.width}px;height:${config.height}px`}></div>
   </aside>
@@ -21,4 +21,5 @@ const minViewport = unit === "leaderboard" ? 1024 : 1200;
   .adsterra-leaderboard { width: min(1120px, calc(100% - 48px)); }
   @media (max-width: 1023px) { .adsterra-leaderboard { display: none; } }
   @media (max-width: 1199px) { .adsterra-skyscraper { display: none; } }
+  @media (max-width: 1500px) { [data-placement="game-side"] { display: none; } }
 </style>

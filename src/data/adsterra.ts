@@ -4,6 +4,9 @@ export const adsterra = {
   consentKey: "magic-sort-adsterra-consent-v1",
   leaderboard: { enabled: true, key: "69c57e7bfab394f61a0a5e3a1bc7a623", width: 728, height: 90 },
   skyscraper: { enabled: true, key: "69f3c4bc657f34079352f7500afb5422", width: 160, height: 600 },
+  // Supply a SECOND Magic Sort 160x600 placement code before enabling the right rail.
+  // Adsterra requires different codes for two same-size banners on one page.
+  skyscraperSecondary: { enabled: false, key: "", width: 160, height: 600 },
   socialBar: { enabled: true, src: "https://pl31569487.profitableratecpmnetwork.com/34/7c/0a/347c0a607788dbb1c35fb832da1553cd.js" },
   smartlink: { enabled: true, href: "https://www.profitableratecpmnetwork.com/f0q0uuezms?key=947896461fbb21d91fe019e0f3b5f212" },
 };
