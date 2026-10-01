@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////
 // VISUAL ASSET MANIFESTS
 ////////////////////////////////////////////////////////////
-var GAME_ASSET_VERSION = '20260824-seo1';
+var GAME_ASSET_VERSION = '20261001-board4';
 
 function versionGameAsset(path) {
     return path + (path.indexOf('?') == -1 ? '?' : '&') + 'v=' + GAME_ASSET_VERSION;
@@ -18,7 +18,9 @@ function buildCriticalAssetManifest() {
 function buildGameplayAssetManifest() {
     var gameplayManifest = [{
         src: versionGameAsset('assets/alchemy-symbols.svg'),
-        id: 'alchemySymbols'
+        id: 'alchemySymbols',
+        // Bitmap needs an image element; PreloadJS otherwise returns an SVG document.
+        type: createjs.Types.IMAGE
     }];
 
     for (var tubeIndex = 0; tubeIndex < tubes_arr.length; tubeIndex++) {

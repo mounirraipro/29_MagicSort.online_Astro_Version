@@ -1,6 +1,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { transform } from "esbuild";
+import "./build-menu-assets.mjs";
 
 const gameRoot = join(process.cwd(), "public", "game", "js");
 const sourceFiles = [
@@ -26,10 +27,13 @@ const sourceFiles = [
   "achievements.js",
   "player-profile.js",
   "cosmetic-catalog.js",
+  "menu-screens.js",
   "cosmetic-cabinet.js",
   "completion-effects.js",
   "gameplay-assists.js",
   "gameplay-rewards.js",
+  "gameplay-layout.js",
+  "gameplay-ui.js",
   "game.js",
   "mobile.js",
   "main.js",

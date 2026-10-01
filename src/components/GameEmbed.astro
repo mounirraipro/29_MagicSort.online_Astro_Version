@@ -1,5 +1,6 @@
 ---
 import { GAME_ASSET_VERSION } from "@/data/gameVersion";
+import "@/styles/game-embed.css";
 
 type Props = {
   title?: string;
@@ -70,7 +71,7 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}${challengeToken ? `&
       let shareRequest = 0;
       let pseudoFullscreen = false;
       let savedScrollPosition = 0;
-      let shellPlaceholder: Comment | null = null;
+      let fullscreenAncestors: HTMLElement[] = [];
       let hiddenAt = 0;
       let readyTimer = 0;
       let feedbackTimer = 0;
@@ -100,9 +101,12 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}${challengeToken ? `&
       const enterPseudoFullscreen = () => {
         savedScrollPosition = window.scrollY;
         pseudoFullscreen = true;
-        shellPlaceholder = document.createComment("game-embed-placeholder");
-        shell.parentNode?.insertBefore(shellPlaceholder, shell);
-        document.body.appendChild(shell);
+        // Reparenting an iframe reloads its document and discards the active puzzle.
+        // Release ancestor clipping/stacking instead, keeping the iframe connected.
+        for (let parent = shell.parentElement; parent && parent !== document.body; parent = parent.parentElement) {
+          parent.classList.add("game-fullscreen-ancestor");
+          fullscreenAncestors.push(parent);
+        }
         updateMobileFullscreenViewport();
         shell.classList.add("is-pseudo-fullscreen");
         document.documentElement.classList.add("game-pseudo-fullscreen");
@@ -117,11 +121,8 @@ const iframeSrc = `/game/index.html?v=${GAME_ASSET_VERSION}${challengeToken ? `&
         }
         shell.classList.remove("is-pseudo-fullscreen");
         document.documentElement.classList.remove("game-pseudo-fullscreen");
-        if (shellPlaceholder?.parentNode) {
-          shellPlaceholder.parentNode.insertBefore(shell, shellPlaceholder);
-          shellPlaceholder.remove();
-        }
-        shellPlaceholder = null;
+        fullscreenAncestors.forEach((parent) => parent.classList.remove("game-fullscreen-ancestor"));
+        fullscreenAncestors = [];
         shell.style.removeProperty("--game-fullscreen-width");
         shell.style.removeProperty("--game-fullscreen-height");
         shell.style.removeProperty("--game-fullscreen-left");

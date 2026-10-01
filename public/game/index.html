@@ -10,11 +10,13 @@
     <meta name="robots" content="noindex,nofollow">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <link rel="shortcut icon" href="assets/icon.ico" type="image/x-icon">
-    <link rel="preload" href="assets/magic-sort-workshop-desktop.webp?v=20260824-seo1" as="image" media="(min-width: 641px)">
-    <link rel="preload" href="assets/magic-sort-workshop-mobile.webp?v=20260824-seo1" as="image" media="(max-width: 640px), (orientation: portrait)">
-    <link rel="stylesheet" href="css/normalize.css?v=20260824-seo1">
-    <link rel="stylesheet" href="css/main.css?v=20260824-seo1">
-    <link rel="stylesheet" href="css/menu-layout.css?v=20260824-seo1">
+    <link rel="preload" href="assets/menu-garden-desktop.webp?v=20261001-board4" as="image" media="(orientation: landscape)">
+    <link rel="preload" href="assets/menu-garden-mobile.webp?v=20261001-board4" as="image" media="(orientation: portrait)">
+    <link rel="preload" href="css/fonts/nunito-latin-900.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" href="css/normalize.css?v=20261001-board4">
+    <link rel="stylesheet" href="css/main.css?v=20261001-board4">
+    <link rel="stylesheet" href="css/menu-layout.css?v=20261001-board4">
+    <link rel="stylesheet" href="css/gameplay-layout.css?v=20261001-board4">
     <script>
     if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
         var msViewportStyle = document.createElement("style");
@@ -39,58 +41,62 @@
             <div class="notSupport">Your browser isn't supported.<br>Please update your browser in order to run the game.</div>
         </div>
         <div id="canvasHolder">
-            <canvas id="gameCanvas" width="1280" height="768"></canvas>
+            <canvas id="gameCanvas" width="900" height="1200"></canvas>
         </div>
         <div id="uiLayer">
             <div id="htmlMenuScene" class="menu-scene is-hidden" aria-hidden="true"></div>
             <div id="htmlMainMenu" class="menu-ui is-hidden">
                 <div class="menu-ui__panel">
-                    <h1 class="menu-ui__title">Magic Sort</h1>
+                    <h1 class="menu-ui__title">Magic<span>Sort</span></h1>
+                    <p class="menu-ui__tagline">Sort. Relax. Discover.</p>
+                    <img class="menu-ui__tubes" src="assets/menu-sorting-tubes.webp" width="640" height="640" alt="Three glass tubes filled with colorful layers" fetchpriority="high">
                     <div class="menu-ui__progress">
-                        <div class="menu-ui__essence" aria-label="Essence balance"><span aria-hidden="true"></span><strong id="htmlMenuEssence">0</strong><small>Essence</small></div>
-                        <div class="menu-ui__achievements" aria-label="Achievement progress">
-                            <span class="menu-ui__seal" aria-hidden="true"></span>
-                            <span><strong id="htmlMenuAchievementCount">0/6</strong><small>Achievements</small></span>
-                            <i aria-hidden="true"><b id="htmlMenuAchievementFill"></b></i>
-                        </div>
+                        <div class="menu-ui__essence" aria-label="Essence balance"><i class="essence-gem" aria-hidden="true"></i><strong id="htmlMenuEssence">0</strong></div>
                         <button id="htmlMainSettingsButton" class="menu-ui__settings" type="button" aria-label="Open settings" title="Settings">
-                            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"/></svg>
+                            <span data-menu-icon="settings" aria-hidden="true"></span>
                         </button>
                     </div>
                     <div class="menu-ui__actions">
+                        <span class="menu-ui__level" id="htmlMenuLevel">Level 1</span>
                         <button id="htmlStartButton" class="menu-ui__button menu-ui__button--play" type="button">
-                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6M10 3v5l-5.5 9.4A2.4 2.4 0 0 0 6.6 21h10.8a2.4 2.4 0 0 0 2.1-3.6L14 8V3"/><path d="M7.5 16h9"/><circle cx="10" cy="13" r=".7"/></svg>
-                            <span>Play</span>
+                            <span data-menu-icon="play" aria-hidden="true"></span>
+                            <span id="htmlStartLabel">Play</span>
                         </button>
                         <div class="menu-ui__secondary">
                             <button id="htmlLevelsButton" class="menu-ui__button menu-ui__button--levels" type="button">
-                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 6 5-3 8 3 5-3v15l-5 3-8-3-5 3Z"/><path d="M8 3v15M16 6v15"/></svg>
+                                <span data-menu-icon="grid-3x3" aria-hidden="true"></span>
                                 <span>Levels</span>
                             </button>
                             <button id="htmlDailyButton" class="menu-ui__button menu-ui__button--daily" type="button">
-                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14a2 2 0 0 1 2 2v14H3V6a2 2 0 0 1 2-2Z"/><path d="M7 2v4M17 2v4M3 9h18"/><circle cx="12" cy="14" r="2"/></svg>
+                                <span data-menu-icon="sun" aria-hidden="true"></span>
                                 <span>Daily</span>
-                                <small id="htmlDailyLabel">Today's puzzle</small>
+                                <small id="htmlDailyLabel" class="visually-hidden">Today's puzzle</small>
                             </button>
                             <button id="htmlCabinetButton" class="menu-ui__button menu-ui__button--cabinet" type="button">
-                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v16H4Z"/><path d="M12 5v16M8 3h8v2M9 13h1M14 13h1"/></svg>
-                                <span>Cabinet</span>
+                                <span data-menu-icon="shopping-bag" aria-hidden="true"></span>
+                                <span>Atelier</span>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div id="htmlLevelMenu" class="overlay-card is-hidden">
+            <div id="htmlLevelMenu" class="overlay-card menu-page is-hidden" aria-label="Levels">
                 <div class="overlay-card__panel overlay-card__panel--wide">
-                    <div class="overlay-card__head">
-                        <button id="htmlLevelPrev" class="chip-button chip-button--icon" type="button">&lt;</button>
-                        <h2 id="htmlLevelTitle" class="overlay-card__title">Pick a Level</h2>
-                        <button id="htmlLevelNext" class="chip-button chip-button--icon" type="button">&gt;</button>
+                    <div class="menu-page__head">
+                        <button id="htmlBackFromLevels" class="panel-back-button panel-back-button--inline" type="button" aria-label="Back to menu" title="Back to menu"><span data-menu-icon="chevron-left" aria-hidden="true"></span></button>
+                        <h2 class="overlay-card__title">Levels</h2>
+                        <strong class="cabinet-balance" aria-label="Essence balance"><i class="essence-gem" aria-hidden="true"></i><span id="htmlLevelEssence">0</span></strong>
                     </div>
-                    <div id="htmlLevelGrid" class="level-grid"></div>
-                    <div class="overlay-card__footer">
-                        <button id="htmlBackFromLevels" class="chip-button" type="button">Back</button>
+                    <div class="level-journey">
+                        <div><small>Your journey</small><h3 id="htmlLevelTitle">Levels 1-12</h3></div>
+                        <span class="level-journey__icon" data-menu-icon="gem" aria-hidden="true"></span>
+                        <progress id="htmlLevelProgress" max="12" value="0" aria-label="Completed levels on this page"></progress>
+                        <span id="htmlLevelProgressText">0 / 12</span>
                     </div>
+                    <div id="htmlLevelGrid" class="level-grid" aria-label="Choose a level"></div>
+                    <div class="level-pagination"><button id="htmlLevelPrev" class="chip-button chip-button--icon" type="button" aria-label="Previous levels" title="Previous levels"><span data-menu-icon="chevron-left" aria-hidden="true"></span></button><span id="htmlLevelPage">1 / 1</span><button id="htmlLevelNext" class="chip-button chip-button--icon" type="button" aria-label="Next levels" title="Next levels"><span data-menu-icon="chevron-right" aria-hidden="true"></span></button></div>
+                    <button id="htmlLevelPlay" class="chip-button chip-button--primary" type="button">Play level 1</button>
+                    <button id="htmlEndlessButton" class="menu-text-button" type="button">Endless challenge <span data-menu-icon="arrow-right" aria-hidden="true"></span></button>
                 </div>
             </div>
             <div id="htmlTubeMenu" class="overlay-card is-hidden">
@@ -111,26 +117,31 @@
                     </div>
                 </div>
             </div>
-            <div id="htmlShopMenu" class="overlay-card is-hidden">
+            <div id="htmlShopMenu" class="overlay-card menu-page is-hidden" aria-label="Atelier">
                 <div class="overlay-card__panel overlay-card__panel--cabinet">
                     <div class="cabinet-head">
                         <button id="htmlBackFromCabinet" class="panel-back-button panel-back-button--inline" type="button" aria-label="Back to menu" title="Back to menu">
                             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
                         </button>
                         <span class="cabinet-head__title">
-                            <h2 class="overlay-card__title">Alchemy Cabinet</h2>
+                            <h2 class="overlay-card__title">Atelier</h2>
                             <small id="htmlCabinetAchievements">0/6 achievements</small>
                         </span>
-                        <strong class="cabinet-balance" aria-label="Essence balance"><i aria-hidden="true"></i><span id="htmlCabinetEssence">0</span></strong>
+                        <strong class="cabinet-balance" aria-label="Essence balance"><i class="essence-gem" aria-hidden="true"></i><span id="htmlCabinetEssence">0</span></strong>
                     </div>
-                    <div class="cabinet-section">
-                        <h3>Background Theme</h3>
+                    <div class="atelier-tabs" role="tablist" aria-label="Cosmetic category">
+                        <button id="htmlThemesTab" type="button" role="tab" aria-selected="true" aria-controls="htmlThemesPanel" data-cabinet-tab="background">Themes</button>
+                        <button id="htmlEffectsTab" type="button" role="tab" aria-selected="false" aria-controls="htmlEffectsPanel" tabindex="-1" data-cabinet-tab="effect">Effects</button>
+                    </div>
+                    <div class="atelier-scroll">
+                    <div id="htmlThemesPanel" class="cabinet-section" role="tabpanel" aria-labelledby="htmlThemesTab">
                         <div id="htmlCabinetBackgrounds" class="cabinet-grid cabinet-grid--backgrounds"></div>
                     </div>
-                    <div class="cabinet-section">
-                        <h3>Pour Effect</h3>
+                    <div id="htmlEffectsPanel" class="cabinet-section" role="tabpanel" aria-labelledby="htmlEffectsTab" hidden>
                         <div id="htmlCabinetEffects" class="cabinet-grid cabinet-grid--effects"></div>
                     </div>
+                    </div>
+                    <div class="atelier-selection"><strong id="htmlCabinetSelection">Velvet Lab</strong><span id="htmlCabinetSelectionState">Current theme</span><button id="htmlCabinetApply" class="chip-button chip-button--primary" type="button">Applied</button></div>
                     <p id="htmlCabinetStatus" class="cabinet-status is-hidden" role="status" aria-live="polite"></p>
                 </div>
             </div>
@@ -161,70 +172,75 @@
                 </div>
             </div>
             <div id="htmlSettingsMenu" class="settings-ui is-hidden">
-                <button id="htmlSettingsToggle" class="settings-ui__toggle" type="button" aria-label="Open game menu">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-                    <span>Menu</span>
+                <button id="htmlSettingsToggle" class="settings-ui__toggle" type="button" aria-label="Open game menu" title="Game settings" aria-expanded="false" aria-controls="htmlSettingsPanel">
+                    <span data-menu-icon="settings" aria-hidden="true"></span>
                 </button>
                 <div id="htmlSettingsPanel" class="settings-ui__panel is-hidden">
                     <button id="htmlSoundButton" class="settings-ui__button" type="button">Sound: On</button>
                     <button id="htmlMusicButton" class="settings-ui__button" type="button">Music: On</button>
                     <button id="htmlSymbolsButton" class="settings-ui__button" type="button">Symbols: On</button>
-                    <button id="htmlQuitButton" class="settings-ui__button settings-ui__button--danger" type="button">Quit</button>
+                    <button id="htmlQuitButton" class="settings-ui__button settings-ui__button--danger" type="button"><span data-menu-icon="log-out" aria-hidden="true"></span><span>Back to menu</span></button>
                 </div>
             </div>
-            <div id="htmlGameHud" class="game-hud is-hidden">
-                <div class="game-hud__stage" aria-label="Current stage">
-                    <span class="game-hud__sigil" aria-hidden="true"></span>
-                    <span class="game-hud__stage-copy">
+            <div id="htmlGameHud" class="play-hud is-hidden">
+                <div class="play-hud__top">
+                <div class="play-stage-label" aria-label="Current stage">
+                    <span data-menu-icon="flask-conical" aria-hidden="true"></span>
+                    <span>
                         <small id="htmlStageKind">Stage</small>
                         <strong id="htmlStageValue">1</strong>
                     </span>
                 </div>
-                <div id="htmlMoveCounter" class="game-hud__stat" aria-live="polite">
-                    <span class="game-hud__label">Moves</span>
-                    <strong id="htmlMoveCountValue" class="game-hud__stat-value">0</strong>
+                <div class="play-essence" aria-label="Essence balance"><i class="essence-gem" aria-hidden="true"></i><strong id="htmlEssenceValue">0</strong></div>
                 </div>
-                <div class="game-hud__stat" aria-live="polite">
-                    <span class="game-hud__label">Sorted</span>
-                    <strong id="htmlSortedCountValue" class="game-hud__stat-value">0/0</strong>
+                <div class="play-stats">
+                <div id="htmlMoveCounter" class="play-stat" aria-live="polite">
+                    <span class="play-stat__label">Moves</span>
+                    <strong id="htmlMoveCountValue">0</strong>
                 </div>
-                <div id="htmlFlowCounter" class="game-hud__stat game-hud__stat--flow" aria-live="polite">
-                    <span class="game-hud__label">Flow</span>
-                    <strong id="htmlFlowValue" class="game-hud__stat-value">x0</strong>
+                <div class="play-stat" aria-live="polite">
+                    <span class="play-stat__label">Sorted</span>
+                    <strong id="htmlSortedCountValue">0/0</strong>
                 </div>
-                <div id="htmlBestCounter" class="game-hud__stat game-hud__stat--best" aria-label="Personal best move count">
-                    <span class="game-hud__label">Best</span>
-                    <strong id="htmlBestMoveValue" class="game-hud__stat-value">--</strong>
+                <div id="htmlBestCounter" class="play-stat play-stat--best" aria-label="Personal best move count">
+                    <span class="play-stat__label"><span data-menu-icon="trophy" aria-hidden="true"></span> <span class="play-best-label">Best</span></span>
+                    <strong id="htmlBestMoveValue">--</strong>
                 </div>
-                <div class="game-hud__stat game-hud__stat--essence" aria-label="Essence balance">
-                    <span class="game-hud__label">Essence</span>
-                    <strong id="htmlEssenceValue" class="game-hud__stat-value">0</strong>
+                </div>
+                <div id="htmlGameClock" class="play-clock">
+                    <span data-menu-icon="timer" aria-hidden="true"></span><time id="htmlTimeValue" aria-label="Time remaining">1:00</time>
+                    <progress id="htmlTimeProgress" value="100" max="100" aria-label="Time remaining"></progress>
+                    <span id="htmlFlowCounter" class="play-flow" aria-live="polite"><span data-menu-icon="flame" aria-hidden="true"></span><span>Flow <strong id="htmlFlowValue">x0</strong></span></span>
                 </div>
             </div>
-            <div id="htmlGameMastery" class="game-mastery is-hidden" aria-label="Stage mastery objectives">
-                <strong class="game-mastery__title">Mastery Seals</strong>
-                <ul id="htmlMasteryObjectives"></ul>
-            </div>
-            <div id="htmlRewardToast" class="game-reward-toast is-hidden" role="status" aria-live="polite">
-                <span class="game-reward-toast__spark" aria-hidden="true"></span>
+            <div id="htmlBoardSpace" class="play-board-space" aria-hidden="true"></div>
+            <div id="htmlPlayStatus" class="play-status is-hidden" role="status"></div>
+            <div id="htmlRewardToast" class="play-reward is-hidden" role="status" aria-live="polite">
+                <span data-menu-icon="sparkles" aria-hidden="true"></span>
                 <strong id="htmlRewardText">Flow x3</strong>
             </div>
-            <div id="htmlGameAssists" class="game-assists is-hidden">
-                <div id="htmlAssistMessage" class="game-assists__message is-hidden" role="status" aria-live="polite"></div>
-                <div class="game-assists__actions">
-                    <button id="htmlUndoButton" class="game-assists__button" type="button" aria-label="Undo last move" title="Undo last move" disabled>
-                        <svg class="game-assists__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7 5 11l4 4"/><path d="M5 11h8a6 6 0 0 1 6 6"/></svg>
+            <div id="htmlGameDock" class="play-dock is-hidden">
+            <div id="htmlGameAssists" class="play-assists is-hidden">
+                <div id="htmlAssistMessage" class="play-assists__message is-hidden" role="status" aria-live="polite"></div>
+                <div class="play-assists__actions">
+                    <button id="htmlUndoButton" class="play-tool" type="button" aria-label="Undo last move" title="Undo last move" disabled>
+                        <span data-menu-icon="undo-2" aria-hidden="true"></span>
                         <span>Undo</span>
                     </button>
-                    <button id="htmlHintButton" class="game-assists__button" type="button" aria-label="Show a useful move" title="Show a useful move">
-                        <svg class="game-assists__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M8.3 14.5a7 7 0 1 1 7.4 0c-.9.7-1.7 1.5-1.7 2.5h-4c0-1-.8-1.8-1.7-2.5Z"/></svg>
+                    <button id="htmlHintButton" class="play-tool play-tool--hint" type="button" aria-label="Show a useful move" title="Show a useful move">
+                        <span data-menu-icon="lightbulb" aria-hidden="true"></span>
                         <span>Hint</span>
                     </button>
-                    <button id="htmlRestartButton" class="game-assists__button" type="button" aria-label="Restart puzzle" title="Restart puzzle">
-                        <svg class="game-assists__icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11a8 8 0 1 0 1 4"/><path d="M20 4v7h-7"/></svg>
+                    <button id="htmlRestartButton" class="play-tool" type="button" aria-label="Restart puzzle" title="Restart puzzle">
+                        <span data-menu-icon="rotate-ccw" aria-hidden="true"></span>
                         <span>Restart</span>
                     </button>
                 </div>
+            </div>
+            <details id="htmlGameMastery" class="play-goals is-hidden">
+                <summary aria-label="Mastery objectives" title="Mastery objectives"><span data-menu-icon="star" aria-hidden="true"></span></summary>
+                <ul id="htmlMasteryObjectives" aria-label="Stage mastery objectives"></ul>
+            </details>
             </div>
             <p id="htmlPuzzleDescription" class="visually-hidden" aria-live="polite">Choose Play, Daily, or Levels to begin.</p>
             <div id="htmlAssetStatus" class="asset-status is-hidden" role="status" aria-label="Preparing game pieces">
@@ -234,6 +250,6 @@
         </div>
     </div>
 
-    <script src="js/game.bundle.min.js?v=20260824-seo1"></script>
+    <script src="js/game.bundle.min.js?v=20261001-board4"></script>
 </body>
 </html>

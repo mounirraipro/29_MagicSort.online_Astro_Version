@@ -1,25 +1,25 @@
 ////////////////////////////////////////////////////////////
 // MAIN
 ////////////////////////////////////////////////////////////
-var stageW = 1280;
-var stageH = 768;
-var contentW = 1024;
-var contentH = 576;
+var stageW = 900;
+var stageH = 1200;
+var contentW = stageW;
+var contentH = stageH;
 
 var viewport = {
-    isLandscape: true
+    isLandscape: false
 };
 var landscapeSize = {
-    w: stageW,
-    h: stageH,
-    cW: contentW,
-    cH: contentH
+    w: 1280,
+    h: 768,
+    cW: 1024,
+    cH: 576
 };
 var portraitSize = {
-    w: 768,
-    h: 1024,
-    cW: 576,
-    cH: 900
+    w: 900,
+    h: 1200,
+    cW: 900,
+    cH: 1200
 };
 
 /*!
@@ -75,6 +75,21 @@ var offset = {
  */
 function resizeGameFunc() {
     setTimeout(function() {
+        if (!$.editor.enable) {
+            var holder = document.getElementById('mainHolder');
+            var layout = GameplayLayout.fitCanvas(holder.clientWidth, holder.clientHeight, stageW, stageH);
+            windowW = holder.clientWidth;
+            windowH = holder.clientHeight;
+            scalePercent = layout.scale;
+            offset.x = offset.y = 0;
+            offset.left = layout.left * 2;
+            offset.top = layout.top * 2;
+            $('#gameCanvas').css({ width: layout.width, height: layout.height, left: layout.left, top: layout.top });
+            var interfaceLayout = GameplayLayout.fitInterface(windowW, windowH);
+            $('#uiLayer').css({ width: interfaceLayout.width, height: interfaceLayout.height, transform: 'scale(' + interfaceLayout.scale + ')', transformOrigin: 'top left' });
+            resizeCanvas();
+            return;
+        }
         $('.mobileRotate').css('left', checkContentWidth($('.mobileRotate')));
         $('.mobileRotate').css('top', checkContentHeight($('.mobileRotate')));
 

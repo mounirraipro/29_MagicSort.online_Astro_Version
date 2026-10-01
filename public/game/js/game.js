@@ -532,8 +532,8 @@ var timerBarRenderState = {
 var selectData = {
     page: 0,
     total: 1,
-    max: 20,
-    column: 5,
+    max: 12,
+    column: 3,
     row: 4
 };
 var cookieName = 'magicsort2026';
@@ -938,16 +938,7 @@ function renderMasteryObjectives() {
         return;
     }
     var objectives = gameplayPolishData.complete ? gameplayPolishData.objectives : getCurrentMasteryObjectives();
-    var html = '';
-    for (var index = 0; index < objectives.length; index++) {
-        var objective = objectives[index];
-        var complete = gameplayPolishData.complete && objective.complete;
-        var onTrack = !gameplayPolishData.complete && objective.complete;
-        html += '<li class="game-mastery__item' + (complete ? ' is-complete' : '') + (onTrack ? ' is-on-track' : '') + '">';
-        html += '<span class="game-mastery__seal game-mastery__seal--' + objective.id + '" aria-hidden="true"></span>';
-        html += '<span><strong>' + objective.title + '</strong><small>' + objective.progress + '</small></span></li>';
-    }
-    $('#htmlMasteryObjectives').html(html);
+    GameplayUI.renderObjectives(objectives, gameplayPolishData.complete);
 }
 
 function updateGameplayPolishUI() {
@@ -972,7 +963,7 @@ function updateGameplayPolishUI() {
 
     var currentBest = getCurrentGameplayBest();
     var friendTarget = gameData.type == 'friend' ? FriendChallenge.getDescriptor().target : null;
-    $('#htmlBestCounter .game-hud__label').text(friendTarget ? 'Target' : 'Best');
+    $('#htmlBestCounter .play-best-label').text(friendTarget ? 'Target' : 'Best');
     $('#htmlBestMoveValue').text(friendTarget ? friendTarget.moves : (currentBest ? currentBest.moves : '--'));
     $('#htmlBestCounter').attr('aria-label', friendTarget ? 'Friend target ' + friendTarget.moves + ' moves' : (currentBest ? 'Personal best ' + currentBest.moves + ' moves' : 'No personal best yet'));
     $('#htmlEssenceValue').text(PlayerProfile.getEssence());
@@ -1272,12 +1263,25 @@ function initHTMLInterface() {
 
     window.htmlInterfaceReady = true;
 
-    $('#htmlStartButton').on('click', function() {
+    function openLevel(level) {
+        DailyChallenge.deactivate();
+        FriendChallenge.deactivate();
+        gameData.type = 'level';
+        gameData.levelNum = level - 1;
+        playSound('soundButton');
+        goPage('select');
+    }
+
+    MenuScreens.init({ startLevel: openLevel, startEndless: function() {
         DailyChallenge.deactivate();
         FriendChallenge.deactivate();
         gameData.type = 'challenge';
         playSound('soundButton');
         goPage('select');
+    } });
+
+    $('#htmlStartButton').on('click', function() {
+        openLevel(MenuScreens.resumeLevel({ total: levelSettings.length, unlocked: gameData.levelCompleted }));
     });
 
     $('#htmlLevelsButton').on('click', function() {
@@ -1431,16 +1435,18 @@ function updateHTMLInterface() {
     $('#uiLayer')
         .toggleClass('is-main-hub', showMainMenu)
         .toggleClass('is-shop-page', showShopMenu)
+        .toggleClass('is-level-page', showLevelMenu)
         .toggleClass('is-vial-page', showTubeMenu)
         .toggleClass('is-game-page', showGameHud);
 
     $('#htmlMainMenu').toggleClass('is-hidden', !showMainMenu);
-    $('#htmlMenuScene').toggleClass('is-hidden', !(showMainMenu || showShopMenu));
+    $('#htmlMenuScene').toggleClass('is-hidden', !(showMainMenu || showShopMenu || showLevelMenu));
     $('#htmlLevelMenu').toggleClass('is-hidden', !showLevelMenu);
     $('#htmlTubeMenu').toggleClass('is-hidden', !showTubeMenu);
     $('#htmlShopMenu').toggleClass('is-hidden', !showShopMenu);
     $('#htmlResultMenu').toggleClass('is-hidden', !showResultMenu);
     $('#htmlGameHud').toggleClass('is-hidden', !showGameHud);
+    $('#htmlGameDock').toggleClass('is-hidden', !showGameHud);
     $('#htmlGameMastery').toggleClass('is-hidden', !showGameHud);
     $('#htmlGameAssists').toggleClass('is-hidden', !showGameHud);
     $('#htmlSettingsMenu').toggleClass('is-hidden', !showSettings);
@@ -1450,9 +1456,11 @@ function updateHTMLInterface() {
     }
     if (!showGameHud) {
         clearGameplayRewardMessage();
+        GameplayUI.showStatus('');
     }
 
     updateHTMLLevels();
+    MenuScreens.renderHome({ total: levelSettings.length, unlocked: gameData.levelCompleted });
     updateHTMLDailyChallenge();
     updateHTMLTubeMenu();
     updateHTMLResult();
@@ -1462,32 +1470,12 @@ function updateHTMLInterface() {
 }
 
 function updateHTMLLevels() {
-    if ($('#htmlLevelGrid').length === 0) {
-        return;
-    }
-
-    $('#htmlLevelTitle').text(textDisplay.selectLevel + ' - Page ' + selectData.page);
-    $('#htmlLevelPrev').prop('disabled', selectData.page <= 1);
-    $('#htmlLevelNext').prop('disabled', selectData.page >= selectData.total);
-
-    var startNum = (selectData.page - 1) * selectData.max;
-    var html = '';
-    for (var i = 0; i < selectData.max; i++) {
-        var levelNum = startNum + i + 1;
-        if (levelNum > levelSettings.length) {
-            break;
-        }
-        var unlocked = levelNum <= gameData.levelCompleted;
-        var best = typeof PlayerProgress == 'undefined' ? null : PlayerProgress.getLevelBest(levelNum);
-        var bestText = best ? '<small>' + best.stars + '&#9733; &middot; ' + best.moves + '</small>' : '';
-        html += '<button class="level-grid__button' + (unlocked ? '' : ' is-locked') + '" type="button" data-level="' + levelNum + '"' + (unlocked ? '' : ' disabled') + '><span>' + levelNum + '</span>' + bestText + '</button>';
-    }
-    $('#htmlLevelGrid').html(html);
-
-    $('#htmlLevelGrid .level-grid__button').off('click').on('click', function() {
-        gameData.levelNum = Number($(this).data('level')) - 1;
-        playSound('soundButton');
-        goPage('select');
+    MenuScreens.renderLevels({
+        page: Math.max(1, selectData.page),
+        pageSize: selectData.max,
+        total: levelSettings.length,
+        unlocked: gameData.levelCompleted,
+        getBest: PlayerProgress.getLevelBest
     });
 }
 
@@ -1525,8 +1513,11 @@ function updateHTMLResult() {
     } else if (gameData.type == 'friend') {
         resultTitle = 'Friend Challenge Complete';
     }
+    if (!gameplayPolishData.complete) {
+        resultTitle = "Time's up";
+    }
     $('#htmlResultTitle').text(resultTitle);
-    $('#htmlResultStars').text(getStarText(gameplayPolishData.complete ? gameplayPolishData.stars : 0));
+    GameplayUI.renderStars(gameplayPolishData.complete ? gameplayPolishData.stars : 0);
     $('#htmlResultMessage').text(getResultPolishMessage());
     $('#htmlResultScore').text(textDisplay.resultDesc.replace('[NUMBER]', addCommas(Math.floor(tweenData.tweenScore || playerData.score))));
     $('#htmlResultMeta').text(getResultMetaText());
@@ -1543,7 +1534,7 @@ function renderResultProgression() {
     for (var index = 0; index < objectives.length; index++) {
         var objective = objectives[index];
         seals += '<span class="result-seal' + (objective.complete ? ' is-earned' : '') + '" title="' + objective.description + '">';
-        seals += '<span class="game-mastery__seal game-mastery__seal--' + objective.id + '" aria-hidden="true"></span>';
+        seals += MenuScreens.icon(objective.id == 'efficient' ? 'zap' : (objective.id == 'pure' ? 'sparkles' : 'flame'));
         seals += '<small>' + objective.title + '</small></span>';
     }
     $('#htmlResultSeals').html(seals);
@@ -1590,10 +1581,8 @@ function updateHTMLConfirm() {
 }
 
 function updateHTMLSettings() {
-    $('#htmlSoundButton').text(buttonSoundOn.visible ? 'Sound: Off' : 'Sound: On');
-    $('#htmlMusicButton').text(buttonMusicOn.visible ? 'Music: Off' : 'Music: On');
+    GameplayUI.renderSettings(!buttonSoundOn.visible, !buttonMusicOn.visible, LiquidAccessibility.isEnabled());
     $('#htmlSymbolsButton')
-        .text(LiquidAccessibility.isEnabled() ? 'Symbols: On' : 'Symbols: Off')
         .prop('disabled', isPourInProgress());
     $('#htmlQuitButton').toggle(curPage === 'game');
 }
@@ -1749,13 +1738,7 @@ function unlockLevelTween(r, c) {
 }
 
 function findSelectPage(level) {
-    for (var n = 0; n < 10; n++) {
-        var startNum = (n + 1) * selectData.max;
-        if (level <= startNum) {
-            selectData.page = n + 1;
-            n = 10;
-        }
-    }
+    selectData.page = Math.max(1, Math.ceil(Math.min(level, levelSettings.length) / selectData.max));
 }
 
 /*!
@@ -2062,6 +2045,13 @@ function positionTubes() {
 
     var finalW = positionData.totalWidth + positionData.width + gameData.marginX;
     var finalH = positionData.totalHeight + positionData.height + gameData.marginY;
+    if (!$.editor.enable) {
+        var boardLayout = GameplayLayout.positionBoard(waterContainer, finalW, finalH, canvasW, canvasH);
+        if (boardLayout) {
+            gameData.scale = boardLayout.scale;
+            return;
+        }
+    }
     var maxWidth = 1000;
     var maxHeight = 500;
     var scaleX = 1;
@@ -2131,6 +2121,7 @@ function prepareStage() {
     gameData.stage.timer = levelSettings[gameData.levelNum].timer;
     gameData.stage.score = levelSettings[gameData.levelNum].score;
     timeData.countdown = levelSettings[gameData.levelNum].timer;
+    GameplayUI.resetTimer(timeData.countdown);
 }
 
 /*!
@@ -3106,6 +3097,10 @@ function animateTimer() {
 }
 
 function updateTimerBar() {
+    if (!$.editor.enable) {
+        GameplayUI.updateTimer(timeData.sessionTimer, timeData.countdown);
+        return;
+    }
     var totalW = timeData.sessionTimer / timeData.countdown * gameSettings.timer.width;
     totalW = totalW < 5 ? 5 : totalW;
     totalW = Math.round(totalW);
@@ -3143,6 +3138,7 @@ function calculateScore() {
             var calTimer = timeData.countdown - timeData.sessionTimer;
             var totalScore = Math.floor((calTimer - timeData.accumulate) * scorePercentage);
             statusTxt.text = textDisplay.score.replace("[NUMBER]", addCommas(totalScore));
+            GameplayUI.showStatus(statusTxt.text);
             updateTimerBar();
         },
         onComplete: function() {
@@ -3160,6 +3156,7 @@ function calculateScore() {
                 overwrite: true,
                 onComplete: function() {
                     statusTxt.text = "";
+                    GameplayUI.showStatus('');
 
                     playSound('soundClear');
                     showGameStatus("clear");
@@ -3225,6 +3222,7 @@ function showGameStatus(con) {
         }
     }
 
+    GameplayUI.showStatus(statusTxt.text);
     statusContainer.alpha = 0;
     TweenMax.to(statusContainer, .5, {
         alpha: 1,
@@ -3283,7 +3281,9 @@ function millisecondsToTimeGame(milli) {
 
 function setOptionMenuOpen(isOpen) {
     optionsContainer.visible = isOpen;
+    if (isOpen) $('#htmlGameMastery').prop('open', false);
     $('#htmlSettingsPanel').toggleClass('is-hidden', !isOpen);
+    $('#htmlSettingsToggle').attr('aria-expanded', String(isOpen));
     $('#htmlGameAssists').toggleClass('is-menu-open', isOpen);
 }
 

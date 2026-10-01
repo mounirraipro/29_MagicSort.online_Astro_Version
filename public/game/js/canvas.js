@@ -174,6 +174,7 @@ function buildGameCanvas() {
     //game
     timerShapeBg = new createjs.Shape();
     timerShape = new createjs.Shape();
+    timerShape.visible = timerShapeBg.visible = $.editor.enable;
     timerContainer.addChild(timerShapeBg, timerShape);
 
     levelTxt = new createjs.Text();
@@ -187,7 +188,8 @@ function buildGameCanvas() {
     levelDisplayContainer.addChild(levelTxt);
 
     statusTxt = new createjs.Text();
-    statusTxt.font = "45px comicyregular";
+    statusTxt.visible = $.editor.enable;
+    statusTxt.font = "900 32px Nunito";
     statusTxt.color = '#D946EF';
     statusTxt.textAlign = "center";
     statusTxt.textBaseline = 'alphabetic';

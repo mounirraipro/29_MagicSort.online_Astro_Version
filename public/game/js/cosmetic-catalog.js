@@ -11,30 +11,35 @@
             {
                 id: 'emerald',
                 title: 'Emerald Conservatory',
+                label: 'Emerald',
                 cost: 350,
                 src: 'assets/theme-emerald-conservatory.webp'
             },
             {
                 id: 'celestial',
                 title: 'Celestial Observatory',
+                label: 'Celestial',
                 cost: 500,
                 src: 'assets/theme-celestial-observatory.webp'
             },
             {
                 id: 'moonlit',
                 title: 'Moonlit Archives',
+                label: 'Moonlit',
                 cost: 650,
                 src: 'assets/theme-moonlit-archives.webp'
             },
             {
                 id: 'sunforge',
                 title: 'Sunforge Sanctum',
+                label: 'Sunforge',
                 cost: 800,
                 src: 'assets/theme-sunforge-sanctum.webp'
             },
             {
                 id: 'frostglass',
                 title: 'Frostglass Grotto',
+                label: 'Frostglass',
                 cost: 950,
                 src: 'assets/theme-frostglass-grotto.webp'
             }

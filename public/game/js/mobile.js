@@ -28,16 +28,10 @@ function checkMobileEvent() {
  * 
  */
 function checkMobileOrientation() {
-    var isLandscape = false;
-
-    if (window.innerWidth > window.innerHeight) {
-        isLandscape = true;
-    }
-
     if ($.editor.enable) {
         viewport.isLandscape = edit.isLandscape;
     } else {
-        viewport.isLandscape = isLandscape;
+        viewport.isLandscape = false;
     }
 
     changeViewport(viewport.isLandscape);

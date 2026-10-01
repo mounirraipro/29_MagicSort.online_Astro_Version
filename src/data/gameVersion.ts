@@ -1,1 +1,1 @@
-export const GAME_ASSET_VERSION = "20260824-seo1";
+export const GAME_ASSET_VERSION = "20261001-board4";
